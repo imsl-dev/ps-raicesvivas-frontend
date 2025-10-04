@@ -2,7 +2,8 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top shadow">
   <div class="container">
     <a class="navbar-brand fw-bold fs-4" href="#">
-      🌱 Raíces Vivas
+      <img src="/raices_vivas_logo.png" alt="Raíces Vivas Logo" width="80" height="80">
+      Raíces Vivas
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
@@ -22,7 +23,10 @@
           <a class="nav-link" (click)="scrollToSection('testimonios')" style="cursor: pointer;">Testimonios</a>
         </li>
         <li class="nav-item">
-          <button class="btn btn-light btn-sm ms-2">Únete Ahora</button>
+          <button class="btn btn-success btn-sm ms-2 mt-1">Iniciar sesión</button>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-secondary btn-sm ms-2 mt-1">Unirse</button>
         </li>
       </ul>
     </div>
@@ -30,8 +34,10 @@
 </nav>
 
 <!-- Hero Section -->
-<section id="inicio" class="hero-section d-flex align-items-center" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1920&h=1080&fit=crop') center/cover; min-height: 100vh; margin-top: 56px;">
+<section id="inicio" class="hero-section d-flex align-items-center"
+  style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1920&h=1080&fit=crop') center/cover; min-height: 100vh; margin-top: 56px;">
   <div class="container text-white text-center">
+    <img src="/raices_vivas_logo.png" alt="Raíces Vivas Logo" width="300" height="300">
     <h1 class="display-2 fw-bold mb-4 animate-fade-in">Sembramos Futuro, Cosechamos Vida</h1>
     <p class="lead mb-5 fs-4">Únete a nuestra misión de reforestar y regenerar nuestro planeta, un árbol a la vez</p>
     <div class="d-flex gap-3 justify-content-center">
@@ -64,18 +70,18 @@
   <div class="container">
     <div class="row align-items-center g-5">
       <div class="col-lg-6">
-        <img src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=800&h=600&fit=crop" 
-             class="img-fluid rounded shadow" alt="Reforestación">
+        <img src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=800&h=600&fit=crop"
+          class="img-fluid rounded shadow" alt="Reforestación">
       </div>
       <div class="col-lg-6">
         <h2 class="fw-bold mb-4 text-success">¿Quiénes Somos?</h2>
         <p class="lead mb-4">
-          Raíces Vivas es una organización benéfica comprometida con la restauración de ecosistemas 
+          Raíces Vivas es una organización benéfica comprometida con la restauración de ecosistemas
           mediante la organización de grupos de reforestación en comunidades locales.
         </p>
         <p class="mb-4">
-          Creemos que cada árbol plantado es una inversión en el futuro de nuestro planeta. 
-          Trabajamos con voluntarios, comunidades y organizaciones para crear espacios verdes 
+          Creemos que cada árbol plantado es una inversión en el futuro de nuestro planeta.
+          Trabajamos con voluntarios, comunidades y organizaciones para crear espacios verdes
           sostenibles que beneficien a las generaciones actuales y futuras.
         </p>
         <ul class="list-unstyled">
@@ -125,7 +131,8 @@
         <div class="card border-0 shadow-sm h-100">
           <div class="card-body p-4">
             <div class="d-flex align-items-center mb-3">
-              <img [src]="testimonial.avatar" class="rounded-circle me-3" width="60" height="60" [alt]="testimonial.name">
+              <img [src]="testimonial.avatar" class="rounded-circle me-3" width="60" height="60"
+                [alt]="testimonial.name">
               <div>
                 <h6 class="mb-0 fw-bold">{{testimonial.name}}</h6>
                 <small class="text-muted">{{testimonial.role}}</small>
@@ -151,13 +158,34 @@
 <!-- Footer -->
 <footer class="bg-dark text-white py-4">
   <div class="container">
-    <div class="row">
-      <div class="col-md-6">
-        <h5 class="fw-bold mb-3">🌱 Raíces Vivas</h5>
-        <p class="text-muted">Sembrando esperanza, cultivando futuro</p>
+    <div class="row align-items-center">
+
+      <!-- Left: Logo and slogan -->
+      <div class="col-md-4 mb-3 mb-md-0 text-center text-md-start">
+
+        <h5 class="fw-bold mb-1">Raíces Vivas</h5>
+        <p class="mb-0 small">Sembrando esperanza, cultivando futuro</p>
       </div>
-      <div class="col-md-6 text-md-end">
-        <p class="mb-0 text-muted">© 2025 Raíces Vivas. Todos los derechos reservados.</p>
+
+      <!-- Center: Navigation / extra space -->
+      <div class="col-md-4  mb-md-0 text-center mt-4">
+
+        <ul class="list-inline mb-0">
+          <li class="list-inline-item">
+            <p href="#" class="text-white text-decoration-none">Contactate con nosotros:</p>
+
+          </li>
+          <br>
+          <li class="list-inline-item">
+            <p href="#" class="text-white text-decoration-none">raicesvivasorg@gmail.com</p>
+          </li>
+
+        </ul>
+      </div>
+
+      <!-- Right: Copyright -->
+      <div class="col-md-4 text-center text-md-end">
+        <p class="mb-0 small">© 2025 Raíces Vivas. Todos los derechos reservados.</p>
       </div>
     </div>
   </div>

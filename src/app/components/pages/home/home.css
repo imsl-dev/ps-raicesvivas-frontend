@@ -4,6 +4,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -27,6 +28,7 @@
 /* Navbar personalizado */
 .navbar {
   transition: background-color 0.3s ease;
+  background-color: rgb(17, 62, 41) !important;
 }
 
 /* Hero section */
@@ -41,7 +43,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.5));
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5));
 }
 
 .hero-section .container {
@@ -82,7 +84,7 @@
   .hero-section h1 {
     font-size: 2.5rem;
   }
-  
+
   .hero-section p {
     font-size: 1.1rem;
   }
