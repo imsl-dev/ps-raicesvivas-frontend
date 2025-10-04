@@ -1,0 +1,30 @@
+<div class="containter">
+  <div class="row justify-content-center mt-5">
+    <div class="col-8 border border-primary-subtle rounded">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Usuario</label>
+          <input type="text" class="form-control" formControlName="user"
+            [ngClass]="loginForm.get('user')?.touched ? (loginForm.get('user')?.invalid ? 'is-invalid' : 'is-valid') : ''">
+          @if (loginForm.get('user')?.getError('required') && loginForm.get('user')?.touched) {
+          <label class="text-danger">Este campo es requerido</label>
+          }
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" formControlName="password"
+            [ngClass]="loginForm.get('password')?.touched ? (loginForm.get('password')?.invalid ? 'is-invalid' : 'is-valid') : ''">
+          @if (loginForm.get('password')?.getError('required') && loginForm.get('password')?.touched) {
+          <label class="text-danger">Este campo es requerido</label>
+          }
+        </div>
+        <div>
+          @if (!firstTry) {
+          <label class="text-danger mb-3">El usuario o contraseña son incorrectos</label>
+          }
+        </div>
+        <button type="submit" class="btn btn-primary mb-3">Ingresar</button>
+      </form>
+    </div>
+  </div>
+</div>
