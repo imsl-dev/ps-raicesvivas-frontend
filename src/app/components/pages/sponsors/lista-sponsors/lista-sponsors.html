@@ -1,1 +1,94 @@
-<p>lista-sponsors works!</p>
+<!-- sponsor-list.component.html -->
+
+<div class="sponsor-list-container">
+  <div class="header">
+    <h2>Listado de Sponsors</h2>
+    <button class="btn btn-primary">+ Nuevo Sponsor</button>
+  </div>
+
+  <!-- Buscador -->
+  <div class="search-container">
+    <input 
+      type="text" 
+      [(ngModel)]="searchTerm"
+      placeholder="Buscar sponsor por nombre..."
+      class="search-input"
+    >
+  </div>
+
+  <!-- Estado de carga -->
+  @if (loading) {
+    <div class="loading">
+      <p>Cargando sponsors...</p>
+    </div>
+  }
+
+  <!-- Mensaje de error -->
+  @if (error) {
+    <div class="error-message">
+      <p>{{ error }}</p>
+      <button class="btn btn-secondary" (click)="loadSponsors()">Reintentar</button>
+    </div>
+  }
+
+  <!-- Listado de sponsors -->
+  @if (!loading && !error) {
+    @if (filteredSponsors.length === 0) {
+      <div class="empty-state">
+        <p>No se encontraron sponsors</p>
+      </div>
+    } @else {
+      <div class="sponsors-grid">
+        @for (sponsor of filteredSponsors; track sponsor.id) {
+          <div class="sponsor-card">
+            <div class="sponsor-header">
+              <h3>{{ sponsor.nombre }}</h3>
+            </div>
+
+            <div class="sponsor-images">
+              @if (sponsor.rutaImg1) {
+                <div class="image-container">
+                  <img [src]="sponsor.rutaImg1" [alt]="sponsor.nombre + ' - Imagen 1'">
+                </div>
+              }
+              @if (sponsor.rutaImg2) {
+                <div class="image-container">
+                  <img [src]="sponsor.rutaImg2" [alt]="sponsor.nombre + ' - Imagen 2'">
+                </div>
+              }
+              @if (!sponsor.rutaImg1 && !sponsor.rutaImg2) {
+                <div class="no-images">
+                  <p>Sin imágenes</p>
+                </div>
+              }
+            </div>
+
+            <div class="sponsor-actions">
+              <button 
+                class="btn-action btn-view" 
+                (click)="viewDetails(sponsor.id)"
+                title="Ver detalles"
+              >
+                👁️ Ver
+              </button>
+              <button 
+                class="btn-action btn-edit" 
+                (click)="editSponsor(sponsor.id)"
+                title="Editar"
+              >
+                ✏️ Editar
+              </button>
+              <button 
+                class="btn-action btn-delete" 
+                (click)="deleteSponsor(sponsor.id)"
+                title="Eliminar"
+              >
+                🗑️ Eliminar
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

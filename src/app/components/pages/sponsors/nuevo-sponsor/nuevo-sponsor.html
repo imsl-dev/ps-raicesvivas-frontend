@@ -1,1 +1,102 @@
-<p>nuevo-sponsor works!</p>
+<!-- sponsor-form.component.html -->
+
+<div class="sponsor-form-container">
+  <h2>Alta de Sponsor</h2>
+
+  <form [formGroup]="sponsorForm" (ngSubmit)="onSubmit()">
+    
+    <!-- Nombre del Sponsor -->
+    <div class="form-group">
+      <label for="nombre">Nombre del Sponsor *</label>
+      <input 
+        type="text" 
+        id="nombre" 
+        formControlName="nombre" 
+        class="form-control"
+        placeholder="Ingrese el nombre del sponsor"
+      >
+      @if (nombre?.invalid && nombre?.touched) {
+        <div class="error-message">
+          @if (nombre?.errors?.['required']) {
+            <small>El nombre es obligatorio</small>
+          }
+          @if (nombre?.errors?.['maxlength']) {
+            <small>El nombre no puede exceder 255 caracteres</small>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Imagen 1 -->
+    <div class="form-group">
+      <label for="imagen1">Imagen 1 (Opcional)</label>
+      <div class="image-upload-container">
+        <input 
+          type="file" 
+          id="imagen1" 
+          accept="image/*"
+          (change)="onFileSelected($event, 1)"
+          class="file-input"
+        >
+        <label for="imagen1" class="file-label">
+          @if (!imagenPreview1) {
+            <span>Seleccionar imagen</span>
+          }
+          @if (imagenPreview1) {
+            <span>Cambiar imagen</span>
+          }
+        </label>
+      </div>
+      
+      @if (imagenPreview1) {
+        <div class="image-preview">
+          <img [src]="imagenPreview1" alt="Preview 1">
+          <button type="button" class="btn-remove" (click)="removeImage(1)">
+            ✕ Eliminar
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- Imagen 2 -->
+    <div class="form-group">
+      <label for="imagen2">Imagen 2 (Opcional)</label>
+      <div class="image-upload-container">
+        <input 
+          type="file" 
+          id="imagen2" 
+          accept="image/*"
+          (change)="onFileSelected($event, 2)"
+          class="file-input"
+        >
+        <label for="imagen2" class="file-label">
+          @if (!imagenPreview2) {
+            <span>Seleccionar imagen</span>
+          }
+          @if (imagenPreview2) {
+            <span>Cambiar imagen</span>
+          }
+        </label>
+      </div>
+      
+      @if (imagenPreview2) {
+        <div class="image-preview">
+          <img [src]="imagenPreview2" alt="Preview 2">
+          <button type="button" class="btn-remove" (click)="removeImage(2)">
+            ✕ Eliminar
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- Botones -->
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="sponsorForm.invalid">
+        Guardar Sponsor
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="resetForm()">
+        Limpiar
+      </button>
+    </div>
+  </form>
+</div>
