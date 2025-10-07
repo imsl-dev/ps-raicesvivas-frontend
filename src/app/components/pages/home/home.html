@@ -1,192 +1,159 @@
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top shadow">
-  <div class="container">
-    <a class="navbar-brand fw-bold fs-4" href="#">
-      <img src="/raices_vivas_logo.png" alt="Raíces Vivas Logo" width="80" height="80">
-      Raíces Vivas
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" (click)="scrollToSection('inicio')" style="cursor: pointer;">Inicio</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" (click)="scrollToSection('impacto')" style="cursor: pointer;">Nuestro Impacto</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" (click)="scrollToSection('eventos')" style="cursor: pointer;">Eventos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" (click)="scrollToSection('testimonios')" style="cursor: pointer;">Testimonios</a>
-        </li>
-        <li class="nav-item">
-          <button class="btn btn-success btn-sm ms-2 mt-1">Iniciar sesión</button>
-        </li>
-        <li class="nav-item">
-          <button class="btn btn-secondary btn-sm ms-2 mt-1">Unirse</button>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
 <!-- Hero Section -->
-<section id="inicio" class="hero-section d-flex align-items-center"
-  style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1920&h=1080&fit=crop') center/cover; min-height: 100vh; margin-top: 56px;">
-  <div class="container text-white text-center">
-    <img src="/raices_vivas_logo.png" alt="Raíces Vivas Logo" width="300" height="300">
-    <h1 class="display-2 fw-bold mb-4 animate-fade-in">Sembramos Futuro, Cosechamos Vida</h1>
-    <p class="lead mb-5 fs-4">Únete a nuestra misión de reforestar y regenerar nuestro planeta, un árbol a la vez</p>
-    <div class="d-flex gap-3 justify-content-center">
-      <button class="btn btn-success btn-lg px-5 py-3">Participar en Evento</button>
-      <button class="btn btn-outline-light btn-lg px-5 py-3">Conocer Más</button>
-    </div>
-  </div>
-</section>
-
-<!-- Estadísticas de Impacto -->
-<section id="impacto" class="py-5 bg-light">
-  <div class="container">
-    <h2 class="text-center mb-5 fw-bold text-success">Nuestro Impacto</h2>
-    <div class="row g-4">
-      <div class="col-md-3 col-sm-6" *ngFor="let stat of stats">
-        <div class="card border-0 shadow-sm h-100 text-center p-4 hover-lift">
-          <div class="card-body">
-            <div class="display-1 mb-3">{{stat.icon}}</div>
-            <h3 class="fw-bold text-success mb-2">{{stat.number}}</h3>
-            <p class="text-muted mb-0">{{stat.label}}</p>
-          </div>
-        </div>
+<div class="homeContainer">
+  <section id="inicio" class="hero-section d-flex align-items-center"
+    style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1920&h=1080&fit=crop') center/cover; min-height: 100vh; margin-top: 56px;">
+    <div class="container text-white text-center">
+      <img src="/raices_vivas_logo.png" alt="Raíces Vivas Logo" width="300" height="300">
+      <h1 class="display-2 fw-bold mb-4 animate-fade-in">Sembramos Futuro, Cosechamos Vida</h1>
+      <p class="lead mb-5 fs-4">Únete a nuestra misión de reforestar y regenerar nuestro planeta, un árbol a la vez</p>
+      <div class="d-flex gap-3 justify-content-center">
+        <button class="btn btn-success btn-lg px-5 py-3">Participar en Evento</button>
+        <button class="btn btn-outline-light btn-lg px-5 py-3">Conocer Más</button>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Misión y Visión -->
-<section class="py-5">
-  <div class="container">
-    <div class="row align-items-center g-5">
-      <div class="col-lg-6">
-        <img src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=800&h=600&fit=crop"
-          class="img-fluid rounded shadow" alt="Reforestación">
-      </div>
-      <div class="col-lg-6">
-        <h2 class="fw-bold mb-4 text-success">¿Quiénes Somos?</h2>
-        <p class="lead mb-4">
-          Raíces Vivas es una organización benéfica comprometida con la restauración de ecosistemas
-          mediante la organización de grupos de reforestación en comunidades locales.
-        </p>
-        <p class="mb-4">
-          Creemos que cada árbol plantado es una inversión en el futuro de nuestro planeta.
-          Trabajamos con voluntarios, comunidades y organizaciones para crear espacios verdes
-          sostenibles que beneficien a las generaciones actuales y futuras.
-        </p>
-        <ul class="list-unstyled">
-          <li class="mb-2">✅ Reforestación participativa y comunitaria</li>
-          <li class="mb-2">✅ Educación ambiental para todas las edades</li>
-          <li class="mb-2">✅ Monitoreo y cuidado de áreas plantadas</li>
-          <li class="mb-2">✅ Colaboración con organizaciones locales</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Próximos Eventos -->
-<section id="eventos" class="py-5 bg-light">
-  <div class="container">
-    <h2 class="text-center mb-5 fw-bold text-success">Próximos Eventos de Reforestación</h2>
-    <div class="row g-4">
-      <div class="col-lg-4 col-md-6" *ngFor="let event of events">
-        <div class="card border-0 shadow h-100 hover-lift">
-          <img [src]="event.image" class="card-img-top" [alt]="event.title" style="height: 200px; object-fit: cover;">
-          <div class="card-body">
-            <h5 class="card-title fw-bold">{{event.title}}</h5>
-            <p class="text-muted mb-2">
-              <i class="bi bi-calendar-event"></i> {{event.date}}
-            </p>
-            <p class="text-muted mb-2">
-              <i class="bi bi-geo-alt"></i> {{event.location}}
-            </p>
-            <p class="text-muted mb-3">
-              <i class="bi bi-people"></i> {{event.participants}} participantes confirmados
-            </p>
-            <button class="btn btn-success w-100">Inscribirme</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Testimonios -->
-<section id="testimonios" class="py-5">
-  <div class="container">
-    <h2 class="text-center mb-5 fw-bold text-success">Voces de Nuestros Voluntarios</h2>
-    <div class="row g-4">
-      <div class="col-lg-4" *ngFor="let testimonial of testimonials">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-body p-4">
-            <div class="d-flex align-items-center mb-3">
-              <img [src]="testimonial.avatar" class="rounded-circle me-3" width="60" height="60"
-                [alt]="testimonial.name">
-              <div>
-                <h6 class="mb-0 fw-bold">{{testimonial.name}}</h6>
-                <small class="text-muted">{{testimonial.role}}</small>
-              </div>
+  <!-- Estadísticas de Impacto -->
+  <section id="impacto" class="py-5 bg-light">
+    <div class="container">
+      <h2 class="text-center mb-5 fw-bold text-success">Nuestro Impacto</h2>
+      <div class="row g-4">
+        <div class="col-md-3 col-sm-6" *ngFor="let stat of stats">
+          <div class="card border-0 shadow-sm h-100 text-center p-4 hover-lift">
+            <div class="card-body">
+              <div class="display-1 mb-3">{{stat.icon}}</div>
+              <h3 class="fw-bold text-success mb-2">{{stat.number}}</h3>
+              <p class="text-muted mb-0">{{stat.label}}</p>
             </div>
-            <p class="text-muted fst-italic">"{{testimonial.text}}"</p>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Call to Action -->
-<section class="py-5 bg-success text-white">
-  <div class="container text-center">
-    <h2 class="fw-bold mb-4">¿Listo para Hacer la Diferencia?</h2>
-    <p class="lead mb-4">Únete a nuestra comunidad de voluntarios y ayúdanos a crear un futuro más verde</p>
-    <button class="btn btn-light btn-lg px-5 py-3">Convertirme en Voluntario</button>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer class="bg-dark text-white py-4">
-  <div class="container">
-    <div class="row align-items-center">
-
-      <!-- Left: Logo and slogan -->
-      <div class="col-md-4 mb-3 mb-md-0 text-center text-md-start">
-
-        <h5 class="fw-bold mb-1">Raíces Vivas</h5>
-        <p class="mb-0 small">Sembrando esperanza, cultivando futuro</p>
-      </div>
-
-      <!-- Center: Navigation / extra space -->
-      <div class="col-md-4  mb-md-0 text-center mt-4">
-
-        <ul class="list-inline mb-0">
-          <li class="list-inline-item">
-            <p href="#" class="text-white text-decoration-none">Contactate con nosotros:</p>
-
-          </li>
-          <br>
-          <li class="list-inline-item">
-            <p href="#" class="text-white text-decoration-none">raicesvivasorg@gmail.com</p>
-          </li>
-
-        </ul>
-      </div>
-
-      <!-- Right: Copyright -->
-      <div class="col-md-4 text-center text-md-end">
-        <p class="mb-0 small">© 2025 Raíces Vivas. Todos los derechos reservados.</p>
+  <!-- Misión y Visión -->
+  <section class="py-5">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <img src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=800&h=600&fit=crop"
+            class="img-fluid rounded shadow" alt="Reforestación">
+        </div>
+        <div class="col-lg-6">
+          <h2 class="fw-bold mb-4 text-success">¿Quiénes Somos?</h2>
+          <p class="lead mb-4">
+            Raíces Vivas es una organización benéfica comprometida con la restauración de ecosistemas
+            mediante la organización de grupos de reforestación en comunidades locales.
+          </p>
+          <p class="mb-4">
+            Creemos que cada árbol plantado es una inversión en el futuro de nuestro planeta.
+            Trabajamos con voluntarios, comunidades y organizaciones para crear espacios verdes
+            sostenibles que beneficien a las generaciones actuales y futuras.
+          </p>
+          <ul class="list-unstyled">
+            <li class="mb-2">✅ Reforestación participativa y comunitaria</li>
+            <li class="mb-2">✅ Educación ambiental para todas las edades</li>
+            <li class="mb-2">✅ Monitoreo y cuidado de áreas plantadas</li>
+            <li class="mb-2">✅ Colaboración con organizaciones locales</li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
-</footer>
+  </section>
+
+  <!-- Próximos Eventos -->
+  <section id="eventos" class="py-5 bg-light">
+    <div class="container">
+      <h2 class="text-center mb-5 fw-bold text-success">Próximos Eventos de Reforestación</h2>
+      <div class="row g-4">
+        <div class="col-lg-4 col-md-6" *ngFor="let event of events">
+          <div class="card border-0 shadow h-100 hover-lift">
+            <img [src]="event.image" class="card-img-top" [alt]="event.title" style="height: 200px; object-fit: cover;">
+            <div class="card-body">
+              <h5 class="card-title fw-bold">{{event.title}}</h5>
+              <p class="text-muted mb-2">
+                <i class="bi bi-calendar-event"></i> {{event.date}}
+              </p>
+              <p class="text-muted mb-2">
+                <i class="bi bi-geo-alt"></i> {{event.location}}
+              </p>
+              <p class="text-muted mb-3">
+                <i class="bi bi-people"></i> {{event.participants}} participantes confirmados
+              </p>
+              <button class="btn btn-success w-100">Inscribirme</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonios -->
+  <section id="testimonios" class="py-5">
+    <div class="container">
+      <h2 class="text-center mb-5 fw-bold text-success">Voces de Nuestros Voluntarios</h2>
+      <div class="row g-4">
+        <div class="col-lg-4" *ngFor="let testimonial of testimonials">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-3">
+                <img [src]="testimonial.avatar" class="rounded-circle me-3" width="60" height="60"
+                  [alt]="testimonial.name">
+                <div>
+                  <h6 class="mb-0 fw-bold">{{testimonial.name}}</h6>
+                  <small class="text-muted">{{testimonial.role}}</small>
+                </div>
+              </div>
+              <p class="text-muted fst-italic">"{{testimonial.text}}"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-5 bg-success text-white">
+    <div class="container text-center">
+      <h2 class="fw-bold mb-4">¿Listo para Hacer la Diferencia?</h2>
+      <p class="lead mb-4">Únete a nuestra comunidad de voluntarios y ayúdanos a crear un futuro más verde</p>
+      <button class="btn btn-light btn-lg px-5 py-3">Convertirme en Voluntario</button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white py-4">
+    <div class="container">
+      <div class="row align-items-center">
+
+        <!-- Left: Logo and slogan -->
+        <div class="col-md-4 mb-3 mb-md-0 text-center text-md-start">
+
+          <h5 class="fw-bold mb-1">Raíces Vivas</h5>
+          <p class="mb-0 small">Sembrando esperanza, cultivando futuro</p>
+        </div>
+
+        <!-- Center: Navigation / extra space -->
+        <div class="col-md-4  mb-md-0 text-center mt-4">
+
+          <ul class="list-inline mb-0">
+            <li class="list-inline-item">
+              <p href="#" class="text-white text-decoration-none">Contactate con nosotros:</p>
+
+            </li>
+            <br>
+            <li class="list-inline-item">
+              <p href="#" class="text-white text-decoration-none">raicesvivasorg@gmail.com</p>
+            </li>
+
+          </ul>
+        </div>
+
+        <!-- Right: Copyright -->
+        <div class="col-md-4 text-center text-md-end">
+          <p class="mb-0 small">© 2025 Raíces Vivas. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,46 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top shadow">
+    <div class="container">
+        <a class="navbar-brand fw-bold fs-4" routerLink="/">
+            <img src="/raices_vivas_logo.png" alt="Raíces Vivas Logo" width="80" height="80">
+            Raíces Vivas
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" (click)="scrollToSection('inicio')" style="cursor: pointer;">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" (click)="scrollToSection('impacto')" style="cursor: pointer;">Nuestro
+                        Impacto</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" (click)="scrollToSection('eventos')" style="cursor: pointer;">Eventos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" (click)="scrollToSection('testimonios')"
+                        style="cursor: pointer;">Testimonios</a>
+                </li>
+
+                <!-- Show login/signup only if NOT authenticated -->
+                @if (authService.isAuthenticated$ | async) {
+                <li class="nav-item">
+                    <button class="btn btn-danger btn-sm ms-2 mt-1" (click)="logout()">Cerrar sesión</button>
+                </li>
+
+                }
+                @else{
+                <li class="nav-item">
+                    <button class="btn btn-success btn-sm ms-2 mt-1" routerLink="/login">Iniciar sesión</button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn btn-secondary btn-sm ms-2 mt-1">Unirse</button>
+                </li>
+                }
+
+            </ul>
+        </div>
+    </div>
+</nav>
