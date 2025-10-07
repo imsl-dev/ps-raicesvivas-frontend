@@ -1,43 +1,45 @@
+// src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
-
-interface LoginForm {
-  user: string;
-  password: string;
-}
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly user: String = 'admin';
-  private readonly password: String = 'admin'
-  token = '';
-  
-  constructor() {
-    const storedToken = localStorage.getItem('token');
-    if (storedToken) {
-      this.token = storedToken;
-    }
+  private authState = new BehaviorSubject<boolean>(this.hasStoredAuth());
+  isAuthenticated$ = this.authState.asObservable();
+  private readonly API_URL = 'http://localhost:8080/api/auth';
+
+  constructor(private http: HttpClient) { }
+
+  /** 🔑 Login: call backend and store role in localStorage */
+  login(email: string, password: string) {
+    return this.http.get<string>(`${this.API_URL}?email=${email}&password=${password}`).pipe(
+      tap(role => {
+        if (role) {
+          localStorage.setItem('role', role);
+          localStorage.setItem('email', email);
+          this.authState.next(true);
+        }
+      })
+    );
   }
 
-  isAuth() {
-    console.log("Token = ", this.token)
-    return this.token.length > 0;
-  }
-
-  login(loginForm: LoginForm): boolean {
-    if (loginForm.user === this.user && loginForm.password === this.password) {
-      this.token = Math.random().toString(36).substring(2);
-      localStorage.setItem('token', this.token);
-      return true;
-    }
-    this.token = '';
-    localStorage.removeItem('token');
-    return false;
-  }
-
+  /** 🚪 Logout: clear localStorage + update state */
   logout() {
-    this.token = '';
-    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('email');
+    this.authState.next(false);
+  }
+
+  /** 📦 Utility: check initial auth state */
+  private hasStoredAuth(): boolean {
+    return !!localStorage.getItem('role');
+  }
+
+  /** 🛡️ Getter for role */
+  getRole(): string | null {
+    return localStorage.getItem('role');
   }
 }

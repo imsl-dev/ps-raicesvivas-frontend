@@ -25,7 +25,13 @@
                 </li>
 
                 <!-- Show login/signup only if NOT authenticated -->
-                @if (!authService.isAuth()) {
+                @if (authService.isAuthenticated$ | async) {
+                <li class="nav-item">
+                    <button class="btn btn-danger btn-sm ms-2 mt-1" (click)="logout()">Cerrar sesión</button>
+                </li>
+
+                }
+                @else{
                 <li class="nav-item">
                     <button class="btn btn-success btn-sm ms-2 mt-1" routerLink="/login">Iniciar sesión</button>
                 </li>
@@ -34,12 +40,6 @@
                 </li>
                 }
 
-                <!-- Show logout if authenticated -->
-                @if (authService.isAuth()) {
-                <li class="nav-item">
-                    <button class="btn btn-danger btn-sm ms-2 mt-1" (click)="logout()">Cerrar sesión</button>
-                </li>
-                }
             </ul>
         </div>
     </div>
