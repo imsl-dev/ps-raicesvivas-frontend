@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ɵInternalFormsSharedModule, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Sponsor } from '../../../../models/entities/Sponsor';
 import { CommonModule } from '@angular/common';
+import { SponsorService } from '../../../../services/sponsor.service';
 
 @Component({
   selector: 'app-nuevo-sponsor',
@@ -14,7 +15,7 @@ export class NuevoSponsor {
   imagenPreview1: string | null = null;
   imagenPreview2: string | null = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private sponsorService: SponsorService) {
     this.sponsorForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.maxLength(255)]],
       rutaImg1: [''],
@@ -54,18 +55,25 @@ export class NuevoSponsor {
   }
 
   onSubmit(): void {
-    if (this.sponsorForm.valid) {
-      const sponsorData: Sponsor = this.sponsorForm.value;
-      console.log('Datos del sponsor:', sponsorData);
-      
-      // Aquí llamarías a tu servicio para guardar el sponsor
-      // this.sponsorService.crearSponsor(sponsorData).subscribe(...)
-      
-      this.resetForm();
-    } else {
-      this.markFormGroupTouched(this.sponsorForm);
-    }
+  if (this.sponsorForm.valid) {
+    const sponsorData: Sponsor = this.sponsorForm.value;
+    console.log('Datos del sponsor:', sponsorData);
+    
+    this.sponsorService.postSponsor(sponsorData).subscribe({
+      next: (response) => {
+        console.log('Sponsor creado con éxito:', response);
+        alert('Sponsor creado exitosamente');
+        this.resetForm();
+      },
+      error: (error) => {
+        console.error('Error al crear el sponsor:', error);
+        alert('Error al crear el sponsor. Por favor, intente nuevamente.');
+      }
+    });
+  } else {
+    this.markFormGroupTouched(this.sponsorForm);
   }
+}
 
   resetForm(): void {
     this.sponsorForm.reset();

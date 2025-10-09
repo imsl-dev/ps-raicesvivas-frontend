@@ -11,5 +11,5 @@ export const routes: Routes = [
     { path: 'nuevo-sponsor', component: NuevoSponsor, canActivate: [authGuard] },
     { path: 'home', component: Home },
     { path: 'login', component: Login },
-    { path: '**', component: Home }
+    { path: '**', component: NuevoSponsor }
 ];
