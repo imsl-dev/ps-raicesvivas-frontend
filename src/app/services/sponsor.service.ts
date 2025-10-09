@@ -9,7 +9,7 @@ import { Sponsor } from "../models/entities/Sponsor";
 export class SponsorService {
     constructor() { }
     private readonly http = inject(HttpClient);
-     private readonly API_URL = 'http://localhost:8080/sponsors';
+     private readonly API_URL = 'http://localhost:8080/api/sponsors';
 
     getSponsor(): Observable<Sponsor[]>{
         return this.http.get<Sponsor[]>(this.API_URL);

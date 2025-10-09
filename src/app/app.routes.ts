@@ -9,7 +9,9 @@ import { Signup } from './components/pages/signup/signup';
 
 export const routes: Routes = [
     { path: 'sponsors', component: ListaSponsors, canActivate: [authGuard] },
-    { path: 'nuevo-sponsor', component: NuevoSponsor, canActivate: [authGuard] },
+    { path: 'sponsors/nuevo', component: NuevoSponsor, canActivate: [authGuard] },
+    { path: 'sponsors/editar/:id', component: NuevoSponsor, canActivate: [authGuard] },
+    { path: 'sponsors/ver/:id', component: NuevoSponsor, canActivate: [authGuard] },
     { path: 'home', component: Home },
     { path: 'login', component: Login },
     { path: 'signup', component: Signup },
