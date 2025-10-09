@@ -29,6 +29,7 @@ export class NuevoSponsor implements OnInit {
   constructor(private fb: FormBuilder) {
     this.sponsorForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.maxLength(255)]],
+      linkDominio: [''],
       rutaImg1: [''],
       rutaImg2: ['']
     });
@@ -57,6 +58,7 @@ export class NuevoSponsor implements OnInit {
       next: (sponsor) => {
         this.sponsorForm.patchValue({
           nombre: sponsor.nombre,
+          linkDominio: sponsor.linkDominio || '',
           rutaImg1: sponsor.rutaImg1 || '',
           rutaImg2: sponsor.rutaImg2 || ''
         });
