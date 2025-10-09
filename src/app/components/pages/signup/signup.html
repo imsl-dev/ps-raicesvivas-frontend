@@ -1,0 +1,99 @@
+<div class="signup-page mt-4">
+    <div class="login-header d-flex justify-content-center">
+        <img src="/raices_vivas_logo.png" alt="Raíces Vivas Logo" width="130" height="130">
+
+    </div>
+    <h2>Crear cuenta en Raices Vivas</h2>
+    <div class="login-container col-md-2">
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-control" formControlName="nombre"
+                    [ngClass]="signupForm.get('nombre')?.touched ? (signupForm.get('nombre')?.invalid ? 'is-invalid' : 'is-valid') : ''">
+                @if (signupForm.get('nombre')?.hasError('required') && signupForm.get('nombre')?.touched) {
+                <label class="text-danger">Este campo es requerido</label>
+                }
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Apellido</label>
+                <input type="text" class="form-control" formControlName="apellido"
+                    [ngClass]="signupForm.get('apellido')?.touched ? (signupForm.get('apellido')?.invalid ? 'is-invalid' : 'is-valid') : ''">
+                @if (signupForm.get('apellido')?.hasError('required') && signupForm.get('apellido')?.touched) {
+                <label class="text-danger">Este campo es requerido</label>
+                }
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" formControlName="email"
+                    [ngClass]="signupForm.get('email')?.touched ? (signupForm.get('email')?.invalid ? 'is-invalid' : 'is-valid') : ''">
+                @if (signupForm.get('email')?.hasError('required') && signupForm.get('email')?.touched) {
+                <label class="text-danger">Este campo es requerido</label>
+                }
+                @if (signupForm.get('email')?.hasError('email') && signupForm.get('email')?.touched) {
+                <label class="text-danger">Este campo debe contener un correo electrónico</label>
+                }
+                @if (signupForm.get('email')?.hasError('emailTaken') && signupForm.get('email')?.touched) {
+                <label class="text-danger">Este correo ya está en uso</label>
+                }
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Contraseña</label>
+                <input type="password" class="form-control" formControlName="password"
+                    [ngClass]="signupForm.get('password')?.touched ? (signupForm.get('password')?.invalid ? 'is-invalid' : 'is-valid') : ''">
+                @if (signupForm.get('password')?.hasError('required') && signupForm.get('password')?.touched) {
+                <label class="text-danger">Este campo es requerido</label>
+                }
+
+
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tipo de Documento</label>
+                <select class="form-control" formControlName="tipoDocumento">
+                    <option value="">Seleccione un tipo</option>
+                    <option value="DNI">DNI</option>
+                    <option value="PASAPORTE">Pasaporte</option>
+                    <option value="LE">LE</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Número de Documento</label>
+                <input type="text" class="form-control" formControlName="nroDocumento" inputmode="numeric"
+                    pattern="[0-9]*" (keypress)="validarSoloNumeros($event)">
+                @if(signupForm.get('nroDocumento')?.hasError('required') && signupForm.get('nroDocumento')?.touched) {
+                <label class="text-danger">Este campo es requerido</label>
+                }
+                @if (signupForm.get('nroDocumento')?.hasError('minlength') && signupForm.get('nroDocumento')?.touched) {
+                <label class="text-danger">Este campo debe tener al menos 8 números</label>
+                }
+                @if (signupForm.get('nroDocumento')?.hasError('pattern') && signupForm.get('nroDocumento')?.touched) {
+                <label class="text-danger">Solo se permiten números</label>
+                }
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Provincia</label>
+                <select class="form-control" formControlName="idProvincia">
+                    <option value="">Seleccione provincia</option>
+                    @for (provincia of provincias; track provincia.id) {
+                    <option [value]="provincia.id">
+                        {{ provincia.nombre }}
+                    </option>
+                    }
+                </select>
+                @if (signupForm.get('idProvincia')?.hasError('required') && signupForm.get('idProvincia')?.touched) {
+                <label class="text-danger">Seleccione una provincia</label>
+                }
+            </div>
+
+            <div class="buttonContainer d-flex justify-content-center">
+                <button type="submit" class="btn btn-success mb-4 mt-2">Registrarse</button>
+            </div>
+
+        </form>
+    </div>
+</div>

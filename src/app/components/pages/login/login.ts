@@ -1,5 +1,5 @@
 // src/app/components/pages/login/login.component.ts
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
@@ -20,6 +20,8 @@ import { BrowserModule } from '@angular/platform-browser';
 export class Login {
   loginForm: FormGroup;
   firstTry = true;
+
+
 
   constructor(
     private fb: FormBuilder,
@@ -43,6 +45,7 @@ export class Login {
     this.authService.login(user, password).subscribe({
       next: () => {
         this.firstTry = true; // reset error
+
         this.router.navigate(['/']); // ✅ redirect after login
       },
       error: (err) => {
