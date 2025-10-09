@@ -4,6 +4,7 @@ import { authGuard } from './guards/auth.guard';
 import { ListaSponsors } from './components/pages/sponsors/lista-sponsors/lista-sponsors';
 import { NuevoSponsor } from './components/pages/sponsors/nuevo-sponsor/nuevo-sponsor';
 import { Login } from './components/pages/login/login';
+import { Signup } from './components/pages/signup/signup';
 
 
 export const routes: Routes = [
@@ -11,5 +12,6 @@ export const routes: Routes = [
     { path: 'nuevo-sponsor', component: NuevoSponsor, canActivate: [authGuard] },
     { path: 'home', component: Home },
     { path: 'login', component: Login },
-    { path: '**', component: NuevoSponsor }
+    { path: 'signup', component: Signup },
+    { path: '**', component: Home }
 ];
