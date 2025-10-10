@@ -19,8 +19,8 @@ export const routes: Routes = [
     { path: 'login', component: Login },
     { path: 'signup', component: Signup },
     { path: 'eventos', component: ListadoEventos, canActivate: [authGuard] },
-    { path: 'eventos/nuevo', component: NuevoEvento, canActivate: [authGuard] },
-    { path: 'eventos/editar/:id', component: NuevoEvento, canActivate: [authGuard] },
     { path: 'eventos/:id', component: DetalleEvento, canActivate: [authGuard] },
+    { path: 'eventos/nuevo', component: NuevoEvento, canActivate: [authGuard] },
+    { path: 'eventos/editar/:id', component: NuevoEvento, canActivate: [authGuard] },  
     { path: '**', component: Home }
 ];

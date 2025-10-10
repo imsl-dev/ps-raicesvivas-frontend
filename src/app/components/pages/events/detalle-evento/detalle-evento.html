@@ -1,1 +1,205 @@
-<p>detalle-evento works!</p>
+<div class="detalle-evento-container">
+  <!-- Estado de carga -->
+  @if (loading) {
+    <div class="loading-container">
+      <div class="spinner-border text-success mb-3" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p>Cargando detalles del evento...</p>
+    </div>
+  }
+
+  <!-- Mensaje de error -->
+  @if (error && !loading) {
+    <div class="error-container">
+      <div class="error-content">
+        <p class="error-message">{{ error }}</p>
+        <button class="btn btn-secondary" (click)="volver()">
+          ← Volver a Eventos
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Detalle del evento -->
+  @if (evento && !loading && !error) {
+    <div class="evento-detalle">
+      <!-- Header con imagen -->
+      <div class="evento-header">
+        @if (evento.rutaImg) {
+          <img [src]="evento.rutaImg" [alt]="evento.nombre" class="evento-imagen-principal">
+        } @else {
+          <div class="evento-imagen-placeholder">
+            <span class="placeholder-icon">🌱</span>
+          </div>
+        }
+        <div class="header-overlay">
+          <div class="header-badges">
+            <span class="tipo-badge">{{ evento.tipo | tipoEvento }}</span>
+            <span class="estado-badge" [ngClass]="getEstadoClass(evento.estado)">
+              {{ evento.estado }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido principal -->
+      <div class="evento-content">
+        <!-- Título y acciones -->
+        <div class="titulo-section">
+          <h1 class="evento-titulo">{{ evento.nombre }}</h1>
+          <div class="acciones-rapidas">
+            <button class="btn-icon" (click)="marcarFavorito()" title="Agregar a favoritos">
+              ❤️
+            </button>
+            <button class="btn-icon" (click)="compartirEvento()" title="Compartir evento">
+              📤
+            </button>
+          </div>
+        </div>
+
+        <!-- Información destacada -->
+        <div class="info-destacada">
+          <!-- Fecha y hora -->
+          <div class="info-card">
+            <div class="info-header">
+              <span class="info-icon">📅</span>
+              <h3>Fecha y Hora</h3>
+            </div>
+            <div class="info-body">
+              <p class="info-principal">{{ formatDate(evento.horaInicio) }}</p>
+              <div class="info-horario">
+                <div class="horario-item">
+                  <span class="horario-label">⏰ Inicio:</span>
+                  <span class="horario-valor">{{ formatTime(evento.horaInicio) }}</span>
+                </div>
+                <div class="horario-item">
+                  <span class="horario-label">⏱️ Fin:</span>
+                  <span class="horario-valor">{{ formatTime(evento.horaFin) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ubicación -->
+          <div class="info-card">
+            <div class="info-header">
+              <span class="info-icon">📍</span>
+              <h3>Ubicación</h3>
+            </div>
+            <div class="info-body">
+              <p class="info-principal">{{ evento.provincia?.nombre }}</p>
+              @if (evento.direccion) {
+                <p class="info-secundaria">{{ evento.direccion }}</p>
+              }
+            </div>
+          </div>
+
+          <!-- Organizador -->
+          @if (evento.sponsor) {
+            <div class="info-card">
+              <div class="info-header">
+                <span class="info-icon">🤝</span>
+                <h3>Organiza</h3>
+              </div>
+              <div class="info-body">
+                <p class="info-principal">{{ evento.sponsor.nombre }}</p>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Descripción -->
+        @if (evento.descripcion) {
+          <div class="descripcion-section">
+            <h2 class="section-title">📋 Descripción</h2>
+            <div class="descripcion-content">
+              <p>{{ evento.descripcion }}</p>
+            </div>
+          </div>
+        }
+
+        <!-- Información adicional -->
+        <div class="info-adicional">
+          <h2 class="section-title">ℹ️ Información Adicional</h2>
+          <div class="info-grid">
+            @if (evento.puntosAsistencia) {
+              <div class="info-item">
+                <span class="item-icon">⭐</span>
+                <div class="item-content">
+                  <span class="item-label">Puntos por Asistencia</span>
+                  <span class="item-valor">{{ evento.puntosAsistencia }} puntos</span>
+                </div>
+              </div>
+            }
+
+            @if (evento.costoInscripcion !== undefined && evento.costoInscripcion !== null) {
+              <div class="info-item">
+                <span class="item-icon">💰</span>
+                <div class="item-content">
+                  <span class="item-label">Costo de Inscripción</span>
+                  <span class="item-valor">
+                    @if (evento.costoInscripcion === 0) {
+                      Gratis
+                    } @else {
+                      ${{ evento.costoInscripcion }}
+                    }
+                  </span>
+                </div>
+              </div>
+            }
+
+            <div class="info-item">
+              <span class="item-icon">👥</span>
+              <div class="item-content">
+                <span class="item-label">Modalidad</span>
+                <span class="item-valor">Presencial</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="item-icon">🎫</span>
+              <div class="item-content">
+                <span class="item-label">Entrada</span>
+                <span class="item-valor">
+                  @if (evento.costoInscripcion === 0 || !evento.costoInscripcion) {
+                    Libre y Gratuita
+                  } @else {
+                    Requiere Inscripción
+                  }
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="acciones-principales">
+          @if (evento.estado === 'PENDIENTE') {
+            <button class="btn btn-success btn-lg" (click)="inscribirseEvento()">
+              ✅ Inscribirme al Evento
+            </button>
+          }
+          @if (evento.estado === 'CANCELADO') {
+            <div class="alerta-cancelado">
+              <p>⚠️ Este evento ha sido cancelado</p>
+            </div>
+          }
+          <button class="btn btn-secondary" (click)="editarEvento()">
+            ✏️ Editar Evento
+          </button>
+          <button class="btn btn-outline" (click)="volver()">
+            ← Volver a Eventos
+          </button>
+        </div>
+
+        <!-- Información de contacto o advertencias -->
+        <div class="info-footer">
+          <p class="texto-pequeño">
+            💡 <strong>Recordatorio:</strong> Por favor, llega 15 minutos antes del inicio del evento.
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+</div>

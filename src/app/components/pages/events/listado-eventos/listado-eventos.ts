@@ -27,7 +27,7 @@ export class ListadoEventos implements OnInit {
   
   // Filtros
   provincias: Provincia[] = [];
-  tiposEvento = Object.values(TipoEvento);
+  tiposEvento = Object.values(TipoEvento).sort((a, b) => a.localeCompare(b));
   estadosEvento = Object.values(EstadoEvento);
   
   filtroProvincia: string = '';
@@ -64,35 +64,37 @@ export class ListadoEventos implements OnInit {
   }
 
   loadProvincias(): void {
-    this.httpService.getProvincias().subscribe({
-      next: (data) => this.provincias = data,
-      error: (err) => console.error('Error cargando provincias:', err)
-    });
-  }
+  this.httpService.getProvincias().subscribe({
+    next: (data) => {
+      this.provincias = data.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    },
+    error: (err) => console.error('Error cargando provincias:', err)
+  });
+}
 
   get filteredEventos(): Evento[] {
-    return this.eventos.filter(evento => {
-      const matchSearch = !this.searchTerm || 
-        evento.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        evento.descripcion?.toLowerCase().includes(this.searchTerm.toLowerCase());
+  return this.eventos.filter(evento => {
+    const matchSearch = !this.searchTerm || 
+      evento.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      evento.descripcion?.toLowerCase().includes(this.searchTerm.toLowerCase());
 
-      const matchProvincia = !this.filtroProvincia || 
-        evento.provincia?.id?.toString() === this.filtroProvincia;
+    const matchProvincia = !this.filtroProvincia || 
+      evento.provinciaId?.toString() === this.filtroProvincia.toString();
 
-      const matchTipo = !this.filtroTipo || evento.tipo === this.filtroTipo;
+    const matchTipo = !this.filtroTipo || evento.tipo === this.filtroTipo;
 
-      const matchEstado = !this.filtroEstado || evento.estado === this.filtroEstado;
+    const matchEstado = !this.filtroEstado || evento.estado === this.filtroEstado;
 
-      const matchFechaDesde = !this.filtroFechaDesde || 
-        new Date(evento.horaInicio) >= new Date(this.filtroFechaDesde);
+    const matchFechaDesde = !this.filtroFechaDesde || 
+      new Date(evento.horaInicio) >= new Date(this.filtroFechaDesde + 'T00:00:00');
 
-      const matchFechaHasta = !this.filtroFechaHasta || 
-        new Date(evento.horaInicio) <= new Date(this.filtroFechaHasta);
+    const matchFechaHasta = !this.filtroFechaHasta || 
+      new Date(evento.horaInicio) <= new Date(this.filtroFechaHasta + 'T23:59:59');
 
-      return matchSearch && matchProvincia && matchTipo && matchEstado && 
-             matchFechaDesde && matchFechaHasta;
-    });
-  }
+    return matchSearch && matchProvincia && matchTipo && matchEstado && 
+           matchFechaDesde && matchFechaHasta;
+  });
+}
 
   limpiarFiltros(): void {
     this.searchTerm = '';

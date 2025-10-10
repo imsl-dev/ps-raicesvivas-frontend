@@ -38,7 +38,7 @@ export class NuevoEvento implements OnInit {
   // Datos para los selects
   sponsors: Sponsor[] = [];
   provincias: Provincia[] = [];
-  tiposEvento = Object.values(TipoEvento);
+  tiposEvento = Object.values(TipoEvento).sort((a, b) => a.localeCompare(b));
   estadosEvento = Object.values(EstadoEvento);
 
   constructor() { }
@@ -141,17 +141,17 @@ export class NuevoEvento implements OnInit {
     });
 
     this.httpService.getProvincias().subscribe({
-      next: (data) => {
-        this.provincias = data;
-        provinciasLoaded = true;
-        checkIfAllLoaded();
-      },
-      error: (err) => {
-        console.error('Error cargando provincias:', err);
-        provinciasLoaded = true;
-        checkIfAllLoaded();
-      }
-    });
+  next: (data) => {
+    this.provincias = data.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    provinciasLoaded = true;
+    checkIfAllLoaded();
+  },
+  error: (err) => {
+    console.error('Error cargando provincias:', err);
+    provinciasLoaded = true;
+    checkIfAllLoaded();
+  }
+});
   }
 
   loadEvento(id: number): void {
