@@ -42,7 +42,7 @@
               }">
                             <option value="">Seleccione un tipo</option>
                             @for (tipoEvento of tiposEvento; track tipoEvento) {
-                            <option [value]="tipoEvento">{{ tipoEvento }}</option>
+                            <option [value]="tipoEvento">{{ tipoEvento | tipoEvento }}</option>
                             }
                         </select>
                         @if (tipo?.invalid && tipo?.touched) {

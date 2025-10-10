@@ -1,1 +1,199 @@
-<p>listado-eventos works!</p>
+<div class="eventos-container">
+  <!-- Botón para mostrar filtros en móvil -->
+  <button class="btn-toggle-filtros" (click)="toggleFiltros()">
+    <span *ngIf="!mostrarFiltros">🔍 Mostrar Filtros</span>
+    <span *ngIf="mostrarFiltros">✖ Ocultar Filtros</span>
+  </button>
+
+  <div class="layout-container">
+    <!-- Barra de filtros lateral -->
+    <aside class="filtros-sidebar" [class.active]="mostrarFiltros">
+      <div class="filtros-header">
+        <h3>🔍 Filtros</h3>
+        <button class="btn-limpiar-filtros" (click)="limpiarFiltros()">
+          🔄 Limpiar
+        </button>
+      </div>
+
+      <div class="filtros-content">
+        <!-- Búsqueda por texto -->
+        <div class="filtro-group">
+          <label>Buscar</label>
+          <input type="text" [(ngModel)]="searchTerm" placeholder="Nombre o descripción..." class="filtro-input">
+        </div>
+
+        <!-- Filtro por Provincia -->
+        <div class="filtro-group">
+          <label>Provincia</label>
+          <select [(ngModel)]="filtroProvincia" class="filtro-select">
+            <option value="">Todas las provincias</option>
+            @for (provincia of provincias; track provincia.id) {
+            <option [value]="provincia.id">{{ provincia.nombre }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Filtro por Tipo -->
+        <div class="filtro-group">
+          <label>Tipo de Evento</label>
+          <select [(ngModel)]="filtroTipo" class="filtro-select">
+            <option value="">Todos los tipos</option>
+            @for (tipo of tiposEvento; track tipo) {
+            <option [value]="tipo">{{ tipo | tipoEvento }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Filtro por Estado -->
+        <div class="filtro-group">
+          <label>Estado</label>
+          <select [(ngModel)]="filtroEstado" class="filtro-select">
+            <option value="">Todos los estados</option>
+            @for (estado of estadosEvento; track estado) {
+            <option [value]="estado">{{ estado }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Filtro por Fecha desde -->
+        <div class="filtro-group">
+          <label>Fecha desde</label>
+          <input type="date" [(ngModel)]="filtroFechaDesde" class="filtro-input">
+        </div>
+
+        <!-- Filtro por Fecha hasta -->
+        <div class="filtro-group">
+          <label>Fecha hasta</label>
+          <input type="date" [(ngModel)]="filtroFechaHasta" class="filtro-input">
+        </div>
+
+        <div class="filtros-info">
+          <small>📊 {{ filteredEventos.length }} evento(s) encontrado(s)</small>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="eventos-main">
+      <div class="header">
+        <h2>📅 Próximos Eventos</h2>
+        <button class="btn btn-primary" (click)="nuevoEvento()">
+          ➕ Nuevo Evento
+        </button>
+      </div>
+
+      <!-- Estado de carga -->
+      @if (loading) {
+      <div class="loading">
+        <div class="spinner-border text-success mb-3" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p>Cargando eventos...</p>
+      </div>
+      }
+
+      <!-- Mensaje de error -->
+      @if (error) {
+      <div class="error-message">
+        <p class="mb-3">{{ error }}</p>
+        <button class="btn btn-secondary" (click)="loadEventos()">
+          🔄 Reintentar
+        </button>
+      </div>
+      }
+
+      <!-- Listado de eventos -->
+      @if (!loading && !error) {
+      @if (filteredEventos.length === 0) {
+      <div class="empty-state">
+        <p>😔 No se encontraron eventos con los filtros aplicados</p>
+      </div>
+      } @else {
+      <div class="eventos-grid">
+        @for (evento of filteredEventos; track evento.id) {
+        <div class="evento-card">
+          <div class="evento-imagen">
+            @if (evento.rutaImg) {
+            <img [src]="evento.rutaImg" [alt]="evento.nombre">
+            } @else {
+            <div class="imagen-placeholder">
+              <span class="placeholder-icon">🌱</span>
+            </div>
+            }
+            <div class="evento-tipo-badge">
+              {{ evento.tipo | tipoEvento }}
+            </div>
+          </div>
+
+          <div class="evento-content">
+            <div class="evento-header-card">
+              <h3 class="evento-nombre">{{ evento.nombre }}</h3>
+              <span class="evento-estado" [ngClass]="getEstadoClass(evento.estado)">
+                {{ evento.estado }}
+              </span>
+            </div>
+
+            @if (evento.descripcion) {
+            <p class="evento-descripcion">{{ evento.descripcion }}</p>
+            }
+
+            <div class="evento-info">
+              <div class="info-item">
+                <span class="info-icon">📍</span>
+                <span>{{ evento.provincia?.nombre || 'No especificada' }}</span>
+              </div>
+
+              @if (evento.direccion) {
+              <div class="info-item">
+                <span class="info-icon">🗺️</span>
+                <span>{{ evento.direccion }}</span>
+              </div>
+              }
+
+              <div class="info-item">
+                <span class="info-icon">📅</span>
+                <span>{{ formatDate(evento.horaInicio) }}</span>
+              </div>
+
+              @if (evento.puntosAsistencia) {
+              <div class="info-item">
+                <span class="info-icon">⭐</span>
+                <span>{{ evento.puntosAsistencia }} puntos</span>
+              </div>
+              }
+
+              @if (evento.costoInscripcion) {
+              <div class="info-item">
+                <span class="info-icon">💰</span>
+                <span>${{ evento.costoInscripcion }}</span>
+              </div>
+              }
+
+              @if (evento.sponsor) {
+              <div class="info-item">
+                <span class="info-icon">🤝</span>
+                <span>{{ evento.sponsor.nombre }}</span>
+              </div>
+              }
+            </div>
+          </div>
+
+          <div class="evento-actions">
+            <button class="btn-action btn-view" (click)="viewDetails(evento.id)" title="Ver detalles">
+              👁️ Ver
+            </button>
+            <button class="btn-action btn-edit" (click)="editEvento(evento.id)" title="Editar">
+              ✏️ Editar
+            </button>
+            <button class="btn-action btn-delete" (click)="deleteEvento(evento.id)" title="Eliminar">
+              🗑️ Eliminar
+            </button>
+          </div>
+        </div>
+        }
+      </div>
+      }
+      }
+    </main>
+  </div>
+</div>

@@ -4,16 +4,17 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SponsorService } from '../../../../services/sponsor.service';
 import { HttpService } from '../../../../services/http.service';
-import { Evento } from '../../../../models/entities/Evento';
 import { Sponsor } from '../../../../models/entities/Sponsor';
 import { Provincia } from '../../../../models/entities/auxiliares/Provincia';
 import { TipoEvento, EstadoEvento } from '../../../../models/enums/Enums';
 import { AuthService } from '../../../../services/auth.service';
 import { EventoService } from '../../../../services/evento.service';
+import { T } from '@angular/cdk/keycodes';
+import { TipoEventoPipe } from '../../../../pipes/tipo-evento.pipe';
 
 @Component({
   selector: 'app-nuevo-evento',
-  imports: [FormsModule, CommonModule, ReactiveFormsModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule, TipoEventoPipe],
   templateUrl: './nuevo-evento.html',
   styleUrl: './nuevo-evento.css'
 })
@@ -182,8 +183,12 @@ export class NuevoEvento implements OnInit {
   onSubmit(): void {
     if (this.eventoForm.valid) {
       const formValue = this.eventoForm.value;
+      
+      // Obtener email del usuario logueado (por ahora hardcodeado a 1)
+      // TODO: Implementar lógica para obtener ID del usuario actual desde AuthService
+      const organizadorId = 1;
 
-      const eventoData: Evento = {
+      const eventoData: any = {
         id: this.eventoId || undefined,
         tipo: formValue.tipo,
         estado: formValue.estado,
@@ -196,8 +201,9 @@ export class NuevoEvento implements OnInit {
         puntosAsistencia: formValue.puntosAsistencia,
         costoInterno: formValue.costoInterno,
         costoInscripcion: formValue.costoInscripcion,
-        provincia: { id: formValue.provinciaId } as Provincia,
-        sponsor: formValue.sponsorId ? { id: formValue.sponsorId } as Sponsor : undefined
+        provinciaId: formValue.provinciaId,
+        sponsorId: formValue.sponsorId || null,
+        organizadorId: organizadorId
       };
 
       const request = this.eventoId

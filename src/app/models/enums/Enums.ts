@@ -29,8 +29,8 @@ export enum TipoDocumento {
 }
 
 export enum TipoEvento {
-  REFORESTACION = 'Reforestacion',
-  RECOLECCION_BASURA = 'Recoleccion de Basura',
-  JUNTA_ALIMENTOS = 'Junta de Alimentos',
-  DONACIONES = 'Donaciones'
+  REFORESTACION = 'REFORESTACION',
+  RECOLECCION_BASURA = 'RECOLECCION_BASURA',
+  JUNTA_ALIMENTOS = 'JUNTA_ALIMENTOS',
+  DONACIONES = 'DONACIONES'
 }
