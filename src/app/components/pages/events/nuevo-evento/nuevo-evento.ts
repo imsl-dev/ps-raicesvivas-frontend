@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule, AbstractControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SponsorService } from '../../../../services/sponsor.service';
@@ -28,7 +28,7 @@ export class NuevoEvento implements OnInit {
   private readonly fb = inject(FormBuilder);
 
   // Mostrar solo CANCELADO en modo edición
-  estadosEventoEdicion = [EstadoEvento.CANCELADO];
+  estadosEventoEdicion: EstadoEvento[] = [];
   mostrarCampoEstado: boolean = false;
 
   eventoId: number | null = null;
@@ -49,87 +49,128 @@ export class NuevoEvento implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.loadSelectData();
 
     this.route.params.subscribe(params => {
       const id = params['id'];
       if (id) {
         this.eventoId = +id;
-        this.loadEvento(id);
+        // Primero cargar los datos de los selects, luego el evento
+        this.loadSelectData(() => {
+          this.loadEvento(id);
+        });
+      } else {
+        // Si es nuevo evento, solo cargar los selects
+        this.loadSelectData();
       }
     });
   }
 
   initForm(): void {
-    this.eventoForm = this.fb.group({
-      tipo: ['', Validators.required],
-      estado: [EstadoEvento.PENDIENTE],
-      provinciaId: ['', Validators.required],
-      sponsorId: [''],
-      nombre: ['', [Validators.required, Validators.maxLength(255)]],
-      descripcion: [''],
-      rutaImg: [''],
-      direccion: ['', Validators.maxLength(500)],
-      horaInicio: ['', Validators.required],
-      horaFin: ['', Validators.required],
-      puntosAsistencia: [0, [Validators.min(0)]],
-      costoInterno: [0, [Validators.min(0)]],
-      costoInscripcion: [0, [Validators.min(0)]]
-    }, { validators: this.validarFechas });
-  }
+  this.eventoForm = this.fb.nonNullable.group({
+    tipo: ['', Validators.required],
+    estado: EstadoEvento.PENDIENTE,
+    provinciaId: ['', Validators.required],
+    sponsorId: '',
+    nombre: ['', [Validators.required, Validators.maxLength(255)]],
+    descripcion: '',
+    rutaImg: '',
+    direccion: ['', Validators.maxLength(500)],
+    horaInicio: ['', Validators.required],
+    horaFin: ['', Validators.required],
+    puntosAsistencia: [0, Validators.min(0)],
+    costoInterno: [0, Validators.min(0)],
+    costoInscripcion: [0, Validators.min(0)]
+  }, { 
+    validators: this.validarFechas
+  });
+}
 
-  validarFechas(formGroup: FormGroup): { [key: string]: any } | null {
-    const horaInicio = formGroup.get('horaInicio')?.value;
-    const horaFin = formGroup.get('horaFin')?.value;
+  validarFechas(control: AbstractControl): { [key: string]: any } | null {
+  const formGroup = control as FormGroup;
+  const horaInicio = formGroup.get('horaInicio')?.value;
+  const horaFin = formGroup.get('horaFin')?.value;
 
-    if (!horaInicio || !horaFin) {
-      return null;
-    }
-
-    const fechaInicio = new Date(horaInicio);
-    const fechaFin = new Date(horaFin);
-    const fechaActual = new Date();
-
-    // Validar que la fecha de inicio sea posterior a la fecha actual
-    if (fechaInicio <= fechaActual) {
-      return { fechaInicioAnteriorActual: true };
-    }
-
-    // Validar que la fecha de fin sea posterior a la de inicio
-    if (fechaFin <= fechaInicio) {
-      return { fechaFinAnteriorInicio: true };
-    }
-
-    // Validar que haya al menos 1 hora de diferencia
-    const diferenciaHoras = (fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60);
-    if (diferenciaHoras < 1) {
-      return { diferenciaHorasMenor: true };
-    }
-
+  if (!horaInicio || !horaFin) {
     return null;
   }
 
-  loadSelectData(): void {
+  const fechaInicio = new Date(horaInicio);
+  const fechaFin = new Date(horaFin);
+  const fechaActual = new Date();
+
+  // Validar que la fecha de inicio sea posterior a la fecha actual
+  if (fechaInicio <= fechaActual) {
+    return { fechaInicioAnteriorActual: true };
+  }
+
+  // Validar que la fecha de fin sea posterior a la de inicio
+  if (fechaFin <= fechaInicio) {
+    return { fechaFinAnteriorInicio: true };
+  }
+
+  // Validar que haya al menos 1 hora de diferencia
+  const diferenciaHoras = (fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60);
+  if (diferenciaHoras < 1) {
+    return { diferenciaHorasMenor: true };
+  }
+
+  return null;
+}
+
+  loadSelectData(callback?: () => void): void {
+    let sponsorsLoaded = false;
+    let provinciasLoaded = false;
+
+    const checkIfAllLoaded = () => {
+      if (sponsorsLoaded && provinciasLoaded && callback) {
+        callback();
+      }
+    };
+
     this.sponsorService.getSponsor().subscribe({
-      next: (data) => this.sponsors = data,
-      error: (err) => console.error('Error cargando sponsors:', err)
+      next: (data) => {
+        this.sponsors = data;
+        sponsorsLoaded = true;
+        checkIfAllLoaded();
+      },
+      error: (err) => {
+        console.error('Error cargando sponsors:', err);
+        sponsorsLoaded = true;
+        checkIfAllLoaded();
+      }
     });
 
     this.httpService.getProvincias().subscribe({
-      next: (data) => this.provincias = data,
-      error: (err) => console.error('Error cargando provincias:', err)
+      next: (data) => {
+        this.provincias = data;
+        provinciasLoaded = true;
+        checkIfAllLoaded();
+      },
+      error: (err) => {
+        console.error('Error cargando provincias:', err);
+        provinciasLoaded = true;
+        checkIfAllLoaded();
+      }
     });
   }
 
   loadEvento(id: number): void {
     this.eventoService.getEventoById(id).subscribe({
       next: (evento) => {
-        this.mostrarCampoEstado = true; // Mostrar campo estado en edición
+        this.mostrarCampoEstado = true;
+
+        // Cargar estado actual + CANCELADO
+        this.estadosEventoEdicion =
+          evento.estado === EstadoEvento.CANCELADO
+            ? [EstadoEvento.CANCELADO]
+            : [evento.estado, EstadoEvento.CANCELADO];
+
+        // Ahora los IDs vienen directamente en el objeto
         this.eventoForm.patchValue({
           tipo: evento.tipo,
           estado: evento.estado,
-          provinciaId: evento.provincia?.id || '',
-          sponsorId: evento.sponsor?.id || '',
+          provinciaId: evento.provinciaId || '',
+          sponsorId: evento.sponsorId || '',
           nombre: evento.nombre,
           descripcion: evento.descripcion || '',
           rutaImg: evento.rutaImg || '',
@@ -140,7 +181,12 @@ export class NuevoEvento implements OnInit {
           costoInterno: evento.costoInterno || 0,
           costoInscripcion: evento.costoInscripcion || 0
         });
+        
         this.imagenPreview = evento.rutaImg || null;
+        
+        setTimeout(() => {
+          this.markFormGroupTouched(this.eventoForm);
+        }, 100);
       },
       error: (err) => {
         console.error('Error cargando evento:', err);
@@ -183,7 +229,7 @@ export class NuevoEvento implements OnInit {
   onSubmit(): void {
     if (this.eventoForm.valid) {
       const formValue = this.eventoForm.value;
-      
+
       // Obtener email del usuario logueado (por ahora hardcodeado a 1)
       // TODO: Implementar lógica para obtener ID del usuario actual desde AuthService
       const organizadorId = 1;

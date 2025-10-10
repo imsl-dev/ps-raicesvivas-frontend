@@ -11,17 +11,21 @@ export interface Evento {
     tipo: TipoEvento;
     estado: EstadoEvento;
     organizador?: Usuario;
+    organizadorId?: number; 
     cuentaBancaria?: CuentaBancaria;
+    cuentaBancariaId?: number; 
     provincia?: Provincia;
+    provinciaId?: number; 
     nombre: string;
     descripcion?: string;
     rutaImg?: string;
     direccion?: string;
-    horaInicio: string; // ISO 8601 string format
-    horaFin: string; // ISO 8601 string format
+    horaInicio: string;
+    horaFin: string;
     puntosAsistencia?: number;
     costoInterno?: number;
     costoInscripcion?: number;
     sponsor?: Sponsor;
+    sponsorId?: number; 
     participantes?: Usuario[];
 }
