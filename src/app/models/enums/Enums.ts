@@ -1,6 +1,8 @@
 export enum EstadoEvento {
-  ACTIVO = 'ACTIVO',
-  INACTIVO = 'INACTIVO'
+  PENDIENTE = 'PENDIENTE',
+  EN_CURSO = 'EN CURSO',
+  CANCELADO = 'CANCELADO',
+  FINALIZADO = 'FINALIZADO'
 }
 
 export enum EstadoInscripcion {
@@ -27,8 +29,8 @@ export enum TipoDocumento {
 }
 
 export enum TipoEvento {
-  REFORESTACION = 'REFORESTACION',
-  RECOLECCION_BASURA = 'RECOLECCION_BASURA',
-  JUNTA_ALIMENTOS = 'JUNTA_ALIMENTOS',
-  DONACIONES = 'DONACIONES'
+  REFORESTACION = 'Reforestacion',
+  RECOLECCION_BASURA = 'Recoleccion de Basura',
+  JUNTA_ALIMENTOS = 'Junta de Alimentos',
+  DONACIONES = 'Donaciones'
 }

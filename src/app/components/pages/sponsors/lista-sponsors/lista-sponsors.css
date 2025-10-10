@@ -1,210 +1,397 @@
-/* sponsor-list.component.css */
-
+/* Lista Sponsors - Diseño mejorado y responsive */
 .sponsor-list-container {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 2rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 6rem 1rem 2rem;
 }
 
 .header {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  animation: fadeInDown 0.6s ease-out;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .header h2 {
-  color: #2c3e50;
+  color: #28a745;
   margin: 0;
+  font-weight: 700;
+  font-size: 1.8rem;
+  flex: 1 1 auto;
 }
 
-/* Buscador */
+/* Buscador mejorado */
 .search-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   margin-bottom: 2rem;
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .search-input {
   width: 100%;
-  max-width: 400px;
-  padding: 0.75rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 1rem 1.5rem;
+  border: 2px solid #e9ecef;
+  border-radius: 50px;
   font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  background-color: white;
 }
 
-/* Estados */
+.search-input::placeholder {
+  color: #adb5bd;
+}
+
+/* Estados mejorados */
 .loading,
 .error-message,
 .empty-state {
   text-align: center;
-  padding: 3rem;
-  color: #7f8c8d;
+  padding: 3rem 1.5rem;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.loading {
+  color: #28a745;
+  font-size: 1.2rem;
+  font-weight: 500;
 }
 
 .error-message {
-  color: #e74c3c;
+  color: #dc3545;
+  font-weight: 500;
 }
 
-/* Grid de sponsors */
+.empty-state {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+/* Grid mejorado y responsive */
 .sponsors-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  gap: 2rem;
+  animation: fadeIn 1s ease-out;
 }
 
-/* Tarjeta de sponsor */
+/* Tarjeta mejorada */
 .sponsor-card {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+}
+
+.sponsor-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #28a745, #20c997);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
 }
 
 .sponsor-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-10px);
+  box-shadow: 0 15px 35px rgba(40, 167, 69, 0.2);
+}
+
+.sponsor-card:hover::before {
+  transform: scaleX(1);
 }
 
 .sponsor-header {
-  padding: 1.25rem;
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
 }
 
 .sponsor-header h3 {
   margin: 0;
-  color: #2c3e50;
-  font-size: 1.25rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  word-wrap: break-word;
 }
 
-/* Imágenes */
+/* Imágenes mejoradas */
 .sponsor-images {
-  padding: 1rem;
+  padding: 1.5rem;
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
   flex-wrap: wrap;
-  min-height: 180px;
+  min-height: 200px;
   align-items: center;
   justify-content: center;
+  background: #f8f9fa;
 }
 
 .image-container {
   flex: 1;
   min-width: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.image-container:hover {
+  transform: scale(1.05);
 }
 
 .image-container img {
   width: 100%;
-  height: 150px;
+  height: 160px;
   object-fit: cover;
-  border-radius: 4px;
-  border: 1px solid #e9ecef;
+  display: block;
 }
 
 .no-images {
   width: 100%;
   text-align: center;
-  color: #95a5a6;
+  color: #adb5bd;
   font-style: italic;
+  font-size: 1.1rem;
 }
 
-/* Acciones */
+/* Acciones mejoradas */
 .sponsor-actions {
   display: flex;
-  gap: 0.5rem;
-  padding: 1rem;
-  background-color: #f8f9fa;
+  gap: 0;
+  padding: 0;
+  background: white;
   border-top: 1px solid #e9ecef;
 }
 
 .btn-action {
   flex: 1;
-  padding: 0.5rem;
+  padding: 1rem 0.5rem;
   border: none;
-  border-radius: 4px;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border-right: 1px solid #e9ecef;
+}
+
+.btn-action:last-child {
+  border-right: none;
+}
+
+.btn-action::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-action:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 .btn-view {
-  background-color: #3498db;
+  background: linear-gradient(135deg, #17a2b8, #138496);
   color: white;
 }
 
 .btn-view:hover {
-  background-color: #2980b9;
+  background: linear-gradient(135deg, #138496, #117a8b);
 }
 
 .btn-edit {
-  background-color: #f39c12;
+  background: linear-gradient(135deg, #ffc107, #ff9800);
   color: white;
 }
 
 .btn-edit:hover {
-  background-color: #e67e22;
+  background: linear-gradient(135deg, #ff9800, #f57c00);
 }
 
 .btn-delete {
-  background-color: #e74c3c;
+  background: linear-gradient(135deg, #dc3545, #c82333);
   color: white;
 }
 
 .btn-delete:hover {
-  background-color: #c0392b;
+  background: linear-gradient(135deg, #c82333, #bd2130);
 }
 
 /* Botones generales */
 .btn {
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 50px;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary {
-  background-color: #27ae60;
+  background: linear-gradient(135deg, #28a745, #20c997);
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #229954;
+  background: linear-gradient(135deg, #218838, #1fa383);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
 }
 
 .btn-secondary {
-  background-color: #95a5a6;
+  background: linear-gradient(135deg, #6c757d, #5a6268);
   color: white;
 }
 
 .btn-secondary:hover {
-  background-color: #7f8c8d;
+  background: linear-gradient(135deg, #5a6268, #545b62);
+  transform: translateY(-2px);
 }
 
-/* Responsive */
+/* Responsive - Tablets */
+@media (max-width: 992px) {
+  .sponsors-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .header h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Responsive - Móviles */
 @media (max-width: 768px) {
   .sponsor-list-container {
-    padding: 1rem;
+    padding: 5rem 0.5rem 1rem;
   }
 
   .header {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .header h2 {
+    font-size: 1.4rem;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 0.85rem;
   }
 
   .sponsors-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
   .sponsor-actions {
     flex-direction: column;
+  }
+
+  .btn-action {
+    border-right: none;
+    border-bottom: 1px solid #e9ecef;
+    padding: 1rem;
+  }
+
+  .btn-action:last-child {
+    border-bottom: none;
+  }
+
+  .search-input {
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .sponsor-header h3 {
+    font-size: 1.2rem;
+  }
+}
+
+/* Responsive - Móviles pequeños */
+@media (max-width: 480px) {
+  .sponsor-list-container {
+    padding: 4.5rem 0.25rem 1rem;
+  }
+
+  .header h2 {
+    font-size: 1.2rem;
+  }
+
+  .btn {
+    font-size: 0.9rem;
+    padding: 0.75rem;
+  }
+
+  .sponsor-header {
+    padding: 1rem;
+  }
+
+  .sponsor-images {
+    padding: 1rem;
+    min-height: 150px;
+  }
+
+  .image-container img {
+    height: 120px;
   }
 }

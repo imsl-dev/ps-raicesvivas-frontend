@@ -1,9 +1,9 @@
-<!-- sponsor-list.component.html -->
-
 <div class="sponsor-list-container">
   <div class="header">
-    <h2>Listado de Sponsors</h2>
-    <button class="btn btn-primary" (click)="nuevoSponsor()">+ Nuevo Sponsor</button>
+    <h2>📋 Listado de Sponsors</h2>
+    <button class="btn btn-primary" (click)="nuevoSponsor()">
+      ➕ Nuevo Sponsor
+    </button>
   </div>
 
   <!-- Buscador -->
@@ -11,7 +11,7 @@
     <input 
       type="text" 
       [(ngModel)]="searchTerm"
-      placeholder="Buscar sponsor por nombre..."
+      placeholder="🔍 Buscar sponsor por nombre..."
       class="search-input"
     >
   </div>
@@ -19,6 +19,9 @@
   <!-- Estado de carga -->
   @if (loading) {
     <div class="loading">
+      <div class="spinner-border text-success mb-3" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
       <p>Cargando sponsors...</p>
     </div>
   }
@@ -26,8 +29,10 @@
   <!-- Mensaje de error -->
   @if (error) {
     <div class="error-message">
-      <p>{{ error }}</p>
-      <button class="btn btn-secondary" (click)="loadSponsors()">Reintentar</button>
+      <p class="mb-3">{{ error }}</p>
+      <button class="btn btn-secondary" (click)="loadSponsors()">
+        🔄 Reintentar
+      </button>
     </div>
   }
 
@@ -35,7 +40,7 @@
   @if (!loading && !error) {
     @if (filteredSponsors.length === 0) {
       <div class="empty-state">
-        <p>No se encontraron sponsors</p>
+        <p>😔 No se encontraron sponsors</p>
       </div>
     } @else {
       <div class="sponsors-grid">
@@ -58,7 +63,7 @@
               }
               @if (!sponsor.rutaImg1 && !sponsor.rutaImg2) {
                 <div class="no-images">
-                  <p>Sin imágenes</p>
+                  <p>🖼️ Sin imágenes</p>
                 </div>
               }
             </div>

@@ -1,1 +1,285 @@
-<p>nuevo-evento works!</p>
+<div class="evento-form-container">
+    <div class="form-content">
+        <h2>{{ tituloFormulario }}</h2>
+
+        <form [formGroup]="eventoForm" (ngSubmit)="onSubmit()">
+
+            <!-- Sección: Información Básica -->
+            <div class="section-divider">📋 Información Básica</div>
+
+            <!-- Primera fila: Nombre y Tipo -->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="nombre">
+                            Nombre del Evento <span class="required-asterisk">*</span>
+                        </label>
+                        <input type="text" id="nombre" formControlName="nombre" class="form-control" [ngClass]="{
+                'is-invalid': nombre?.invalid && nombre?.touched,
+                'is-valid': nombre?.valid && nombre?.touched
+              }" placeholder="Ej: Reforestación Sierra Grande">
+                        @if (nombre?.invalid && nombre?.touched) {
+                        <div class="error-message">
+                            @if (nombre?.errors?.['required']) {
+                            <small>⚠️ El nombre es obligatorio</small>
+                            }
+                            @if (nombre?.errors?.['maxlength']) {
+                            <small>⚠️ El nombre no puede exceder 255 caracteres</small>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="tipo">
+                            Tipo de Evento <span class="required-asterisk">*</span>
+                        </label>
+                        <select id="tipo" formControlName="tipo" class="form-control" [ngClass]="{
+                'is-invalid': tipo?.invalid && tipo?.touched,
+                'is-valid': tipo?.valid && tipo?.touched
+              }">
+                            <option value="">Seleccione un tipo</option>
+                            @for (tipoEvento of tiposEvento; track tipoEvento) {
+                            <option [value]="tipoEvento">{{ tipoEvento }}</option>
+                            }
+                        </select>
+                        @if (tipo?.invalid && tipo?.touched) {
+                        <div class="error-message">
+                            <small>⚠️ Seleccione un tipo de evento</small>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="descripcion">Descripción del Evento</label>
+                        <textarea id="descripcion" formControlName="descripcion" class="form-control" rows="4"
+                            placeholder="Describa los detalles y objetivos del evento..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección: Ubicación y Organización -->
+            <div class="section-divider">📍 Ubicación y Organización</div>
+
+            <!-- Tercera fila: Provincia y Sponsor (Estado solo en edición) -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="provinciaId">
+                            Provincia <span class="required-asterisk">*</span>
+                        </label>
+                        <select id="provinciaId" formControlName="provinciaId" class="form-control" [ngClass]="{
+                'is-invalid': provinciaId?.invalid && provinciaId?.touched,
+                'is-valid': provinciaId?.valid && provinciaId?.touched
+              }">
+                            <option value="">Seleccione provincia</option>
+                            @for (provincia of provincias; track provincia.id) {
+                            <option [value]="provincia.id">{{ provincia.nombre }}</option>
+                            }
+                        </select>
+                        @if (provinciaId?.invalid && provinciaId?.touched) {
+                        <div class="error-message">
+                            <small>⚠️ Seleccione una provincia</small>
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="sponsorId">Sponsor (Opcional)</label>
+                        <select id="sponsorId" formControlName="sponsorId" class="form-control">
+                            <option value="">Sin sponsor</option>
+                            @for (sponsor of sponsors; track sponsor.id) {
+                            <option [value]="sponsor.id">{{ sponsor.nombre }}</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estado - Solo en modo edición -->
+            @if (mostrarCampoEstado) {
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="estado">
+                            Estado <span class="required-asterisk">*</span>
+                        </label>
+                        <select id="estado" formControlName="estado" class="form-control">
+                            @for (estadoEvento of estadosEventoEdicion; track estadoEvento) {
+                            <option [value]="estadoEvento">{{ estadoEvento }}</option>
+                            }
+                        </select>
+                        <small class="text-muted">
+                            ℹ️ Solo puede cambiar el estado a CANCELADO. Los estados EN CURSO y FINALIZADO se actualizan
+                            automáticamente.
+                        </small>
+                    </div>
+                </div>
+            </div>
+            }
+
+            <!-- Dirección -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="direccion">Dirección del Evento</label>
+                        <input type="text" id="direccion" formControlName="direccion" class="form-control" [ngClass]="{
+                'is-invalid': direccion?.invalid && direccion?.touched,
+                'is-valid': direccion?.valid && direccion?.touched
+              }" placeholder="Ej: Av. Principal 1234, Ciudad">
+                        @if (direccion?.invalid && direccion?.touched) {
+                        <div class="error-message">
+                            @if (direccion?.errors?.['maxlength']) {
+                            <small>⚠️ La dirección no puede exceder 500 caracteres</small>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección: Fechas y Horarios -->
+            <div class="section-divider">📅 Fechas y Horarios</div>
+
+            <!-- Quinta fila: Fechas -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="horaInicio">
+                            Fecha y Hora de Inicio <span class="required-asterisk">*</span>
+                        </label>
+                        <input type="datetime-local" id="horaInicio" formControlName="horaInicio" class="form-control"
+                            [ngClass]="{
+                'is-invalid': (horaInicio?.invalid && horaInicio?.touched) || fechaInicioInvalida,
+                'is-valid': horaInicio?.valid && horaInicio?.touched && !fechaInicioInvalida
+              }">
+                        @if (horaInicio?.invalid && horaInicio?.touched) {
+                        <div class="error-message">
+                            <small>⚠️ La fecha de inicio es obligatoria</small>
+                        </div>
+                        }
+                        @if (fechaInicioInvalida) {
+                        <div class="error-message">
+                            <small>⚠️ La fecha de inicio debe ser posterior a la fecha actual</small>
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="horaFin">
+                            Fecha y Hora de Fin <span class="required-asterisk">*</span>
+                        </label>
+                        <input type="datetime-local" id="horaFin" formControlName="horaFin" class="form-control"
+                            [ngClass]="{
+                'is-invalid': (horaFin?.invalid && horaFin?.touched) || fechaFinInvalida || diferenciaHorasInvalida,
+                'is-valid': horaFin?.valid && horaFin?.touched && !fechaFinInvalida && !diferenciaHorasInvalida
+              }">
+                        @if (horaFin?.invalid && horaFin?.touched) {
+                        <div class="error-message">
+                            <small>⚠️ La fecha de fin es obligatoria</small>
+                        </div>
+                        }
+                        @if (fechaFinInvalida) {
+                        <div class="error-message">
+                            <small>⚠️ La fecha de fin debe ser posterior a la fecha de inicio</small>
+                        </div>
+                        }
+                        @if (diferenciaHorasInvalida) {
+                        <div class="error-message">
+                            <small>⚠️ Debe haber al menos 1 hora de diferencia entre el inicio y el fin del
+                                evento</small>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección: Puntos y Costos -->
+            <div class="section-divider">💰 Puntos y Costos</div>
+
+            <!-- Sexta fila: Puntos y Costos -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="puntosAsistencia">Puntos por Asistencia</label>
+                        <input type="number" id="puntosAsistencia" formControlName="puntosAsistencia"
+                            class="form-control" min="0" placeholder="0">
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="costoInterno">Costo Interno ($)</label>
+                        <input type="number" id="costoInterno" formControlName="costoInterno" class="form-control"
+                            min="0" step="0.01" placeholder="0.00">
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="costoInscripcion">Costo de Inscripción ($)</label>
+                        <input type="number" id="costoInscripcion" formControlName="costoInscripcion"
+                            class="form-control" min="0" step="0.01" placeholder="0.00">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección: Imagen -->
+            <div class="section-divider">🖼️ Imagen del Evento</div>
+
+            <!-- Imagen del Evento -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="rutaImg">Imagen del Evento (Opcional)</label>
+                        <div class="image-upload-container">
+                            <input type="file" id="rutaImg" accept="image/*" (change)="onFileSelected($event)"
+                                class="file-input">
+                            <label for="rutaImg" class="file-label">
+                                @if (!imagenPreview) {
+                                <span>📁 Seleccionar imagen</span>
+                                }
+                                @if (imagenPreview) {
+                                <span>🔄 Cambiar imagen</span>
+                                }
+                            </label>
+                        </div>
+
+                        @if (imagenPreview) {
+                        <div class="image-preview">
+                            <img [src]="imagenPreview" alt="Vista previa del evento">
+                            <button type="button" class="btn-remove" (click)="removeImage()">
+                                ✕ Eliminar imagen
+                            </button>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" [disabled]="eventoForm.invalid">
+                    💾 Guardar Evento
+                </button>
+                <button type="button" class="btn btn-secondary" (click)="resetForm()">
+                    🔄 Limpiar
+                </button>
+                <button type="button" class="btn btn-tertiary" (click)="volver()">
+                    ← Volver
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
