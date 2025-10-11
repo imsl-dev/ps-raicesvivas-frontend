@@ -81,9 +81,11 @@
     <main class="eventos-main">
       <div class="header">
         <h2>📅 Próximos Eventos</h2>
+        @if (usuarioLogeado?.rol === 'ORGANIZADOR'){
         <button class="btn btn-primary" (click)="nuevoEvento()">
           ➕ Nuevo Evento
         </button>
+        }
       </div>
 
       <!-- Estado de carga -->
@@ -186,12 +188,11 @@
             <button class="btn-action btn-view" (click)="viewDetails(evento.id)" title="Ver detalles">
               👁️ Ver
             </button>
+            @if (usuarioLogeado?.rol === 'ORGANIZADOR') {
             <button class="btn-action btn-edit" (click)="editEvento(evento.id)" title="Editar">
               ✏️ Editar
             </button>
-            <button class="btn-action btn-delete" (click)="deleteEvento(evento.id)" title="Eliminar">
-              🗑️ Eliminar
-            </button>
+            }
           </div>
         </div>
         }

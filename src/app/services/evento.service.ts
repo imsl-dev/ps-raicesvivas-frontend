@@ -15,6 +15,10 @@ export class EventoService {
         return this.http.get<Evento[]>(this.API_URL);
     }
 
+    getEventosOrganizador(idOrganizador: number): Observable<Evento[]> {
+        return this.http.get<Evento[]>(`${this.API_URL}/organizador/${idOrganizador}`);
+    }
+
     getEventoById(id: number): Observable<Evento> {
         return this.http.get<Evento>(`${this.API_URL}/${id}`);
     }

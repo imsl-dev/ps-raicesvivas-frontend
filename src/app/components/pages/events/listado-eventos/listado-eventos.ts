@@ -4,10 +4,11 @@ import { FormsModule } from "@angular/forms";
 import { CommonModule } from '@angular/common';
 import { EventoService } from '../../../../services/evento.service';
 import { Router } from '@angular/router';
-import { TipoEvento, EstadoEvento } from '../../../../models/enums/Enums';
+import { TipoEvento, EstadoEvento, TipoDocumento, RolUsuario } from '../../../../models/enums/Enums';
 import { Provincia } from '../../../../models/entities/auxiliares/Provincia';
 import { HttpService } from '../../../../services/http.service';
 import { TipoEventoPipe } from '../../../../pipes/tipo-evento.pipe';
+import { Usuario } from '../../../../models/entities/Usuario';
 
 @Component({
   selector: 'app-listado-eventos',
@@ -24,15 +25,16 @@ export class ListadoEventos implements OnInit {
   loading: boolean = true;
   error: string | null = null;
   searchTerm: string = '';
-  
+  usuarioLogeado: Usuario | null = null;
+
   // Filtros
   provincias: Provincia[] = [];
   tiposEvento = Object.values(TipoEvento).sort((a, b) => a.localeCompare(b));
   estadosEvento = Object.values(EstadoEvento);
-  
+
   filtroProvincia: string = '';
   filtroTipo: string = '';
-  filtroEstado: string = '';
+  filtroEstado: string = EstadoEvento.PROXIMO;
   filtroFechaDesde: string = '';
   filtroFechaHasta: string = '';
 
@@ -42,59 +44,97 @@ export class ListadoEventos implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.loadUsuarioLogeado();
     this.loadEventos();
     this.loadProvincias();
+  }
+
+  loadUsuarioLogeado(): void {
+    this.usuarioLogeado = {
+      id: 1,
+      nombre: 'María',
+      apellido: 'Organizadora',
+      tipoDocumento: TipoDocumento.DNI,
+      nroDocumento: '23456789',
+      rol: RolUsuario.ORGANIZADOR,
+      provincia: { id: 5, nombre: 'Córdoba' },
+      puntos: 100
+    };
+
+    // this.httpService.getUsuarioLogeado().subscribe({
+    //   next: (data) => {
+    //     this.usuarioLogeado = data;
+    //   },
+    //   error: (err) => {
+    //     console.error('Error cargando usuario logeado:', err);
+    //   }
+    // });
   }
 
   loadEventos(): void {
     this.loading = true;
     this.error = null;
 
-    this.service.getEventos().subscribe({
-      next: (data) => {
-        this.eventos = data;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Error al cargar los eventos';
-        this.loading = false;
-        console.error('Error cargando eventos:', err);
-      }
-    });
+    if (this.usuarioLogeado?.rol === 'ORGANIZADOR' && this.usuarioLogeado.id) {
+      this.service.getEventosOrganizador(this.usuarioLogeado.id).subscribe({
+        next: (data) => {
+          this.eventos = data;
+          this.loading = false;
+        },
+        error: (err) => {
+          this.error = 'Error al cargar los eventos';
+          this.loading = false;
+          console.error('Error cargando eventos:', err);
+        }
+      });
+    }
+    else {
+      this.service.getEventos().subscribe({
+        next: (data) => {
+          this.eventos = data;
+          this.loading = false;
+        },
+        error: (err) => {
+          this.error = 'Error al cargar los eventos';
+          this.loading = false;
+          console.error('Error cargando eventos:', err);
+        }
+      });
+    }
   }
 
   loadProvincias(): void {
-  this.httpService.getProvincias().subscribe({
-    next: (data) => {
-      this.provincias = data.sort((a, b) => a.nombre.localeCompare(b.nombre));
-    },
-    error: (err) => console.error('Error cargando provincias:', err)
-  });
-}
+    this.httpService.getProvincias().subscribe({
+      next: (data) => {
+        this.provincias = data.sort((a, b) => a.nombre.localeCompare(b.nombre));
+      },
+      error: (err) => console.error('Error cargando provincias:', err)
+    });
+  }
 
   get filteredEventos(): Evento[] {
-  return this.eventos.filter(evento => {
-    const matchSearch = !this.searchTerm || 
-      evento.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      evento.descripcion?.toLowerCase().includes(this.searchTerm.toLowerCase());
+    return this.eventos.filter(evento => {
+      const matchSearch = !this.searchTerm ||
+        evento.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        evento.descripcion?.toLowerCase().includes(this.searchTerm.toLowerCase());
 
-    const matchProvincia = !this.filtroProvincia || 
-      evento.provinciaId?.toString() === this.filtroProvincia.toString();
+      const matchProvincia = !this.filtroProvincia ||
+        evento.provinciaId?.toString() === this.filtroProvincia.toString();
 
-    const matchTipo = !this.filtroTipo || evento.tipo === this.filtroTipo;
+      const matchTipo = !this.filtroTipo || evento.tipo === this.filtroTipo;
 
-    const matchEstado = !this.filtroEstado || evento.estado === this.filtroEstado;
+      const matchEstado = !this.filtroEstado || evento.estado === this.filtroEstado;
 
-    const matchFechaDesde = !this.filtroFechaDesde || 
-      new Date(evento.horaInicio) >= new Date(this.filtroFechaDesde + 'T00:00:00');
+      const matchFechaDesde = !this.filtroFechaDesde ||
+        new Date(evento.horaInicio) >= new Date(this.filtroFechaDesde + 'T00:00:00');
 
-    const matchFechaHasta = !this.filtroFechaHasta || 
-      new Date(evento.horaInicio) <= new Date(this.filtroFechaHasta + 'T23:59:59');
+      const matchFechaHasta = !this.filtroFechaHasta ||
+        new Date(evento.horaInicio) <= new Date(this.filtroFechaHasta + 'T23:59:59');
 
-    return matchSearch && matchProvincia && matchTipo && matchEstado && 
-           matchFechaDesde && matchFechaHasta;
-  });
-}
+      return matchSearch && matchProvincia && matchTipo && matchEstado &&
+        matchFechaDesde && matchFechaHasta;
+    });
+  }
 
   limpiarFiltros(): void {
     this.searchTerm = '';
@@ -107,23 +147,6 @@ export class ListadoEventos implements OnInit {
 
   toggleFiltros(): void {
     this.mostrarFiltros = !this.mostrarFiltros;
-  }
-
-  deleteEvento(id: number | undefined): void {
-    if (!id) return;
-
-    if (confirm('¿Está seguro de que desea eliminar este evento?')) {
-      this.service.deleteEvento(id).subscribe({
-        next: () => {
-          this.eventos = this.eventos.filter(e => e.id !== id);
-          alert('Evento eliminado exitosamente');
-        },
-        error: (err) => {
-          console.error('Error al eliminar el evento:', err);
-          alert('Error al eliminar el evento. Por favor, intente nuevamente.');
-        }
-      });
-    }
   }
 
   editEvento(id: number | undefined): void {
@@ -142,8 +165,8 @@ export class ListadoEventos implements OnInit {
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-AR', { 
-      day: '2-digit', 
+    return date.toLocaleDateString('es-AR', {
+      day: '2-digit',
       month: 'long',
       hour: '2-digit',
       minute: '2-digit'
