@@ -66,56 +66,56 @@ export class NuevoEvento implements OnInit {
   }
 
   initForm(): void {
-  this.eventoForm = this.fb.nonNullable.group({
-    tipo: ['', Validators.required],
-    estado: EstadoEvento.PENDIENTE,
-    provinciaId: ['', Validators.required],
-    sponsorId: '',
-    nombre: ['', [Validators.required, Validators.maxLength(255)]],
-    descripcion: '',
-    rutaImg: '',
-    direccion: ['', Validators.maxLength(500)],
-    horaInicio: ['', Validators.required],
-    horaFin: ['', Validators.required],
-    puntosAsistencia: [0, Validators.min(0)],
-    costoInterno: [0, Validators.min(0)],
-    costoInscripcion: [0, Validators.min(0)]
-  }, { 
-    validators: this.validarFechas
-  });
-}
+    this.eventoForm = this.fb.nonNullable.group({
+      tipo: ['', Validators.required],
+      estado: EstadoEvento.PROXIMO,
+      provinciaId: ['', Validators.required],
+      sponsorId: '',
+      nombre: ['', [Validators.required, Validators.maxLength(255)]],
+      descripcion: '',
+      rutaImg: '',
+      direccion: ['', Validators.maxLength(500)],
+      horaInicio: ['', Validators.required],
+      horaFin: ['', Validators.required],
+      puntosAsistencia: [0, Validators.min(0)],
+      costoInterno: [0, Validators.min(0)],
+      costoInscripcion: [0, Validators.min(0)]
+    }, {
+      validators: this.validarFechas
+    });
+  }
 
   validarFechas(control: AbstractControl): { [key: string]: any } | null {
-  const formGroup = control as FormGroup;
-  const horaInicio = formGroup.get('horaInicio')?.value;
-  const horaFin = formGroup.get('horaFin')?.value;
+    const formGroup = control as FormGroup;
+    const horaInicio = formGroup.get('horaInicio')?.value;
+    const horaFin = formGroup.get('horaFin')?.value;
 
-  if (!horaInicio || !horaFin) {
+    if (!horaInicio || !horaFin) {
+      return null;
+    }
+
+    const fechaInicio = new Date(horaInicio);
+    const fechaFin = new Date(horaFin);
+    const fechaActual = new Date();
+
+    // Validar que la fecha de inicio sea posterior a la fecha actual
+    if (fechaInicio <= fechaActual) {
+      return { fechaInicioAnteriorActual: true };
+    }
+
+    // Validar que la fecha de fin sea posterior a la de inicio
+    if (fechaFin <= fechaInicio) {
+      return { fechaFinAnteriorInicio: true };
+    }
+
+    // Validar que haya al menos 1 hora de diferencia
+    const diferenciaHoras = (fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60);
+    if (diferenciaHoras < 1) {
+      return { diferenciaHorasMenor: true };
+    }
+
     return null;
   }
-
-  const fechaInicio = new Date(horaInicio);
-  const fechaFin = new Date(horaFin);
-  const fechaActual = new Date();
-
-  // Validar que la fecha de inicio sea posterior a la fecha actual
-  if (fechaInicio <= fechaActual) {
-    return { fechaInicioAnteriorActual: true };
-  }
-
-  // Validar que la fecha de fin sea posterior a la de inicio
-  if (fechaFin <= fechaInicio) {
-    return { fechaFinAnteriorInicio: true };
-  }
-
-  // Validar que haya al menos 1 hora de diferencia
-  const diferenciaHoras = (fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60);
-  if (diferenciaHoras < 1) {
-    return { diferenciaHorasMenor: true };
-  }
-
-  return null;
-}
 
   loadSelectData(callback?: () => void): void {
     let sponsorsLoaded = false;
@@ -141,17 +141,17 @@ export class NuevoEvento implements OnInit {
     });
 
     this.httpService.getProvincias().subscribe({
-  next: (data) => {
-    this.provincias = data.sort((a, b) => a.nombre.localeCompare(b.nombre));
-    provinciasLoaded = true;
-    checkIfAllLoaded();
-  },
-  error: (err) => {
-    console.error('Error cargando provincias:', err);
-    provinciasLoaded = true;
-    checkIfAllLoaded();
-  }
-});
+      next: (data) => {
+        this.provincias = data.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        provinciasLoaded = true;
+        checkIfAllLoaded();
+      },
+      error: (err) => {
+        console.error('Error cargando provincias:', err);
+        provinciasLoaded = true;
+        checkIfAllLoaded();
+      }
+    });
   }
 
   loadEvento(id: number): void {
@@ -181,9 +181,9 @@ export class NuevoEvento implements OnInit {
           costoInterno: evento.costoInterno || 0,
           costoInscripcion: evento.costoInscripcion || 0
         });
-        
+
         this.imagenPreview = evento.rutaImg || null;
-        
+
         setTimeout(() => {
           this.markFormGroupTouched(this.eventoForm);
         }, 100);
@@ -274,7 +274,7 @@ export class NuevoEvento implements OnInit {
 
   resetForm(): void {
     this.eventoForm.reset({
-      estado: EstadoEvento.PENDIENTE,
+      estado: EstadoEvento.PROXIMO,
       puntosAsistencia: 0,
       costoInterno: 0,
       costoInscripcion: 0

@@ -53,6 +53,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -123,19 +124,19 @@
   font-size: 0.85rem;
 }
 
-.estado-pendiente {
-  background: #fff3cd;
-  color: #856404;
+.estado-proximo {
+  background: #d4edda;
+  color: #155724;
 }
 
 .estado-en-curso {
-  background: #d1ecf1;
-  color: #0c5460;
+  background: #cfe2ff;
+  color: #084298;
 }
 
 .estado-finalizado {
-  background: #d4edda;
-  color: #155724;
+  background: #e2e3e5;
+  color: #383d41;
 }
 
 .estado-cancelado {

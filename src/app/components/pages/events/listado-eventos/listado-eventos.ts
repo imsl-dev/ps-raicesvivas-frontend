@@ -152,8 +152,8 @@ export class ListadoEventos implements OnInit {
 
   getEstadoClass(estado: EstadoEvento): string {
     switch (estado) {
-      case EstadoEvento.PENDIENTE:
-        return 'estado-pendiente';
+      case EstadoEvento.PROXIMO:
+        return 'estado-proximo';
       case EstadoEvento.EN_CURSO:
         return 'estado-en-curso';
       case EstadoEvento.FINALIZADO:

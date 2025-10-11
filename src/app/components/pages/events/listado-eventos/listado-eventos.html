@@ -1,8 +1,12 @@
 <div class="eventos-container">
   <!-- Botón para mostrar filtros en móvil -->
   <button class="btn-toggle-filtros" (click)="toggleFiltros()">
-    <span *ngIf="!mostrarFiltros">🔍 Mostrar Filtros</span>
-    <span *ngIf="mostrarFiltros">✖ Ocultar Filtros</span>
+    @if (!mostrarFiltros) {
+    <span>🔍 Mostrar Filtros</span>
+    }
+    @if (mostrarFiltros) {
+    <span>✖ Ocultar Filtros</span>
+    }
   </button>
 
   <div class="layout-container">

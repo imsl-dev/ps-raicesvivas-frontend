@@ -1,5 +1,5 @@
 export enum EstadoEvento {
-  PENDIENTE = 'PENDIENTE',
+  PROXIMO = 'PRÓXIMO',
   EN_CURSO = 'EN CURSO',
   CANCELADO = 'CANCELADO',
   FINALIZADO = 'FINALIZADO'

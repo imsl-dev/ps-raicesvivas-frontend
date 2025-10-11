@@ -103,9 +103,9 @@ export class DetalleEvento implements OnInit {
 
   getEstadoClass(estado: string): string {
     switch (estado) {
-      case 'PENDIENTE':
-        return 'estado-pendiente';
-      case 'EN_CURSO':
+      case 'PRÓXIMO':
+        return 'estado-proximo';
+      case 'EN CURSO':
         return 'estado-en-curso';
       case 'FINALIZADO':
         return 'estado-finalizado';
