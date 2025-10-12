@@ -79,12 +79,15 @@
 
     <!-- Contenido principal -->
     <main class="eventos-main">
-      <div class="header">
-        <h2>📅 Próximos Eventos</h2>
+      <div class="header">  
         @if (usuarioLogeado?.rol === 'ORGANIZADOR'){
+        <h2>📅 Mis Eventos</h2>
         <button class="btn btn-primary" (click)="nuevoEvento()">
           ➕ Nuevo Evento
         </button>
+        }
+        @else {
+          <h2>📅 Próximos Eventos</h2>
         }
       </div>
 

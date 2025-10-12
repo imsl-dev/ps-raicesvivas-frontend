@@ -1,35 +1,116 @@
-<div class="login-page mt-4">
-  <div class="login-header">
-    <img src="/raices_vivas_logo.png" alt="Raíces Vivas Logo" width="130" height="130">
-    <h2>Ingresar a RaicesVivas</h2>
+<div class="login-page">
+  <!-- Fondo animado con partículas -->
+  <div class="background-animation">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
   </div>
+
   <div class="login-container">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">Correo electrónico</label>
-        <input type="text" class="form-control" formControlName="user"
-          [ngClass]="loginForm.get('user')?.touched ? (loginForm.get('user')?.invalid ? 'is-invalid' : 'is-valid') : ''">
-        @if (loginForm.get('user')?.getError('required') && loginForm.get('user')?.touched) {
-        <label class="text-danger">Este campo es requerido</label>
+    <!-- Logo y Header -->
+    <div class="login-header">
+      <div class="logo-container">
+        <img src="/raices_vivas_logo.png" alt="Raíces Vivas Logo" class="logo-img">
+      </div>
+      <h2 class="login-title">Bienvenido de nuevo</h2>
+      <p class="login-subtitle">Inicia sesión para continuar</p>
+    </div>
+
+    <!-- Formulario -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      
+      <!-- Campo de Email -->
+      <div class="form-group">
+        <label for="user" class="form-label">
+          <span class="label-icon">📧</span>
+          Correo electrónico
+        </label>
+        <div class="input-wrapper">
+          <input 
+            type="text" 
+            id="user"
+            class="form-control" 
+            formControlName="user"
+            placeholder="ejemplo@correo.com"
+            [ngClass]="{
+              'is-invalid': loginForm.get('user')?.invalid && loginForm.get('user')?.touched,
+              'is-valid': loginForm.get('user')?.valid && loginForm.get('user')?.touched
+            }"
+          >
+          <span class="input-icon">👤</span>
+        </div>
+        @if (loginForm.get('user')?.hasError('required') && loginForm.get('user')?.touched) {
+          <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            <span>El correo electrónico es requerido</span>
+          </div>
         }
       </div>
 
-      <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">Contraseña</label>
-        <input type="password" class="form-control" formControlName="password"
-          [ngClass]="loginForm.get('password')?.touched ? (loginForm.get('password')?.invalid ? 'is-invalid' : 'is-valid') : ''">
-        @if (loginForm.get('password')?.getError('required') && loginForm.get('password')?.touched) {
-        <label class="text-danger">Este campo es requerido</label>
+      <!-- Campo de Contraseña -->
+      <div class="form-group">
+        <label for="password" class="form-label">
+          <span class="label-icon">🔒</span>
+          Contraseña
+        </label>
+        <div class="input-wrapper">
+          <input 
+            type="password" 
+            id="password"
+            class="form-control" 
+            formControlName="password"
+            placeholder="••••••••"
+            [ngClass]="{
+              'is-invalid': loginForm.get('password')?.invalid && loginForm.get('password')?.touched,
+              'is-valid': loginForm.get('password')?.valid && loginForm.get('password')?.touched
+            }"
+          >
+          <span class="input-icon">🔑</span>
+        </div>
+        @if (loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched) {
+          <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            <span>La contraseña es requerida</span>
+          </div>
         }
       </div>
 
-      <div>
-        @if (!firstTry) {
-        <label class="text-danger mb-3">El usuario o contraseña son incorrectos</label>
-        }
+      <!-- Mensaje de error general -->
+      @if (!firstTry) {
+        <div class="alert-error">
+          <span class="alert-icon">❌</span>
+          <div class="alert-content">
+            <strong>Error de autenticación</strong>
+            <p>El usuario o contraseña son incorrectos</p>
+          </div>
+        </div>
+      }
+
+      <!-- Olvidé mi contraseña -->
+      <div class="forgot-password">
+        <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
       </div>
 
-      <button type="submit" class="btn btn-primary mb-3">Ingresar</button>
+      <!-- Botón de submit -->
+      <button type="submit" class="btn-submit">
+        <span class="btn-icon">🚀</span>
+        <span>Iniciar Sesión</span>
+      </button>
+
+      <!-- Divider -->
+      <div class="divider">
+        <span class="divider-text">o</span>
+      </div>
+
+      <!-- Registro -->
+      <div class="signup-section">
+        <p class="signup-text">¿No tienes una cuenta?</p>
+        <a routerLink="/signup" class="signup-link">
+          Regístrate aquí
+        </a>
+      </div>
     </form>
   </div>
 </div>

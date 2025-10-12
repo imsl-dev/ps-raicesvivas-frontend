@@ -17,8 +17,7 @@ export class AuthService {
     apellido: "Apellido mockeado",
     tipoDocumento: TipoDocumento.DNI,
     nroDocumento: "12345678",
-    rol: RolUsuario.USUARIO
-
+    rol: RolUsuario.USUARIO,
   }
 
   private userState = new BehaviorSubject<Usuario>(this.mockUsuario)
