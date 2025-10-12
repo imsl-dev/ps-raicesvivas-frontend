@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 
 @Component({
@@ -11,6 +11,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 })
 export class Home {
   // Estadísticas de impacto
+
   stats = [
     { number: '15,000+', label: 'Árboles Plantados', icon: '🌳' },
     { number: '500+', label: 'Voluntarios Activos', icon: '👥' },
