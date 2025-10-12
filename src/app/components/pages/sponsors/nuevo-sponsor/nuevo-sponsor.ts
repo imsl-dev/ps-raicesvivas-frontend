@@ -31,7 +31,8 @@ export class NuevoSponsor implements OnInit {
       nombre: ['', [Validators.required, Validators.maxLength(255)]],
       linkDominio: [''],
       rutaImg1: [''],
-      rutaImg2: ['']
+      rutaImg2: [''],
+      activo: [true]
     });
   }
 
@@ -60,7 +61,8 @@ export class NuevoSponsor implements OnInit {
           nombre: sponsor.nombre,
           linkDominio: sponsor.linkDominio || '',
           rutaImg1: sponsor.rutaImg1 || '',
-          rutaImg2: sponsor.rutaImg2 || ''
+          rutaImg2: sponsor.rutaImg2 || '',
+          activo: sponsor.activo ?? true
         });
         this.imagenPreview1 = sponsor.rutaImg1 || null;
         this.imagenPreview2 = sponsor.rutaImg2 || null;

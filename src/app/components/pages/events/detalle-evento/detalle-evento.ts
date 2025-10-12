@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { EventoService } from '../../../../services/evento.service';
 import { Evento } from '../../../../models/entities/Evento';
 import { TipoEventoPipe } from '../../../../pipes/tipo-evento.pipe';
+import { AuthService } from '../../../../services/auth.service';
+import { Usuario } from '../../../../models/entities/Usuario';
 
 @Component({
   selector: 'app-detalle-evento',
@@ -15,12 +17,15 @@ export class DetalleEvento implements OnInit {
   private readonly eventoService = inject(EventoService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
 
   evento: Evento | null = null;
   loading: boolean = true;
   error: string | null = null;
+  usuarioLogeado: Usuario | null = null;
 
   ngOnInit(): void {
+    this.loadUsuarioLogeado();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadEvento(+id);
@@ -28,6 +33,28 @@ export class DetalleEvento implements OnInit {
       this.error = 'ID de evento no válido';
       this.loading = false;
     }
+  }
+
+  loadUsuarioLogeado(): void {
+    // this.usuarioLogeado = {
+    //   id: 1,
+    //   nombre: 'María',
+    //   apellido: 'Organizadora',
+    //   tipoDocumento: TipoDocumento.DNI,
+    //   nroDocumento: '23456789',
+    //   rol: RolUsuario.ORGANIZADOR,
+    //   provincia: { id: 5, nombre: 'Córdoba' },
+    //   puntos: 100
+    // };
+
+    this.authService.obtenerUsuarioLogueado().subscribe({
+      next: (data) => {
+        this.usuarioLogeado = data;
+      },
+      error: (err) => {
+        console.error('Error cargando usuario logeado:', err);
+      }
+    });
   }
 
   loadEvento(id: number): void {

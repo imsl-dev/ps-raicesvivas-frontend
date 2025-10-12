@@ -76,6 +76,7 @@ export class AuthService {
   }
 
   obtenerUsuarioLogueado(): Observable<Usuario> {
+    console.log('Id usuario:', this.usuario);
     return this.usuario
   }
 }

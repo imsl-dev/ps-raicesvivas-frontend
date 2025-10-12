@@ -9,6 +9,7 @@ import { Provincia } from '../../../../models/entities/auxiliares/Provincia';
 import { HttpService } from '../../../../services/http.service';
 import { TipoEventoPipe } from '../../../../pipes/tipo-evento.pipe';
 import { Usuario } from '../../../../models/entities/Usuario';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-listado-eventos',
@@ -20,6 +21,7 @@ export class ListadoEventos implements OnInit {
   private readonly service = inject(EventoService);
   private readonly router = inject(Router);
   private readonly httpService = inject(HttpService);
+  private readonly authService = inject(AuthService);
 
   eventos: Evento[] = [];
   loading: boolean = true;
@@ -45,30 +47,20 @@ export class ListadoEventos implements OnInit {
 
   ngOnInit(): void {
     this.loadUsuarioLogeado();
-    this.loadEventos();
     this.loadProvincias();
   }
 
   loadUsuarioLogeado(): void {
-    this.usuarioLogeado = {
-      id: 1,
-      nombre: 'María',
-      apellido: 'Organizadora',
-      tipoDocumento: TipoDocumento.DNI,
-      nroDocumento: '23456789',
-      rol: RolUsuario.ORGANIZADOR,
-      provincia: { id: 5, nombre: 'Córdoba' },
-      puntos: 100
-    };
-
-    // this.httpService.getUsuarioLogeado().subscribe({
-    //   next: (data) => {
-    //     this.usuarioLogeado = data;
-    //   },
-    //   error: (err) => {
-    //     console.error('Error cargando usuario logeado:', err);
-    //   }
-    // });
+    this.authService.obtenerUsuarioLogueado().subscribe({
+      next: (data) => {
+        this.usuarioLogeado = data;
+        this.loadEventos();
+      },
+      error: (err) => {
+        console.error('Error cargando usuario logeado:', err);
+        this.loadEventos();
+      }
+    });
   }
 
   loadEventos(): void {

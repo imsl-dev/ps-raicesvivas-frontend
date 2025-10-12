@@ -41,6 +41,11 @@ export class NuevoEvento implements OnInit {
   tiposEvento = Object.values(TipoEvento).sort((a, b) => a.localeCompare(b));
   estadosEvento = Object.values(EstadoEvento);
 
+  // Esta variable es para el caso en el que se haya creado un evento y el sponsor fuera inhabilitado luego.
+  // De esta manera el sponsor que actualmente se encuentra inactivo se muestra igual en el select
+  // Por regla de negocio, al momento de crear el evento ya se pudo haber "cerrado" el sponsor y por lo tanto no debería obligarte a desvincularlo del evento.
+  sponsorInactivoEvento: Sponsor | null = null;
+
   constructor() { }
 
   get tituloFormulario(): string {
@@ -164,6 +169,25 @@ export class NuevoEvento implements OnInit {
           evento.estado === EstadoEvento.CANCELADO
             ? [EstadoEvento.CANCELADO]
             : [evento.estado, EstadoEvento.CANCELADO];
+
+        // Verificar si el sponsor del evento está inactivo (no está en la lista)
+        if (evento.sponsorId) {
+          const sponsorEnLista = this.sponsors.find(s => s.id === evento.sponsorId);
+
+          if (!sponsorEnLista) {
+            // El sponsor está inactivo, obtenerlo directamente
+            this.sponsorService.getSponsorById(evento.sponsorId).subscribe({
+              next: (sponsorInactivo) => {
+                this.sponsorInactivoEvento = sponsorInactivo;
+                // Agregar el sponsor inactivo temporalmente a la lista
+                this.sponsors = [sponsorInactivo, ...this.sponsors];
+              },
+              error: (err) => {
+                console.error('Error cargando sponsor inactivo:', err);
+              }
+            });
+          }
+        }
 
         // Ahora los IDs vienen directamente en el objeto
         this.eventoForm.patchValue({

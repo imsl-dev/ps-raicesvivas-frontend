@@ -4,4 +4,5 @@ export interface Sponsor {
   linkDominio?: string;
   rutaImg1?: string;
   rutaImg2?: string;
+  activo?: boolean;
 }
