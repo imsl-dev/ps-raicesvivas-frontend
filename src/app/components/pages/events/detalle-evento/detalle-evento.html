@@ -185,7 +185,7 @@
           <p>⚠️ Este evento ha sido cancelado</p>
         </div>
         }
-        @if (usuarioLogeado?.rol === 'ORGANIZADOR' && evento?.organizadorId === usuarioLogeado?.id) {
+        @if (usuarioLogeado?.rol === 'ORGANIZADOR' && evento.organizadorId === usuarioLogeado?.id) {
           <button class="btn btn-secondary" (click)="editarEvento()">
           ✏️ Editar Evento
         </button>
