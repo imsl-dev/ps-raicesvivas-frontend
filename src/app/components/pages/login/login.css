@@ -1,5 +1,6 @@
 /* Contenedor principal */
 .login-page {
+  margin-top: 5%;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -69,14 +70,18 @@
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0) translateX(0) rotate(0deg);
     opacity: 0.3;
   }
+
   33% {
     transform: translateY(-30px) translateX(20px) rotate(120deg);
     opacity: 0.6;
   }
+
   66% {
     transform: translateY(30px) translateX(-20px) rotate(240deg);
     opacity: 0.4;
@@ -101,6 +106,7 @@
     opacity: 0;
     transform: translateY(50px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -119,9 +125,12 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.05);
   }
@@ -240,9 +249,19 @@
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  75% {
+    transform: translateX(5px);
+  }
 }
 
 .error-icon {
@@ -339,9 +358,12 @@
 }
 
 @keyframes bounce {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-5px);
   }

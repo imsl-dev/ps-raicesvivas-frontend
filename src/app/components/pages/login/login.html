@@ -1,4 +1,4 @@
-<div class="login-page">
+<div class="login-page  ">
   <!-- Fondo animado con partículas -->
   <div class="background-animation">
     <div class="particle"></div>
@@ -20,7 +20,7 @@
 
     <!-- Formulario -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-      
+
       <!-- Campo de Email -->
       <div class="form-group">
         <label for="user" class="form-label">
@@ -28,24 +28,18 @@
           Correo electrónico
         </label>
         <div class="input-wrapper">
-          <input 
-            type="text" 
-            id="user"
-            class="form-control" 
-            formControlName="user"
-            placeholder="ejemplo@correo.com"
+          <input type="text" id="user" class="form-control" formControlName="user" placeholder="ejemplo@correo.com"
             [ngClass]="{
               'is-invalid': loginForm.get('user')?.invalid && loginForm.get('user')?.touched,
               'is-valid': loginForm.get('user')?.valid && loginForm.get('user')?.touched
-            }"
-          >
+            }">
           <span class="input-icon">👤</span>
         </div>
         @if (loginForm.get('user')?.hasError('required') && loginForm.get('user')?.touched) {
-          <div class="error-message">
-            <span class="error-icon">⚠️</span>
-            <span>El correo electrónico es requerido</span>
-          </div>
+        <div class="error-message">
+          <span class="error-icon">⚠️</span>
+          <span>El correo electrónico es requerido</span>
+        </div>
         }
       </div>
 
@@ -56,36 +50,30 @@
           Contraseña
         </label>
         <div class="input-wrapper">
-          <input 
-            type="password" 
-            id="password"
-            class="form-control" 
-            formControlName="password"
-            placeholder="••••••••"
+          <input type="password" id="password" class="form-control" formControlName="password" placeholder="••••••••"
             [ngClass]="{
               'is-invalid': loginForm.get('password')?.invalid && loginForm.get('password')?.touched,
               'is-valid': loginForm.get('password')?.valid && loginForm.get('password')?.touched
-            }"
-          >
+            }">
           <span class="input-icon">🔑</span>
         </div>
         @if (loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched) {
-          <div class="error-message">
-            <span class="error-icon">⚠️</span>
-            <span>La contraseña es requerida</span>
-          </div>
+        <div class="error-message">
+          <span class="error-icon">⚠️</span>
+          <span>La contraseña es requerida</span>
+        </div>
         }
       </div>
 
       <!-- Mensaje de error general -->
       @if (!firstTry) {
-        <div class="alert-error">
-          <span class="alert-icon">❌</span>
-          <div class="alert-content">
-            <strong>Error de autenticación</strong>
-            <p>El usuario o contraseña son incorrectos</p>
-          </div>
+      <div class="alert-error">
+        <span class="alert-icon">❌</span>
+        <div class="alert-content">
+          <strong>Error de autenticación</strong>
+          <p>El usuario o contraseña son incorrectos</p>
         </div>
+      </div>
       }
 
       <!-- Olvidé mi contraseña -->
