@@ -6,9 +6,10 @@ export enum EstadoEvento {
 }
 
 export enum EstadoInscripcion {
+  PENDIENTE = 'PENDIENTE',
   PRESENTE = 'PRESENTE',
   AUSENTE = 'AUSENTE',
-  PENDIENTE = 'PENDIENTE'
+  CANCELADO = 'CANCELADO'
 }
 
 export enum EstadoPeticion {

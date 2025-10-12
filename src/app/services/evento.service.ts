@@ -34,4 +34,26 @@ export class EventoService {
     deleteEvento(id: number): Observable<void> {
         return this.http.delete<void>(`${this.API_URL}/${id}`);
     }
+
+    validarInscripcion(usuarioId: number, eventoId: number): Observable<boolean> {
+        return this.http.get<boolean>(`${this.API_URL}/validarInscripcion`, {
+            params: { usuarioId: usuarioId.toString(), eventoId: eventoId.toString() }
+        });
+    }
+
+    inscribirseEvento(usuarioId: number, eventoId: number): Observable<any> {
+        return this.http.post(`${this.API_URL}/inscribirse`, null, {
+            params: { usuarioId: usuarioId.toString(), eventoId: eventoId.toString() }
+        });
+    }
+
+    cancelarInscripcion(usuarioId: number, eventoId: number): Observable<any> {
+        return this.http.put(`${this.API_URL}`, null, {
+            params: {
+                usuarioId: usuarioId.toString(),
+                eventoId: eventoId.toString(),
+                estado: 'CANCELADO'
+            }
+        });
+    }
 }

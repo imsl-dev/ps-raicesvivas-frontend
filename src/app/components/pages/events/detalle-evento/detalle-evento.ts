@@ -23,6 +23,9 @@ export class DetalleEvento implements OnInit {
   loading: boolean = true;
   error: string | null = null;
   usuarioLogeado: Usuario | null = null;
+  estaInscripto: boolean = false;
+  procesandoInscripcion: boolean = false;
+  mostrarModalCancelacion: boolean = false;
 
   ngOnInit(): void {
     this.loadUsuarioLogeado();
@@ -36,20 +39,13 @@ export class DetalleEvento implements OnInit {
   }
 
   loadUsuarioLogeado(): void {
-    // this.usuarioLogeado = {
-    //   id: 1,
-    //   nombre: 'María',
-    //   apellido: 'Organizadora',
-    //   tipoDocumento: TipoDocumento.DNI,
-    //   nroDocumento: '23456789',
-    //   rol: RolUsuario.ORGANIZADOR,
-    //   provincia: { id: 5, nombre: 'Córdoba' },
-    //   puntos: 100
-    // };
-
     this.authService.obtenerUsuarioLogueado().subscribe({
       next: (data) => {
         this.usuarioLogeado = data;
+        // Si ya cargamos el evento, verificar inscripción
+        if (this.evento?.id && this.usuarioLogeado?.id) {
+          this.verificarInscripcion();
+        }
       },
       error: (err) => {
         console.error('Error cargando usuario logeado:', err);
@@ -84,6 +80,10 @@ export class DetalleEvento implements OnInit {
           sponsor: data.sponsorNombre ? { id: data.sponsorId, nombre: data.sponsorNombre } : undefined
         };
         this.loading = false;
+        // Verificar inscripción si el usuario ya está cargado
+        if (this.usuarioLogeado?.id) {
+          this.verificarInscripcion();
+        }
       },
       error: (err) => {
         this.error = 'Error al cargar el evento';
@@ -103,16 +103,82 @@ export class DetalleEvento implements OnInit {
     }
   }
 
+  verificarInscripcion(): void {
+    if (!this.evento?.id || !this.usuarioLogeado?.id) return;
+
+    this.eventoService.validarInscripcion(this.usuarioLogeado.id, this.evento.id).subscribe({
+      next: (inscripto) => {
+        this.estaInscripto = inscripto;
+      },
+      error: (err) => {
+        console.error('Error verificando inscripción:', err);
+        this.estaInscripto = false;
+      }
+    });
+  }
+
   inscribirseEvento(): void {
-    // TODO: Implementar lógica de inscripción
-    alert('Funcionalidad de inscripción en desarrollo');
+    if (!this.evento?.id || !this.usuarioLogeado?.id || this.procesandoInscripcion) return;
+
+    this.procesandoInscripcion = true;
+
+    this.eventoService.inscribirseEvento(this.usuarioLogeado.id, this.evento.id).subscribe({
+      next: () => {
+        this.estaInscripto = true;
+        this.procesandoInscripcion = false;
+        alert('✅ ¡Te has inscripto exitosamente al evento!');
+      },
+      error: (err) => {
+        this.procesandoInscripcion = false;
+        console.error('Error al inscribirse:', err);
+        if (err.status === 409) {
+          alert('⚠️ Ya estás inscripto a este evento');
+        } else {
+          alert('❌ Error al inscribirse. Por favor, intenta nuevamente.');
+        }
+      }
+    });
+  }
+
+  abrirModalCancelacion(): void {
+    this.mostrarModalCancelacion = true;
+  }
+
+  cerrarModalCancelacion(): void {
+    this.mostrarModalCancelacion = false;
+  }
+
+  confirmarCancelacion(): void {
+    if (!this.evento?.id || !this.usuarioLogeado?.id || this.procesandoInscripcion) return;
+
+    this.procesandoInscripcion = true;
+
+    this.eventoService.cancelarInscripcion(this.usuarioLogeado.id, this.evento.id).subscribe({
+      next: () => {
+        this.estaInscripto = false;
+        this.procesandoInscripcion = false;
+        this.cerrarModalCancelacion();
+        alert('✅ Tu inscripción ha sido cancelada');
+      },
+      error: (err) => {
+        this.procesandoInscripcion = false;
+        console.error('Error al cancelar inscripción:', err);
+        alert('❌ Error al cancelar la inscripción. Por favor, intenta nuevamente.');
+      }
+    });
+  }
+
+  tieneCostoInscripcion(): boolean {
+    return this.evento?.costoInscripcion !== undefined &&
+      this.evento?.costoInscripcion !== null &&
+      this.evento?.costoInscripcion > 0;
   }
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-AR', { 
+    return date.toLocaleDateString('es-AR', {
       weekday: 'long',
-      day: '2-digit', 
+      day: '2-digit',
       month: 'long',
       year: 'numeric',
       hour: '2-digit',
@@ -122,7 +188,7 @@ export class DetalleEvento implements OnInit {
 
   formatTime(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleTimeString('es-AR', { 
+    return date.toLocaleTimeString('es-AR', {
       hour: '2-digit',
       minute: '2-digit'
     });
