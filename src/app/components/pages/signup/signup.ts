@@ -20,14 +20,19 @@ export class Signup implements OnInit {
   signupForm!: FormGroup;
   provincias: any[] = [];
 
+
+
   private _snackBar = inject(MatSnackBar);
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private httpService: HttpService,
     private validadorEmail: ValidadorEmailDisponible,
-    private router: Router
+    private router: Router,
+
   ) { }
+
+  imagePreview: string | null = null;
 
   ngOnInit(): void {
     this.signupForm = this.fb.group({
@@ -37,7 +42,8 @@ export class Signup implements OnInit {
       password: ['', Validators.required],
       tipoDocumento: ['', [Validators.required]],
       nroDocumento: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^[0-9]+$/)]],
-      idProvincia: ['', Validators.required]
+      idProvincia: ['', Validators.required],
+      rutaImg: ['']
     });
 
     this.httpService.getProvincias().subscribe({
@@ -89,6 +95,30 @@ export class Signup implements OnInit {
 
     }
 
+  }
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (input.files && input.files[0]) {
+
+      const file = input.files[0];
+      console.log(file);
+      const reader = new FileReader();
+
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        const result = e.target?.result as string;
+        this.imagePreview = result;
+        console.log(result);
+        this.signupForm.patchValue({ rutaImg: result });
+      };
+
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeImage(): void {
+    this.imagePreview = null;
+    this.signupForm.patchValue({ rutaImg: '' });
   }
 
 

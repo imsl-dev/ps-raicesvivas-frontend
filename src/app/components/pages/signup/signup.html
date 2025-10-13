@@ -20,7 +20,7 @@
 
     <!-- Formulario -->
     <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
-      
+
       <!-- Fila: Nombre y Apellido -->
       <div class="form-row">
         <div class="form-group">
@@ -29,22 +29,16 @@
             Nombre
             <span class="required">*</span>
           </label>
-          <input 
-            type="text" 
-            id="nombre"
-            class="form-control" 
-            formControlName="nombre"
-            placeholder="Tu nombre"
+          <input type="text" id="nombre" class="form-control" formControlName="nombre" placeholder="Tu nombre"
             [ngClass]="{
               'is-invalid': signupForm.get('nombre')?.invalid && signupForm.get('nombre')?.touched,
               'is-valid': signupForm.get('nombre')?.valid && signupForm.get('nombre')?.touched
-            }"
-          >
+            }">
           @if (signupForm.get('nombre')?.hasError('required') && signupForm.get('nombre')?.touched) {
-            <div class="error-message">
-              <span class="error-icon">⚠️</span>
-              <span>El nombre es requerido</span>
-            </div>
+          <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            <span>El nombre es requerido</span>
+          </div>
           }
         </div>
 
@@ -54,22 +48,16 @@
             Apellido
             <span class="required">*</span>
           </label>
-          <input 
-            type="text" 
-            id="apellido"
-            class="form-control" 
-            formControlName="apellido"
-            placeholder="Tu apellido"
+          <input type="text" id="apellido" class="form-control" formControlName="apellido" placeholder="Tu apellido"
             [ngClass]="{
               'is-invalid': signupForm.get('apellido')?.invalid && signupForm.get('apellido')?.touched,
               'is-valid': signupForm.get('apellido')?.valid && signupForm.get('apellido')?.touched
-            }"
-          >
+            }">
           @if (signupForm.get('apellido')?.hasError('required') && signupForm.get('apellido')?.touched) {
-            <div class="error-message">
-              <span class="error-icon">⚠️</span>
-              <span>El apellido es requerido</span>
-            </div>
+          <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            <span>El apellido es requerido</span>
+          </div>
           }
         </div>
       </div>
@@ -81,34 +69,28 @@
           Correo electrónico
           <span class="required">*</span>
         </label>
-        <input 
-          type="email" 
-          id="email"
-          class="form-control" 
-          formControlName="email"
-          placeholder="ejemplo@correo.com"
+        <input type="email" id="email" class="form-control" formControlName="email" placeholder="ejemplo@correo.com"
           [ngClass]="{
             'is-invalid': signupForm.get('email')?.invalid && signupForm.get('email')?.touched,
             'is-valid': signupForm.get('email')?.valid && signupForm.get('email')?.touched
-          }"
-        >
+          }">
         @if (signupForm.get('email')?.hasError('required') && signupForm.get('email')?.touched) {
-          <div class="error-message">
-            <span class="error-icon">⚠️</span>
-            <span>El correo electrónico es requerido</span>
-          </div>
+        <div class="error-message">
+          <span class="error-icon">⚠️</span>
+          <span>El correo electrónico es requerido</span>
+        </div>
         }
         @if (signupForm.get('email')?.hasError('email') && signupForm.get('email')?.touched) {
-          <div class="error-message">
-            <span class="error-icon">⚠️</span>
-            <span>Ingrese un correo electrónico válido</span>
-          </div>
+        <div class="error-message">
+          <span class="error-icon">⚠️</span>
+          <span>Ingrese un correo electrónico válido</span>
+        </div>
         }
         @if (signupForm.get('email')?.hasError('emailTaken') && signupForm.get('email')?.touched) {
-          <div class="error-message">
-            <span class="error-icon">⚠️</span>
-            <span>Este correo ya está en uso</span>
-          </div>
+        <div class="error-message">
+          <span class="error-icon">⚠️</span>
+          <span>Este correo ya está en uso</span>
+        </div>
         }
       </div>
 
@@ -119,22 +101,16 @@
           Contraseña
           <span class="required">*</span>
         </label>
-        <input 
-          type="password" 
-          id="password"
-          class="form-control" 
-          formControlName="password"
-          placeholder="••••••••"
+        <input type="password" id="password" class="form-control" formControlName="password" placeholder="••••••••"
           [ngClass]="{
             'is-invalid': signupForm.get('password')?.invalid && signupForm.get('password')?.touched,
             'is-valid': signupForm.get('password')?.valid && signupForm.get('password')?.touched
-          }"
-        >
+          }">
         @if (signupForm.get('password')?.hasError('required') && signupForm.get('password')?.touched) {
-          <div class="error-message">
-            <span class="error-icon">⚠️</span>
-            <span>La contraseña es requerida</span>
-          </div>
+        <div class="error-message">
+          <span class="error-icon">⚠️</span>
+          <span>La contraseña es requerida</span>
+        </div>
         }
       </div>
 
@@ -146,25 +122,20 @@
             Tipo de Documento
             <span class="required">*</span>
           </label>
-          <select 
-            id="tipoDocumento"
-            class="form-control" 
-            formControlName="tipoDocumento"
-            [ngClass]="{
+          <select id="tipoDocumento" class="form-control" formControlName="tipoDocumento" [ngClass]="{
               'is-invalid': signupForm.get('tipoDocumento')?.invalid && signupForm.get('tipoDocumento')?.touched,
               'is-valid': signupForm.get('tipoDocumento')?.valid && signupForm.get('tipoDocumento')?.touched
-            }"
-          >
+            }">
             <option value="">Seleccione</option>
             <option value="DNI">DNI</option>
             <option value="PASAPORTE">Pasaporte</option>
             <option value="LE">LE</option>
           </select>
           @if (signupForm.get('tipoDocumento')?.hasError('required') && signupForm.get('tipoDocumento')?.touched) {
-            <div class="error-message">
-              <span class="error-icon">⚠️</span>
-              <span>Seleccione un tipo</span>
-            </div>
+          <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            <span>Seleccione un tipo</span>
+          </div>
           }
         </div>
 
@@ -174,37 +145,29 @@
             Número de Documento
             <span class="required">*</span>
           </label>
-          <input 
-            type="text" 
-            id="nroDocumento"
-            class="form-control" 
-            formControlName="nroDocumento"
-            placeholder="12345678"
-            inputmode="numeric"
-            pattern="[0-9]*"
-            (keypress)="validarSoloNumeros($event)"
+          <input type="text" id="nroDocumento" class="form-control" formControlName="nroDocumento"
+            placeholder="12345678" inputmode="numeric" pattern="[0-9]*" (keypress)="validarSoloNumeros($event)"
             [ngClass]="{
               'is-invalid': signupForm.get('nroDocumento')?.invalid && signupForm.get('nroDocumento')?.touched,
               'is-valid': signupForm.get('nroDocumento')?.valid && signupForm.get('nroDocumento')?.touched
-            }"
-          >
+            }">
           @if (signupForm.get('nroDocumento')?.hasError('required') && signupForm.get('nroDocumento')?.touched) {
-            <div class="error-message">
-              <span class="error-icon">⚠️</span>
-              <span>El número es requerido</span>
-            </div>
+          <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            <span>El número es requerido</span>
+          </div>
           }
           @if (signupForm.get('nroDocumento')?.hasError('minlength') && signupForm.get('nroDocumento')?.touched) {
-            <div class="error-message">
-              <span class="error-icon">⚠️</span>
-              <span>Mínimo 8 números</span>
-            </div>
+          <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            <span>Mínimo 8 números</span>
+          </div>
           }
           @if (signupForm.get('nroDocumento')?.hasError('pattern') && signupForm.get('nroDocumento')?.touched) {
-            <div class="error-message">
-              <span class="error-icon">⚠️</span>
-              <span>Solo números</span>
-            </div>
+          <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            <span>Solo números</span>
+          </div>
           }
         </div>
       </div>
@@ -216,26 +179,38 @@
           Provincia
           <span class="required">*</span>
         </label>
-        <select 
-          id="idProvincia"
-          class="form-control" 
-          formControlName="idProvincia"
-          [ngClass]="{
+        <select id="idProvincia" class="form-control" formControlName="idProvincia" [ngClass]="{
             'is-invalid': signupForm.get('idProvincia')?.invalid && signupForm.get('idProvincia')?.touched,
             'is-valid': signupForm.get('idProvincia')?.valid && signupForm.get('idProvincia')?.touched
-          }"
-        >
+          }">
           <option value="">Seleccione provincia</option>
           @for (provincia of provincias; track provincia.id) {
-            <option [value]="provincia.id">{{ provincia.nombre }}</option>
+          <option [value]="provincia.id">{{ provincia.nombre }}</option>
           }
         </select>
         @if (signupForm.get('idProvincia')?.hasError('required') && signupForm.get('idProvincia')?.touched) {
-          <div class="error-message">
-            <span class="error-icon">⚠️</span>
-            <span>Seleccione una provincia</span>
-          </div>
+        <div class="error-message">
+          <span class="error-icon">⚠️</span>
+          <span>Seleccione una provincia</span>
+        </div>
         }
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="rutaImg" class="form-label">
+            <span class="label-icon">📷</span>
+            Foto de perfil
+          </label>
+          <input type="file" id="rutaImg" accept="image/*" (change)="onFileSelected($event)" class="file-input">
+          <label for="rutaImg" class="file-label"></label>
+        </div>
+        @if (imagePreview) {
+        <div class="image-preview">
+          <img [src]="imagePreview" alt="Vista previa del evento">
+          <button type="button" class="btn btn-remove" (click)="removeImage()">
+            ✕ Eliminar imagen
+          </button>
+        </div>}
       </div>
 
       <!-- Botón submit -->

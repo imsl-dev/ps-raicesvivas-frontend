@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Usuario } from '../models/entities/Usuario';
 
 @Injectable({
   providedIn: 'root'
@@ -15,4 +16,9 @@ export class HttpService {
   getProvincias(): Observable<any[]> {
     return this.http.get<any[]>(`${this.API_URL}/provincias`);
   }
+
+  getUsuarioById(id: number) {
+    return this.http.get<Usuario>(`${this.API_URL}/usuarios/${id}`)
+  }
+
 }

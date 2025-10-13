@@ -1,0 +1,78 @@
+<div class="signup-page">
+    <div class="background-animation">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    @if (!loading && user) {
+    <div class="signup-container">
+        <div class="signup-header">
+            <div class="logo-container">
+                <img [src]="user.rutaImg" alt="Profile Logo" class="logo-img" />
+            </div>
+            <h2 class="signup-title">{{ user.nombre }} {{ user.apellido }}</h2>
+            <p class="signup-subtitle">Perfil de usuario</p>
+        </div>
+
+        <div class="signup-form">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" class="form-control" [value]="user.nombre" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Apellido</label>
+                    <input type="text" class="form-control" [value]="user.apellido" readonly />
+                </div>
+            </div>
+            <div class="form-row">
+
+
+                <div class="form-group">
+                    <label class="form-label">Rol</label>
+                    <input type="text" class="form-control" [value]="rolFormateado" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Provincia</label>
+                    <input type="text" class="form-control" [value]="user.provincia?.nombre || '-'" readonly />
+                </div>
+            </div>
+
+
+            <div class="form-row">
+                <div class="form-group d-flex justify-content-center">
+                    <label class="form-label">Contacto</label>
+                    <input type="text" class="form-control" [value]="user.email || '-'" readonly />
+                </div>
+
+                @if(isMyProfile) {
+                <div class="form-group d-flex justify-content-center">
+                    <label class="form-label">¿Te interesa organizar eventos?</label>
+                    <button class="btn btn-warning" title="Solicitar ser un organizador de eventos">
+                        🚀 Solicitar ser un organizador
+                    </button>
+                </div>
+                }
+
+            </div>
+
+
+
+
+        </div>
+    </div>
+    } @else {
+    <div class="signup-container">
+        @if (loading) {
+        <h2 class="signup-title">Cargando...</h2>
+        } @else {
+        <p class="error-message">{{ error }}</p>
+        }
+    </div>
+    }
+</div>
