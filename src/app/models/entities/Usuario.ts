@@ -13,5 +13,5 @@ export interface Usuario {
     provincia?: Provincia;
     puntos?: number;
     rutaImg?: string
-    email: string
+    email?: string
 }
