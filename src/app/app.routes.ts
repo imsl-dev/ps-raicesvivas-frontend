@@ -10,6 +10,7 @@ import { NuevoEvento } from './components/pages/events/nuevo-evento/nuevo-evento
 import { ListadoEventos } from './components/pages/events/listado-eventos/listado-eventos';
 import { adminGuard } from './guards/admin.guard';
 import { organizadorGuard } from './guards/organizador.guard';
+import { Profile } from './components/pages/profile/profile';
 
 
 export const routes: Routes = [
@@ -23,6 +24,7 @@ export const routes: Routes = [
     { path: 'eventos', component: ListadoEventos, canActivate: [authGuard] },
     { path: 'eventos/:id', component: DetalleEvento, canActivate: [authGuard] },
     { path: 'eventos/nuevo', component: NuevoEvento, canActivate: [authGuard, organizadorGuard] },
-    { path: 'eventos/editar/:id', component: NuevoEvento, canActivate: [authGuard, organizadorGuard] },  
+    { path: 'eventos/editar/:id', component: NuevoEvento, canActivate: [authGuard, organizadorGuard] },
+    { path: 'perfil/:id', component: Profile, canActivate: [authGuard] },
     { path: '**', component: Home }
 ];

@@ -12,4 +12,6 @@ export interface Usuario {
     rol: RolUsuario;
     provincia?: Provincia;
     puntos?: number;
+    rutaImg?: string
+    email: string
 }
