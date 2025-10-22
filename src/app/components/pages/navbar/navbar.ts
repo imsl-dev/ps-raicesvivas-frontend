@@ -23,18 +23,18 @@ export class Navbar implements OnInit {
   }
 
   loadUsuarioLogeado(): void {
-  this.authService.obtenerUsuarioLogueado().subscribe({
-    next: (data) => {
-      this.usuarioLogeado = data;
-      // Mostrar sección de puntos solo para usuarios con rol USUARIO y puntos > 0
-      this.mostrarSeccionPuntos = data?.rol === 'USUARIO' && (data?.puntos ?? 0) > 0;
-    },
-    error: (err) => {
-      console.error('Error cargando usuario logeado:', err);
-      this.mostrarSeccionPuntos = false;
-    }
-  });
-}
+    this.authService.obtenerUsuarioLogueado().subscribe({
+      next: (data) => {
+        this.usuarioLogeado = data;
+        // Mostrar sección de puntos solo para usuarios con rol USUARIO y puntos > 0
+        this.mostrarSeccionPuntos = data?.rol === 'USUARIO' && (data?.puntos ?? 0) > 0;
+      },
+      error: (err) => {
+        console.error('Error cargando usuario logeado:', err);
+        this.mostrarSeccionPuntos = false;
+      }
+    });
+  }
 
   logout() {
     this.authService.logout();
@@ -46,36 +46,36 @@ export class Navbar implements OnInit {
   }
 
   toggleDropdownPerfil(): void {
-  this.mostrarDropdownPerfil = !this.mostrarDropdownPerfil;
-}
+    this.mostrarDropdownPerfil = !this.mostrarDropdownPerfil;
+  }
 
-cerrarDropdown(): void {
-  this.mostrarDropdownPerfil = false;
-}
+  cerrarDropdown(): void {
+    this.mostrarDropdownPerfil = false;
+  }
 
-editarPerfil(): void {
-  this.cerrarDropdown();
-  this.router.navigate(['/perfil']);
-  // TODO: Implementar navegación a editar perfil
-}
+  editarPerfil(): void {
+    this.cerrarDropdown();
+    const idUsuarioLogueado = this.usuarioLogeado?.id || 0
+    this.router.navigate([`/perfil/${idUsuarioLogueado}`]);
+  }
 
-getImagenPerfil(): string {
-  return this.usuarioLogeado?.rutaImg || 'https://ui-avatars.com/api/?name=' + 
-    (this.usuarioLogeado?.nombre || 'U') + '+' + 
-    (this.usuarioLogeado?.apellido || 'U') + '&background=28a745&color=fff&size=128';
-}
+  getImagenPerfil(): string {
+    return this.usuarioLogeado?.rutaImg || 'https://ui-avatars.com/api/?name=' +
+      (this.usuarioLogeado?.nombre || 'U') + '+' +
+      (this.usuarioLogeado?.apellido || 'U') + '&background=28a745&color=fff&size=128';
+  }
 
-esUsuario(): boolean {
-  return this.usuarioLogeado?.rol === 'USUARIO';
-}
+  esUsuario(): boolean {
+    return this.usuarioLogeado?.rol === 'USUARIO';
+  }
 
-esOrganizador(): boolean {
-  return this.usuarioLogeado?.rol === 'ORGANIZADOR';
-}
+  esOrganizador(): boolean {
+    return this.usuarioLogeado?.rol === 'ORGANIZADOR';
+  }
 
-esAdmin(): boolean {
-  return this.usuarioLogeado?.rol === 'ADMIN';
-}
+  esAdmin(): boolean {
+    return this.usuarioLogeado?.rol === 'ADMIN';
+  }
 
   scrollToSection(sectionId: string) {
     const element = document.getElementById(sectionId);

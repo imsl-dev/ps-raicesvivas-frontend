@@ -1,0 +1,82 @@
+<h3 mat-dialog-title>Enviar postulación para organizar eventos</h3>
+
+<form [formGroup]="formSolicitud" (ngSubmit)="onSubmit()">
+    <mat-dialog-content class="mat-typography">
+        <p>
+            A continuación te pediremos algunos de tus datos para verificar tu identidad
+        </p>
+
+        <!-- Motivación -->
+        <div class="row text-center my-3">
+            <h4>¿Qué te motiva a querer ser un organizador?</h4>
+        </div>
+
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Máximo 500 caracteres</mat-label>
+            <textarea matInput rows="5" cols="50" maxlength="500" formControlName="motivo"
+                placeholder="Escribe tu respuesta aquí..."></textarea>
+            <mat-hint align="end">{{ 500 - (formSolicitud.get('motivo')?.value?.length || 0) }}
+                caracteres restantes</mat-hint>
+            @if(formSolicitud.get('motivo')?.hasError('required')) {
+            <mat-error>Este campo es obligatorio</mat-error>
+            }
+
+        </mat-form-field>
+
+        <!-- Información personal -->
+        <div class="row text-center my-3">
+            <h4>Información personal</h4>
+        </div>
+
+        <!-- ID Image Upload -->
+        <div class="my-2">
+            <label for="idImage" class="font-large block mb-2">DNI / Pasaporte (imagen)</label>
+            <br>
+            <input type="file" id="idImage" accept="image/*" (change)="onFileSelected($event)" />
+            <br>
+            <mat-hint>Puedes subir una foto o imagen escaneada de tu documento</mat-hint>
+            @if(formSolicitud.get('idImage')?.hasError('required') && formSolicitud.get('idImage')?.touched) {
+            <mat-error>Debe subir una imagen del
+                documento</mat-error>
+            }
+
+            <!-- Optional preview -->
+            @if(selectedImage) {
+            <div class="mt-3 text-center">
+                <img [src]="selectedImage" alt="Vista previa del documento"
+                    style="max-width: 100%; max-height: 200px; border-radius: 8px" />
+            </div>
+            }
+
+        </div>
+
+        <!-- CBU -->
+        <mat-form-field appearance="outline" class="w-100 my-3">
+            <mat-hint>A esta cuenta se transferirá el dinero de las inscripciones y donaciones</mat-hint>
+            <mat-label>CBU</mat-label>
+
+            <input matInput type="text" maxlength="22" formControlName="cbu" placeholder="Ingrese su CBU" />
+            <mat-hint align="end">22 dígitos</mat-hint>
+
+            @if(formSolicitud.get('cbu')?.hasError('required')) {
+            <mat-error *ngIf="">El CBU es obligatorio</mat-error>
+            }
+
+            @if (formSolicitud.get('cbu')?.hasError('pattern')) {
+            <mat-error>Debe contener solo números</mat-error>
+            }
+
+            @if (formSolicitud.get('cbu')?.hasError('minlength')) {
+            <mat-error *ngIf="">El CBU debe tener 22 dígitos</mat-error>
+            }
+
+        </mat-form-field>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close (click)="onCancel()">Cancelar</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="formSolicitud.invalid">
+            Postularme
+        </button>
+    </mat-dialog-actions>
+</form>

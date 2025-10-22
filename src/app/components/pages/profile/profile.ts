@@ -1,8 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Usuario } from '../../../models/entities/Usuario';
 import { AuthService } from '../../../services/auth.service';
 import { HttpService } from '../../../services/http.service';
 import { ActivatedRoute } from '@angular/router';
+import {
+  MatDialog,
+  MAT_DIALOG_DATA,
+  MatDialogTitle,
+  MatDialogContent,
+} from '@angular/material/dialog';
+import { SolicitudOrganizador } from '../../modals/solicitud-organizador/solicitud-organizador';
 
 @Component({
   selector: 'app-profile',
@@ -11,6 +18,16 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './profile.css'
 })
 export class Profile implements OnInit {
+
+  solicitudDialog = inject(MatDialog)
+
+  openDialog() {
+    this.solicitudDialog.open(SolicitudOrganizador, {
+      data: {
+        animal: "panda"
+      }
+    })
+  }
 
   user?: Usuario
 
