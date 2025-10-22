@@ -43,9 +43,9 @@
                 <!-- Testimonios - Solo para usuarios con rol USUARIO -->
                 @if (esUsuario()) {
                     <li class="nav-item">
-                        <a class="nav-link" (click)="scrollToSection('testimonios')">
+                        <a class="nav-link" routerLink="/donaciones" routerLinkActive="active">
                             <span class="nav-icon">💬</span>
-                            <span class="nav-text">Testimonios</span>
+                            <span class="nav-text">Mural de Donaciones</span>
                         </a>
                     </li>
                 }

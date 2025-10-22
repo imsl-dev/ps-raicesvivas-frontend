@@ -1,0 +1,67 @@
+<div class="pago-container">
+  @if (loading) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Verificando tu pago...</p>
+    </div>
+  }
+  
+  @if (error) {
+    <div class="error-state">
+      <div class="error-icon">❌</div>
+      <h2>Error al procesar el pago</h2>
+      <p>No pudimos verificar el estado de tu pago</p>
+      <button class="btn btn-primary" (click)="volverAEventos()">Volver a Eventos</button>
+    </div>
+  }
+  
+  @if (!loading && !error && pago) {
+    <div class="success-content">
+      <div class="success-icon">✅</div>
+      
+      <h1 class="success-title">¡Pago Exitoso!</h1>
+      
+      <div class="success-message">
+        <p>Tu pago ha sido procesado correctamente</p>
+        @if (pago.nombreEvento) {
+          <p class="evento-name">{{ pago.nombreEvento }}</p>
+        }
+      </div>
+
+      <div class="pago-details">
+        <div class="detail-row">
+          <span class="detail-label">ID de Pago:</span>
+          <span class="detail-value">#{{ pago.id }}</span>
+        </div>
+        
+        <div class="detail-row">
+          <span class="detail-label">Monto:</span>
+          <span class="detail-value amount">${{ pago.monto }}</span>
+        </div>
+        
+        <div class="detail-row">
+          <span class="detail-label">Estado:</span>
+          <span class="detail-value estado-aprobado">{{ pago.estadoPago }}</span>
+        </div>
+        
+        <div class="detail-row">
+          <span class="detail-label">Fecha:</span>
+          <span class="detail-value">{{ pago.fechaCreacion | date: 'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <p>✉️ Recibirás un correo de confirmación con los detalles de tu inscripción</p>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-primary" (click)="volverAEventos()">
+          Ver Eventos
+        </button>
+        <button class="btn btn-secondary" (click)="irAMisPagos()">
+          Mis Pagos
+        </button>
+      </div>
+    </div>
+  }
+</div>

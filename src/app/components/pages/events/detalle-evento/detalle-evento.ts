@@ -6,6 +6,8 @@ import { Evento } from '../../../../models/entities/Evento';
 import { TipoEventoPipe } from '../../../../pipes/tipo-evento.pipe';
 import { AuthService } from '../../../../services/auth.service';
 import { Usuario } from '../../../../models/entities/Usuario';
+import { PagoService } from '../../../../services/pago.service';
+import { PagoRequest } from '../../../../models/dtos/pagos/PagoRequest';
 
 @Component({
   selector: 'app-detalle-evento',
@@ -18,17 +20,25 @@ export class DetalleEvento implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly pagoService = inject(PagoService);
 
   evento: Evento | null = null;
   loading: boolean = true;
   error: string | null = null;
   usuarioLogeado: Usuario | null = null;
+
+  // INSCRIPCION
   estaInscripto: boolean = false;
   procesandoInscripcion: boolean = false;
   mostrarModalCancelacion: boolean = false;
 
+  // PAGOS
+  procesandoPago = false;
+  yaPago = false;
+
   ngOnInit(): void {
     this.loadUsuarioLogeado();
+    this.verificarPago();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadEvento(+id);
@@ -117,9 +127,30 @@ export class DetalleEvento implements OnInit {
     });
   }
 
+  verificarPago(): void {
+    if (!this.evento?.id || !this.usuarioLogeado?.id) return;
+
+    this.pagoService.verificarPago(this.usuarioLogeado.id, this.evento.id).subscribe({
+      next: (yaPago) => {
+        this.yaPago = yaPago;
+      },
+      error: (err) => {
+        console.error('Error verificando pago:', err);
+        this.yaPago = false;
+      }
+    });
+  }
+
   inscribirseEvento(): void {
     if (!this.evento?.id || !this.usuarioLogeado?.id || this.procesandoInscripcion) return;
 
+    // Si el evento tiene costo, redirigir a MercadoPago
+    if (this.tieneCostoInscripcion() && !this.yaPago) {
+      this.procesarPago();
+      return;
+    }
+
+    // Si no tiene costo o ya pagó, inscribir directamente
     this.procesandoInscripcion = true;
 
     this.eventoService.inscribirseEvento(this.usuarioLogeado.id, this.evento.id).subscribe({
@@ -136,6 +167,32 @@ export class DetalleEvento implements OnInit {
         } else {
           alert('❌ Error al inscribirse. Por favor, intenta nuevamente.');
         }
+      }
+    });
+  }
+
+  procesarPago(): void {
+    if (!this.evento?.id || !this.usuarioLogeado?.id || this.procesandoPago) return;
+
+    this.procesandoPago = true;
+
+    const pagoRequest: PagoRequest = {
+      usuarioId: this.usuarioLogeado.id,
+      eventoId: this.evento.id,
+      tipoPago: 'INSCRIPCION',
+      monto: this.evento.costoInscripcion || 0,
+      descripcion: `Inscripción a ${this.evento.nombre}`
+    };
+
+    this.pagoService.crearPago(pagoRequest).subscribe({
+      next: (response) => {
+        // Redirigir a MercadoPago
+        window.location.href = response.initPoint;
+      },
+      error: (err) => {
+        this.procesandoPago = false;
+        console.error('Error al crear el pago:', err);
+        alert('❌ Error al procesar el pago. Por favor, intenta nuevamente.');
       }
     });
   }

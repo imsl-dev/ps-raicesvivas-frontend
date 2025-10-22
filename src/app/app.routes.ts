@@ -11,6 +11,9 @@ import { ListadoEventos } from './components/pages/events/listado-eventos/listad
 import { adminGuard } from './guards/admin.guard';
 import { organizadorGuard } from './guards/organizador.guard';
 import { Profile } from './components/pages/profile/profile';
+import { PagoSuccess } from './components/pages/pago/pago-success/pago-success';
+import { PagoFailure } from './components/pages/pago/pago-failure/pago-failure';
+import { PagoPending } from './components/pages/pago/pago-pending/pago-pending';
 
 
 export const routes: Routes = [
@@ -26,5 +29,8 @@ export const routes: Routes = [
     { path: 'eventos/nuevo', component: NuevoEvento, canActivate: [authGuard, organizadorGuard] },
     { path: 'eventos/editar/:id', component: NuevoEvento, canActivate: [authGuard, organizadorGuard] },
     { path: 'perfil/:id', component: Profile, canActivate: [authGuard] },
+    { path: 'pago/success', component: PagoSuccess },
+    { path: 'pago/failure', component: PagoFailure },
+    { path: 'pago/pending', component: PagoPending },
     { path: '**', component: Home }
 ];
