@@ -1,5 +1,5 @@
 
-import { RolUsuario, TipoDocumento } from '../enums/Enums';
+import { EstadoPeticion, RolUsuario, TipoDocumento } from '../enums/Enums';
 import { Provincia } from './auxiliares/Provincia';
 
 
@@ -13,5 +13,6 @@ export interface Usuario {
     provincia?: Provincia;
     puntos?: number;
     rutaImg?: string
-    email?: string
+    email?: string;
+    estadoPeticionOrganizador?: EstadoPeticion
 }

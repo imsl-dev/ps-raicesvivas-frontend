@@ -25,12 +25,12 @@
 
                 <!-- Nuestro Impacto - Solo para usuarios con rol USUARIO -->
                 @if (esUsuario()) {
-                    <li class="nav-item">
-                        <a class="nav-link" (click)="scrollToSection('impacto')">
-                            <span class="nav-icon">📊</span>
-                            <span class="nav-text">Nuestro Impacto</span>
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" (click)="scrollToSection('impacto')">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Nuestro Impacto</span>
+                    </a>
+                </li>
                 }
 
                 <li class="nav-item">
@@ -42,108 +42,109 @@
 
                 <!-- Testimonios - Solo para usuarios con rol USUARIO -->
                 @if (esUsuario()) {
-                    <li class="nav-item">
-                        <a class="nav-link" (click)="scrollToSection('testimonios')">
-                            <span class="nav-icon">💬</span>
-                            <span class="nav-text">Testimonios</span>
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" (click)="scrollToSection('testimonios')">
+                        <span class="nav-icon">💬</span>
+                        <span class="nav-text">Testimonios</span>
+                    </a>
+                </li>
                 }
 
                 <!-- Panel Organizador - Solo para organizadores -->
                 @if (esOrganizador()) {
-                    <li class="nav-item">
-                        <a class="nav-link" routerLink="/panel-organizadores" routerLinkActive="active">
-                            <span class="nav-icon">👨‍💼</span>
-                            <span class="nav-text">Panel Organizador</span>
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/panel-organizadores" routerLinkActive="active">
+                        <span class="nav-icon">👨‍💼</span>
+                        <span class="nav-text">Panel Organizador</span>
+                    </a>
+                </li>
                 }
 
                 <!-- Panel Administrador - Solo para admins -->
                 @if (esAdmin()) {
-                    <li class="nav-item">
-                        <a class="nav-link" routerLink="/panel-administradores" routerLinkActive="active">
-                            <span class="nav-icon">⚙️</span>
-                            <span class="nav-text">Panel Administrador</span>
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/panel-administradores" routerLinkActive="active">
+                        <span class="nav-icon">⚙️</span>
+                        <span class="nav-text">Panel Administrador</span>
+                    </a>
+                </li>
                 }
 
                 <!-- Divisor visible solo en desktop -->
                 @if (authService.isAuthenticated$ | async) {
-                    <li class="nav-divider d-none d-lg-block"></li>
+                <li class="nav-divider d-none d-lg-block"></li>
                 }
 
                 <!-- Sección de usuario autenticado -->
                 @if (authService.isAuthenticated$ | async) {
-                    <!-- Puntos del usuario - Solo para rol USUARIO -->
-                    @if (mostrarSeccionPuntos) {
-                        <li class="nav-item puntos-container">
-                            <div class="puntos-badge">
-                                <span class="puntos-icon">⭐</span>
-                                <div class="puntos-info">
-                                    <span class="puntos-label">Mis puntos</span>
-                                    <span class="puntos-valor">{{ usuarioLogeado?.puntos }}</span>
-                                </div>
-                            </div>
-                            <button class="btn btn-canjear" (click)="canjearPuntos()">
-                                <span class="btn-icon">🎁</span>
-                                <span>Canjear</span>
-                            </button>
-                        </li>
-                    }
+                <!-- Puntos del usuario - Solo para rol USUARIO -->
+                @if (mostrarSeccionPuntos) {
+                <li class="nav-item puntos-container">
+                    <div class="puntos-badge">
+                        <span class="puntos-icon">⭐</span>
+                        <div class="puntos-info">
+                            <span class="puntos-label">Mis puntos</span>
+                            <span class="puntos-valor">{{ usuarioLogeado?.puntos }}</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-canjear" (click)="canjearPuntos()">
+                        <span class="btn-icon">🎁</span>
+                        <span>Canjear</span>
+                    </button>
+                </li>
+                }
 
-                    <!-- Dropdown de perfil de usuario -->
-                    <li class="nav-item dropdown-perfil" (clickOutside)="cerrarDropdown()">
-                        <button class="btn-perfil" (click)="toggleDropdownPerfil()">
-                            <img [src]="getImagenPerfil()" [alt]="usuarioLogeado?.nombre" class="avatar-img">
+                <!-- Dropdown de perfil de usuario -->
+                <li class="nav-item dropdown-perfil" (clickOutside)="cerrarDropdown()">
+                    <button class="btn-perfil" (click)="toggleDropdownPerfil()">
+                        <img [src]="getImagenPerfil()" [alt]="usuarioLogeado?.nombre" class="avatar-img">
+                    </button>
+
+                    <!-- Menú dropdown -->
+                    @if (mostrarDropdownPerfil) {
+                    <div class="dropdown-menu-perfil">
+                        <!-- Información del usuario -->
+                        <div class="dropdown-header">
+                            <img [src]="getImagenPerfil()" [alt]="usuarioLogeado?.nombre" class="avatar-img-large">
+                            <div class="user-info">
+                                <span class="user-name">{{ usuarioLogeado?.nombre }} {{ usuarioLogeado?.apellido
+                                    }}</span>
+                                <span class="user-email">{{ usuarioLogeado?.email }}</span>
+                            </div>
+                        </div>
+
+                        <div class="dropdown-divider"></div>
+
+                        <!-- Opciones del menú -->
+                        <button class="dropdown-item" (click)="editarPerfil()">
+                            <span class="item-icon">👤</span>
+                            <span>Mi perfil</span>
                         </button>
 
-                        <!-- Menú dropdown -->
-                        @if (mostrarDropdownPerfil) {
-                            <div class="dropdown-menu-perfil">
-                                <!-- Información del usuario -->
-                                <div class="dropdown-header">
-                                    <img [src]="getImagenPerfil()" [alt]="usuarioLogeado?.nombre" class="avatar-img-large">
-                                    <div class="user-info">
-                                        <span class="user-name">{{ usuarioLogeado?.nombre }} {{ usuarioLogeado?.apellido }}</span>
-                                        <span class="user-email">{{ usuarioLogeado?.email }}</span>
-                                    </div>
-                                </div>
+                        <div class="dropdown-divider"></div>
 
-                                <div class="dropdown-divider"></div>
-
-                                <!-- Opciones del menú -->
-                                <button class="dropdown-item" (click)="editarPerfil()">
-                                    <span class="item-icon">👤</span>
-                                    <span>Editar perfil</span>
-                                </button>
-
-                                <div class="dropdown-divider"></div>
-
-                                <button class="dropdown-item logout-item" (click)="logout()">
-                                    <span class="item-icon">🚪</span>
-                                    <span>Cerrar sesión</span>
-                                </button>
-                            </div>
-                        }
-                    </li>
+                        <button class="dropdown-item logout-item" (click)="logout()">
+                            <span class="item-icon">🚪</span>
+                            <span>Cerrar sesión</span>
+                        </button>
+                    </div>
+                    }
+                </li>
                 }
                 @else {
-                    <!-- Botones para usuarios no autenticados -->
-                    <li class="nav-item">
-                        <button class="btn btn-login" routerLink="/login">
-                            <span class="btn-icon">🔑</span>
-                            <span>Iniciar sesión</span>
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="btn btn-signup" routerLink="/signup">
-                            <span class="btn-icon">🌱</span>
-                            <span>Unirse</span>
-                        </button>
-                    </li>
+                <!-- Botones para usuarios no autenticados -->
+                <li class="nav-item">
+                    <button class="btn btn-login" routerLink="/login">
+                        <span class="btn-icon">🔑</span>
+                        <span>Iniciar sesión</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn btn-signup" routerLink="/signup">
+                        <span class="btn-icon">🌱</span>
+                        <span>Unirse</span>
+                    </button>
+                </li>
                 }
             </ul>
         </div>
