@@ -1,0 +1,46 @@
+<div class="pago-container">
+  <div class="failure-content">
+    <div class="failure-icon">❌</div>
+    
+    <h1 class="failure-title">Pago Rechazado</h1>
+    
+    <div class="failure-message">
+      <p>Lo sentimos, tu pago no pudo ser procesado</p>
+      <p class="mensaje-detalle">Por favor, verifica los datos de tu tarjeta e intenta nuevamente</p>
+    </div>
+
+    @if (pagoId) {
+      <div class="pago-details">
+        <div class="detail-row">
+          <span class="detail-label">ID de Transacción:</span>
+          <span class="detail-value">#{{ pagoId }}</span>
+        </div>
+      </div>
+    }
+
+    <div class="info-box">
+      <h3>Posibles causas del rechazo:</h3>
+      <ul>
+        <li>❌ Fondos insuficientes en la cuenta</li>
+        <li>❌ Datos de la tarjeta incorrectos</li>
+        <li>❌ La tarjeta ha expirado</li>
+        <li>❌ Límite de compra excedido</li>
+        <li>❌ Tarjeta bloqueada o inhabilitada</li>
+      </ul>
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn btn-primary" (click)="reintentar()">
+        🔄 Intentar Nuevamente
+      </button>
+      <button class="btn btn-secondary" (click)="volverAEventos()">
+        ← Volver a Eventos
+      </button>
+    </div>
+
+    <div class="help-box">
+      <p>¿Necesitas ayuda? Contacta a soporte:</p>
+      <p class="email">📧 raicesvivasorg@gmail.com</p>
+    </div>
+  </div>
+</div>
