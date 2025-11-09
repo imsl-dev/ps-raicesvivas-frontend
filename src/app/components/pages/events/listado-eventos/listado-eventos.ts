@@ -27,6 +27,7 @@ export class ListadoEventos implements OnInit {
   loading: boolean = true;
   error: string | null = null;
   searchTerm: string = '';
+  verSoloMisEventos: boolean = false;
   usuarioLogeado: Usuario | null = null;
 
   // Filtros
@@ -48,6 +49,9 @@ export class ListadoEventos implements OnInit {
   ngOnInit(): void {
     this.loadUsuarioLogeado();
     this.loadProvincias();
+    if (this.usuarioLogeado?.rol === RolUsuario.ORGANIZADOR) {
+      this.verSoloMisEventos = true;
+    }
   }
 
   loadUsuarioLogeado(): void {
@@ -67,32 +71,17 @@ export class ListadoEventos implements OnInit {
     this.loading = true;
     this.error = null;
 
-    if (this.usuarioLogeado?.rol === 'ORGANIZADOR' && this.usuarioLogeado.id) {
-      this.service.getEventosOrganizador(this.usuarioLogeado.id).subscribe({
-        next: (data) => {
-          this.eventos = data;
-          this.loading = false;
-        },
-        error: (err) => {
-          this.error = 'Error al cargar los eventos';
-          this.loading = false;
-          console.error('Error cargando eventos:', err);
-        }
-      });
-    }
-    else {
-      this.service.getEventos().subscribe({
-        next: (data) => {
-          this.eventos = data;
-          this.loading = false;
-        },
-        error: (err) => {
-          this.error = 'Error al cargar los eventos';
-          this.loading = false;
-          console.error('Error cargando eventos:', err);
-        }
-      });
-    }
+    this.service.getEventos().subscribe({
+      next: (data) => {
+        this.eventos = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Error al cargar los eventos';
+        this.loading = false;
+        console.error('Error cargando eventos:', err);
+      }
+    });
   }
 
   loadProvincias(): void {
@@ -123,8 +112,12 @@ export class ListadoEventos implements OnInit {
       const matchFechaHasta = !this.filtroFechaHasta ||
         new Date(evento.horaInicio) <= new Date(this.filtroFechaHasta + 'T23:59:59');
 
+      const matchOrganizador = !this.verSoloMisEventos ||
+        !this.usuarioLogeado?.id ||
+        evento.organizadorId === this.usuarioLogeado.id;
+
       return matchSearch && matchProvincia && matchTipo && matchEstado &&
-        matchFechaDesde && matchFechaHasta;
+        matchFechaDesde && matchFechaHasta && matchOrganizador;
     });
   }
 
@@ -135,6 +128,7 @@ export class ListadoEventos implements OnInit {
     this.filtroEstado = '';
     this.filtroFechaDesde = '';
     this.filtroFechaHasta = '';
+    this.verSoloMisEventos = true;
   }
 
   toggleFiltros(): void {
@@ -148,15 +142,15 @@ export class ListadoEventos implements OnInit {
 
   deleteEvento(id: number | undefined): void {
     if (!id) return;
-    if (confirm('¿Está seguro de que desea suspender este evento? Luego no será posible reanudarlo.')) {
+    if (confirm('¿Está seguro de que desea cancelar este evento? Luego no será posible reanudarlo.')) {
       this.service.deleteEvento(id).subscribe({
         next: () => {
           this.eventos = this.eventos.filter(e => e.id !== id);
-          alert('Evento suspendido exitosamente');
+          alert('Evento cancelado exitosamente');
         },
         error: (err) => {
-          console.error('Error al suspender el evento:', err);
-          alert('Error al suspender el evento. Por favor, intente nuevamente.');
+          console.error('Error al cancelar el evento:', err);
+          alert('Error al cancelar el evento. Por favor, intente nuevamente.');
         }
       });
     }

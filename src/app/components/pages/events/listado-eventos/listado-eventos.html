@@ -71,6 +71,16 @@
           <input type="date" [(ngModel)]="filtroFechaHasta" class="filtro-input">
         </div>
 
+        <!-- Filtro solo para organizadores -->
+        @if (usuarioLogeado?.rol === 'ORGANIZADOR') {
+        <div class="filtro-group">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="verSoloMisEventos" class="filtro-checkbox">
+            <span>Ver solo mis eventos</span>
+          </label>
+        </div>
+        }
+
         <div class="filtros-info">
           <small>📊 {{ filteredEventos.length }} evento(s) encontrado(s)</small>
         </div>
@@ -197,8 +207,8 @@
             </button>
             }
             @if (usuarioLogeado?.rol === 'ORGANIZADOR' && evento.organizadorId === usuarioLogeado?.id && evento.estado === 'PRÓXIMO') {
-            <button class="btn-action btn-delete" (click)="deleteEvento(evento.id)" title="Suspender">
-              🚫 Suspender
+            <button class="btn-action btn-delete" (click)="deleteEvento(evento.id)" title="Cancelar">
+              🚫 Cancelar
             </button>
             }
           </div>
