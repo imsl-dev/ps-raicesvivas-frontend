@@ -191,9 +191,14 @@
             <button class="btn-action btn-view" (click)="viewDetails(evento.id)" title="Ver detalles">
               👁️ Ver
             </button>
-            @if (usuarioLogeado?.rol === 'ORGANIZADOR') {
+            @if (usuarioLogeado?.rol === 'ORGANIZADOR' && evento.organizadorId === usuarioLogeado?.id && evento.estado === 'PRÓXIMO') {
             <button class="btn-action btn-edit" (click)="editEvento(evento.id)" title="Editar">
               ✏️ Editar
+            </button>
+            }
+            @if (usuarioLogeado?.rol === 'ORGANIZADOR' && evento.organizadorId === usuarioLogeado?.id && evento.estado === 'PRÓXIMO') {
+            <button class="btn-action btn-delete" (click)="deleteEvento(evento.id)" title="Suspender">
+              🚫 Suspender
             </button>
             }
           </div>

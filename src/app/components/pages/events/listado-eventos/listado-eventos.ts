@@ -146,6 +146,22 @@ export class ListadoEventos implements OnInit {
     this.router.navigate(['/eventos/editar', id]);
   }
 
+  deleteEvento(id: number | undefined): void {
+    if (!id) return;
+    if (confirm('¿Está seguro de que desea suspender este evento? Luego no será posible reanudarlo.')) {
+      this.service.deleteEvento(id).subscribe({
+        next: () => {
+          this.eventos = this.eventos.filter(e => e.id !== id);
+          alert('Evento suspendido exitosamente');
+        },
+        error: (err) => {
+          console.error('Error al suspender el evento:', err);
+          alert('Error al suspender el evento. Por favor, intente nuevamente.');
+        }
+      });
+    }
+  }
+
   viewDetails(id: number | undefined): void {
     if (!id) return;
     this.router.navigate(['/eventos', id]);
