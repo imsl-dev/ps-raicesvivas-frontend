@@ -17,7 +17,8 @@ export class SolicitudOrganizador {
   formSolicitudDialog = inject(MatDialog)
 
   constructor(
-    private dialogRef: MatDialogRef<SolicitudOrganizador>
+    private dialogRef: MatDialogRef<SolicitudOrganizador>,
+
   ) { }
 
   openDialog() {
@@ -28,6 +29,8 @@ export class SolicitudOrganizador {
     this.dialogRef.afterClosed().subscribe(() => {
       this.formSolicitudDialog.open(FrmSolicitudOrganizador);
     });
+
+
 
   }
 }

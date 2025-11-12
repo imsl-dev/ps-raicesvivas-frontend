@@ -236,6 +236,11 @@
     color: #adb5bd;
 }
 
+.form-control:read-only {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
 /* Select específico */
 select.form-control {
     cursor: pointer;
@@ -314,21 +319,43 @@ select.form-control {
     transform: none;
 }
 
-.btn-icon {
-    font-size: 1.3rem;
-    animation: grow 2s infinite ease-in-out;
+/* Botón cancelar */
+.btn-cancel {
+    width: 100%;
+    padding: 1.2rem 2rem;
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
 }
 
-@keyframes grow {
+.btn-cancel:hover:not(:disabled) {
+    background: linear-gradient(135deg, #5a6268, #495057);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+}
 
-    0%,
-    100% {
-        transform: scale(1);
-    }
+.btn-cancel:active:not(:disabled) {
+    transform: translateY(-1px);
+}
 
-    50% {
-        transform: scale(1.2);
-    }
+.btn-cancel:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+}
+
+.btn-icon {
+    font-size: 1.3rem;
 }
 
 /* Divider */
@@ -474,7 +501,8 @@ select.form-control {
         padding-right: 2.75rem;
     }
 
-    .btn-submit {
+    .btn-submit,
+    .btn-cancel {
         padding: 1rem 1.5rem;
         font-size: 1rem;
     }
@@ -499,8 +527,14 @@ select.form-control {
         font-size: 0.9rem;
     }
 
-    .btn-submit {
+    .btn-submit,
+    .btn-cancel {
         padding: 0.9rem 1.25rem;
         font-size: 0.95rem;
     }
+}
+
+.inverted-emoji {
+    transform: scale(-1, 1);
+    width: fit-content;
 }

@@ -59,7 +59,7 @@
             <mat-hint align="end">22 dígitos</mat-hint>
 
             @if(formSolicitud.get('cbu')?.hasError('required')) {
-            <mat-error *ngIf="">El CBU es obligatorio</mat-error>
+            <mat-error>El CBU es obligatorio</mat-error>
             }
 
             @if (formSolicitud.get('cbu')?.hasError('pattern')) {
@@ -67,7 +67,7 @@
             }
 
             @if (formSolicitud.get('cbu')?.hasError('minlength')) {
-            <mat-error *ngIf="">El CBU debe tener 22 dígitos</mat-error>
+            <mat-error>El CBU debe tener 22 dígitos</mat-error>
             }
 
         </mat-form-field>

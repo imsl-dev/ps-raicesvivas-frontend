@@ -205,8 +205,8 @@
           <label for="rutaImg" class="file-label"></label>
         </div>
         @if (imagePreview) {
-        <div class="image-preview">
-          <img [src]="imagePreview" alt="Vista previa del evento">
+        <div>
+          <img [src]="imagePreview" alt="Vista previa del evento" class="image-preview">
           <button type="button" class="btn btn-remove" (click)="removeImage()">
             ✕ Eliminar imagen
           </button>

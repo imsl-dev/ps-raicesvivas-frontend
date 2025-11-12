@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Usuario } from '../models/entities/Usuario';
+import { ActualizarUsuarioDTO } from '../models/dtos/usuarios/ActualizarUsuarioDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,10 @@ export class HttpService {
 
   getUsuarioById(id: number) {
     return this.http.get<Usuario>(`${this.API_URL}/usuarios/${id}`)
+  }
+
+  updateUser(user: ActualizarUsuarioDTO) {
+    return this.http.patch<Usuario>(`${this.API_URL}/usuarios`, user);
   }
 
 }
