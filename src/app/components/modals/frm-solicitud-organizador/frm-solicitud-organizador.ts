@@ -1,22 +1,43 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatDialogRef, MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 import { MatFormField, MatLabel, MatError, MatHint } from "@angular/material/form-field";
 import { MatInput } from '@angular/material/input';
+import { PeticionService } from '../../../services/peticion.service';
+import { PeticionOrganizador } from '../../../models/entities/PeticionOrganizador';
+import { PeticionOrganizadorPostDTO } from '../../../models/dtos/peticionesOrganizador/PeticionOrganizadorPostDTO';
+import { AuthService } from '../../../services/auth.service';
+import { Usuario } from '../../../models/entities/Usuario';
 
 @Component({
   selector: 'app-frm-solicitud-organizador',
   templateUrl: './frm-solicitud-organizador.html',
   imports: [MatFormField, MatLabel, MatDialogActions, MatError, MatHint, MatDialogContent, ReactiveFormsModule, MatInput, MatButton, MatDialogTitle],
 })
-export class FrmSolicitudOrganizador {
+export class FrmSolicitudOrganizador implements OnInit {
   formSolicitud: FormGroup;
   selectedImage: string | null = null;
   fileData: File | null = null;
 
+  user: Usuario = {
+    id: 1,
+    nombre: "",
+    apellido: ""
+  }
+
+  ngOnInit(): void {
+    this.authService.obtenerUsuarioLogueado().subscribe({
+      next: (usuario) => {
+        this.user = usuario;
+      }
+    })
+  }
+
   constructor(
     private fb: FormBuilder,
+    private peticionService: PeticionService,
+    private authService: AuthService,
     private dialogRef: MatDialogRef<FrmSolicitudOrganizador>
   ) {
     this.formSolicitud = this.fb.group({
@@ -58,7 +79,15 @@ export class FrmSolicitudOrganizador {
       }
 
       // You can send `formData` to your backend here
-      console.log('Form data ready to submit:', this.formSolicitud.value);
+      const peticion: PeticionOrganizadorPostDTO = {
+        idUsuario: this.user.id || 1,
+        mensajeUsuario: this.formSolicitud.get('motivo')?.value!
+      }
+      this.peticionService.postPeticion(peticion).subscribe({
+        next: (response) => {
+
+        }
+      })
 
       this.dialogRef.close(this.formSolicitud.value);
     }
