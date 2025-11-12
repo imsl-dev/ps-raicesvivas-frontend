@@ -16,9 +16,9 @@
   }
   
   @if (!loading && !error && pago) {
-    <div class="success-content">
+  <div class="success-content">
+    @if (pago.estadoPago === 'APROBADO') {
       <div class="success-icon">✅</div>
-      
       <h1 class="success-title">¡Pago Exitoso!</h1>
       
       <div class="success-message">
@@ -27,41 +27,77 @@
           <p class="evento-name">{{ pago.nombreEvento }}</p>
         }
       </div>
-
-      <div class="pago-details">
-        <div class="detail-row">
-          <span class="detail-label">ID de Pago:</span>
-          <span class="detail-value">#{{ pago.id }}</span>
-        </div>
-        
-        <div class="detail-row">
-          <span class="detail-label">Monto:</span>
-          <span class="detail-value amount">${{ pago.monto }}</span>
-        </div>
-        
-        <div class="detail-row">
-          <span class="detail-label">Estado:</span>
-          <span class="detail-value estado-aprobado">{{ pago.estadoPago }}</span>
-        </div>
-        
-        <div class="detail-row">
-          <span class="detail-label">Fecha:</span>
-          <span class="detail-value">{{ pago.fechaCreacion | date: 'dd/MM/yyyy HH:mm' }}</span>
-        </div>
+    } @else {
+      <div class="pending-icon">⏳</div>
+      <h1 class="pending-title">Verificando tu pago...</h1>
+      
+      <div class="pending-message">
+        <p>Estamos confirmando tu pago con MercadoPago</p>
+        <p class="small-text">Esto puede tomar unos segundos</p>
+        <div class="spinner-small"></div>
       </div>
+    }
 
+    <div class="pago-details">
+      <div class="detail-row">
+        <span class="detail-label">ID de Pago:</span>
+        <span class="detail-value">#{{ pago.id }}</span>
+      </div>
+      
+      <div class="detail-row">
+        <span class="detail-label">Monto:</span>
+        <span class="detail-value amount">${{ pago.monto }}</span>
+      </div>
+      
+      <div class="detail-row">
+        <span class="detail-label">Estado:</span>
+        <span class="detail-value" [ngClass]="{
+          'estado-aprobado': pago.estadoPago === 'APROBADO',
+          'estado-pendiente': pago.estadoPago === 'PENDIENTE',
+          'estado-rechazado': pago.estadoPago === 'RECHAZADO'
+        }">
+          {{ pago.estadoPago }}
+        </span>
+      </div>
+      
+      <div class="detail-row">
+        <span class="detail-label">Fecha:</span>
+        <span class="detail-value">{{ pago.fechaCreacion | date: 'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+    </div>
+
+    @if (pago.estadoPago === 'APROBADO') {
       <div class="info-box">
         <p>✉️ Recibirás un correo de confirmación con los detalles de tu inscripción</p>
       </div>
+    } @else if (pago.estadoPago === 'PENDIENTE') {
+      <div class="warning-box">
+        <p>⏳ El webhook está procesando tu pago</p>
+        <p class="small-text">Actualización automática cada 3 segundos</p>
+      </div>
+      
+      <button 
+        class="btn btn-link" 
+        (click)="verificarManualmente()"
+        [disabled]="verificandoEstado">
+        @if (verificandoEstado) {
+          <span class="spinner-tiny"></span> Verificando...
+        } @else {
+          🔄 Verificar ahora
+        }
+      </button>
+    }
 
-      <div class="action-buttons">
-        <button class="btn btn-primary" (click)="volverAEventos()">
-          Ver Eventos
-        </button>
+    <div class="action-buttons">
+      <button class="btn btn-primary" (click)="volverAEventos()">
+        Ver Eventos
+      </button>
+      @if (pago.estadoPago === 'APROBADO') {
         <button class="btn btn-secondary" (click)="irAMisPagos()">
           Mis Pagos
         </button>
-      </div>
+      }
     </div>
-  }
+  </div>
+}
 </div>

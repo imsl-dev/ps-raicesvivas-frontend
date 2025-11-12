@@ -52,9 +52,10 @@ export class DetalleEvento implements OnInit {
     this.authService.obtenerUsuarioLogueado().subscribe({
       next: (data) => {
         this.usuarioLogeado = data;
-        // Si ya cargamos el evento, verificar inscripción
+        // Si ya cargamos el evento, verificar inscripción Y pago
         if (this.evento?.id && this.usuarioLogeado?.id) {
           this.verificarInscripcion();
+          this.verificarPago();
         }
       },
       error: (err) => {
@@ -89,10 +90,12 @@ export class DetalleEvento implements OnInit {
           provincia: data.provinciaNombre ? { id: data.provinciaId, nombre: data.provinciaNombre } : undefined,
           sponsor: data.sponsorNombre ? { id: data.sponsorId, nombre: data.sponsorNombre } : undefined
         };
+
         this.loading = false;
-        // Verificar inscripción si el usuario ya está cargado
+        // Verificar inscripción Y pago si el usuario ya está cargado
         if (this.usuarioLogeado?.id) {
           this.verificarInscripcion();
+          this.verificarPago();
         }
       },
       error: (err) => {
