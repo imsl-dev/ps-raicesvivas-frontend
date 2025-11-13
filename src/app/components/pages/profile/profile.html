@@ -71,7 +71,7 @@
                     </button>
                 </div>
                 }
-                @else if (isMyProfile && tienePeticionActiva && !tienePeticionAceptada) {
+                @else if (isMyProfile && tienePeticionActiva && !tienePeticionAceptada && !tienePeticionCancelada) {
                 <div class="form-group d-flex justify-content-center">
                     <label class="form-label">¿Te interesa organizar eventos?</label>
                     <button class="btn btn-info" title="">
@@ -84,6 +84,14 @@
                     <label class="form-label">¿Te interesa organizar eventos?</label>
                     <button class="btn btn-success" title="">
                         ¡Ya sos organizador!
+                    </button>
+                </div>
+                }
+                @else if (isMyProfile && tienePeticionActiva && tienePeticionCancelada) {
+                <div class="form-group d-flex justify-content-center">
+                    <label class="form-label">¿Te interesa organizar eventos?</label>
+                    <button class="btn btn-danger" title="">
+                        Tu petición fue rechazada
                     </button>
                 </div>
                 }

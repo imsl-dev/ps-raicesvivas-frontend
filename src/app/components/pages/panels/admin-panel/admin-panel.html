@@ -1,1 +1,52 @@
-<p>admin-panel works!</p>
+<div class="admin-container">
+    <!-- Botón para mostrar sidebar en móvil -->
+    <button class="btn-toggle-sidebar" (click)="toggleSidebar()">
+        @if (!mostrarSidebar) {
+        <span>📋 Menú Admin</span>
+        }
+        @if (mostrarSidebar) {
+        <span>✖ Cerrar Menú</span>
+        }
+    </button>
+
+    <div class="layout-container">
+        <!-- Sidebar de navegación -->
+        <aside class="admin-sidebar" [class.active]="mostrarSidebar">
+            <div class="sidebar-header">
+                <h3>⚙️ Panel de Administración</h3>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-item" [class.active]="isSelected('peticiones')" (click)="selectOption('peticiones')">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-text">Peticiones para Organizadores</span>
+                </button>
+
+                <button class="nav-item" [class.active]="isSelected('permisos')" (click)="selectOption('permisos')">
+                    <span class="nav-icon">🔐</span>
+                    <span class="nav-text">Gestión de Permisos</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                @if (usuarioLogeado) {
+                <div class="user-info">
+                    <p class="user-name">{{ usuarioLogeado.nombre }} {{ usuarioLogeado.apellido }}</p>
+                    <p class="user-role">{{ usuarioLogeado.rol }}</p>
+                </div>
+                }
+            </div>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="admin-main">
+            @if (selectedOption === 'peticiones') {
+            <app-gestion-peticiones />
+            }
+
+            @if (selectedOption === 'permisos') {
+            <app-gestion-roles />
+            }
+        </main>
+    </div>
+</div>

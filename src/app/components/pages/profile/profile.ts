@@ -60,9 +60,12 @@ export class Profile implements OnInit {
 
   tienePeticionAceptada = false;
 
+  tienePeticionCancelada = false;
+
   peticionOrganizador: PeticionOrganizador = {
     usuarioId: 1,
-    estadoPeticion: EstadoPeticion.PENDIENTE
+    estadoPeticion: EstadoPeticion.PENDIENTE,
+    image64: ""
   }
 
   // Edit mode properties
@@ -146,7 +149,10 @@ export class Profile implements OnInit {
 
     splitted.shift()
 
-    return uppercase + splitted.join("")
+    const result = uppercase + splitted.join("")
+
+
+    return result == "Admin" ? "Administrador" : result
 
   }
 
@@ -267,12 +273,28 @@ export class Profile implements OnInit {
     this.peticionService.getPeticionByUserId(id).subscribe(
       {
         next: (peticion) => {
-          this.peticionOrganizador = peticion;
-          this.tienePeticionActiva = true;
+          console.log("Peticion", peticion);
+          if (peticion) {
 
-          if (this.peticionOrganizador.estadoPeticion == EstadoPeticion.ACEPTADO) {
-            this.tienePeticionAceptada = true;
+            this.peticionOrganizador = peticion;
+            this.tienePeticionActiva = true;
+
+            if (this.peticionOrganizador.estadoPeticion == EstadoPeticion.ACEPTADO) {
+              this.tienePeticionAceptada = true;
+            }
+            if (this.peticionOrganizador.estadoPeticion == EstadoPeticion.CANCELADO) {
+              this.tienePeticionCancelada = true;
+            }
+
+
           }
+
+          else {
+            this.tienePeticionActiva = false;
+          }
+
+
+
         }
       }
     )

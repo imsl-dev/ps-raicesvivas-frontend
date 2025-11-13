@@ -59,11 +59,12 @@ export class FrmSolicitudOrganizador implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       this.fileData = file;
-      this.formSolicitud.patchValue({ idImage: file });
 
       const reader = new FileReader();
       reader.onload = () => {
         this.selectedImage = reader.result as string;
+        this.formSolicitud.patchValue({ idImage: this.selectedImage })
+        console.log("Selected image: ", this.selectedImage);
       };
       reader.readAsDataURL(file);
     }
@@ -81,8 +82,10 @@ export class FrmSolicitudOrganizador implements OnInit {
       // You can send `formData` to your backend here
       const peticion: PeticionOrganizadorPostDTO = {
         idUsuario: this.user.id || 1,
-        mensajeUsuario: this.formSolicitud.get('motivo')?.value!
+        mensajeUsuario: this.formSolicitud.get('motivo')?.value!,
+        image64: this.selectedImage as string
       }
+      console.log("Image data:", this.formSolicitud.get('idImage')?.value!);
       this.peticionService.postPeticion(peticion).subscribe({
         next: (response) => {
 
@@ -96,4 +99,6 @@ export class FrmSolicitudOrganizador implements OnInit {
   onCancel() {
     this.dialogRef.close()
   }
+
+
 }
