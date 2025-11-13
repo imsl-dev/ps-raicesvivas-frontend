@@ -1,5 +1,5 @@
 export interface PeticionOrganizadorPostDTO {
-
     idUsuario: number,
-    mensajeUsuario: string
+    mensajeUsuario: string,
+    image64: string
 }
