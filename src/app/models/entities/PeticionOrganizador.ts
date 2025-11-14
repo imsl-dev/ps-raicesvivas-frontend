@@ -6,4 +6,7 @@ export interface PeticionOrganizador {
     estadoPeticion: EstadoPeticion;
     mensajeUsuario?: string;
     image64: string;
+    nombreUsuario: string,
+    apellidoUsuario: string,
+    email: string
 }

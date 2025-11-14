@@ -62,7 +62,7 @@
                     <input type="text" class="form-control" [value]="user.email || '-'" readonly />
                 </div>
 
-                @if(isMyProfile && !tienePeticionActiva) {
+                @if(isMyProfile && !tienePeticionActiva && !esAdministrador) {
                 <div class="form-group d-flex justify-content-center">
                     <label class="form-label">¿Te interesa organizar eventos?</label>
                     <button class="btn btn-warning" title="Solicitar ser un organizador de eventos"

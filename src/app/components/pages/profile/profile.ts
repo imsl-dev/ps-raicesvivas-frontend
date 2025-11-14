@@ -62,10 +62,15 @@ export class Profile implements OnInit {
 
   tienePeticionCancelada = false;
 
+  esAdministrador = false;
+
   peticionOrganizador: PeticionOrganizador = {
     usuarioId: 1,
     estadoPeticion: EstadoPeticion.PENDIENTE,
-    image64: ""
+    image64: "",
+    nombreUsuario: "",
+    apellidoUsuario: "",
+    email: ""
   }
 
   // Edit mode properties
@@ -116,6 +121,12 @@ export class Profile implements OnInit {
           //checkear si es mi perfil
 
           this.checkIsMyProfile()
+
+          //checkear si es admin para no mostrar boton peticion
+
+          if (this.user.rol == RolUsuario.ADMIN) {
+            this.esAdministrador = true;
+          }
           //obtener peticion organizador
           this.obtenerPeticionOrganizador(id);
 
@@ -273,9 +284,8 @@ export class Profile implements OnInit {
     this.peticionService.getPeticionByUserId(id).subscribe(
       {
         next: (peticion) => {
-          console.log("Peticion", peticion);
           if (peticion) {
-
+            console.log("Peticion:", peticion);
             this.peticionOrganizador = peticion;
             this.tienePeticionActiva = true;
 
@@ -286,14 +296,11 @@ export class Profile implements OnInit {
               this.tienePeticionCancelada = true;
             }
 
-
           }
 
           else {
             this.tienePeticionActiva = false;
           }
-
-
 
         }
       }
