@@ -42,12 +42,12 @@
 
                 <!-- Testimonios - Solo para usuarios con rol USUARIO -->
                 @if (esUsuario()) {
-                    <li class="nav-item">
-                        <a class="nav-link" routerLink="/donaciones" routerLinkActive="active">
-                            <span class="nav-icon">💬</span>
-                            <span class="nav-text">Mural de Donaciones</span>
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/donaciones" routerLinkActive="active">
+                        <span class="nav-icon">💬</span>
+                        <span class="nav-text">Mural de Donaciones</span>
+                    </a>
+                </li>
                 }
 
                 <!-- Panel Organizador - Solo para organizadores -->
@@ -63,7 +63,7 @@
                 <!-- Panel Administrador - Solo para admins -->
                 @if (esAdmin()) {
                 <li class="nav-item">
-                    <a class="nav-link" routerLink="/panel-administradores" routerLinkActive="active">
+                    <a class="nav-link" routerLink="/panel-administrador" routerLinkActive="active">
                         <span class="nav-icon">⚙️</span>
                         <span class="nav-text">Panel Administrador</span>
                     </a>

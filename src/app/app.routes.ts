@@ -14,6 +14,7 @@ import { Profile } from './components/pages/profile/profile';
 import { PagoSuccess } from './components/pages/pago/pago-success/pago-success';
 import { PagoFailure } from './components/pages/pago/pago-failure/pago-failure';
 import { PagoPending } from './components/pages/pago/pago-pending/pago-pending';
+import { AdminPanel } from './components/pages/panels/admin-panel/admin-panel';
 
 
 export const routes: Routes = [
@@ -32,5 +33,7 @@ export const routes: Routes = [
     { path: 'pago/success', component: PagoSuccess },
     { path: 'pago/failure', component: PagoFailure },
     { path: 'pago/pending', component: PagoPending },
+    { path: 'panel-administrador', component: AdminPanel, canActivate: [adminGuard] },
     { path: '**', component: Home }
+
 ];
