@@ -4,11 +4,7 @@ export default defineConfig({
     server: {
         host: '0.0.0.0',
         port: 4200,
-        allowedHosts: [
-            'localhost',
-            '127.0.0.1',
-            'raicesvivas-frontend.ngrok-free.app'
-        ],
+        allowedHosts: true,
         cors: true,
         hmr: {
             protocol: 'wss',

@@ -49,7 +49,7 @@
       <div class="titulo-section">
         <h1 class="evento-titulo">{{ evento.nombre }}</h1>
         <div class="acciones-rapidas">
-          <button class="btn-icon" (click)="marcarFavorito()" title="Agregar a favoritos">
+          <button class="btn-icon" (click)="realizarDonacion()" title="Agregar a favoritos">
             ❤️
           </button>
           <button class="btn-icon" (click)="compartirEvento()" title="Compartir evento">
@@ -178,8 +178,7 @@
         @if (evento.estado === 'PRÓXIMO' && usuarioLogeado?.rol === 'USUARIO') {
         @if (!estaInscripto) {
         @if (tieneCostoInscripcion()) {
-        @if (!yaPago) {
-        <button class="btn btn-success btn-lg" (click)="inscribirseEvento()" [disabled]="procesandoPago">
+        <button class="btn btn-success btn-lg" (click)="abrirModalConfirmacionPago()" [disabled]="procesandoPago">
           @if (procesandoPago) {
           <span class="spinner-border spinner-border-sm me-2"></span>
           Procesando pago...
@@ -196,19 +195,6 @@
           <span class="spinner-border spinner-border-sm me-2"></span>
           Procesando...
           } @else {
-          ✅ Completar Inscripción (Ya Pagaste)
-          }
-        </button>
-        <p class="texto-pago-info texto-success">
-          ✓ Tu pago fue aprobado correctamente
-        </p>
-        }
-        } @else {
-        <button class="btn btn-success btn-lg" (click)="inscribirseEvento()" [disabled]="procesandoInscripcion">
-          @if (procesandoInscripcion) {
-          <span class="spinner-border spinner-border-sm me-2"></span>
-          Procesando...
-          } @else {
           ✅ Inscribirme al Evento (Gratis)
           }
         </button>
@@ -219,9 +205,11 @@
             <span class="icono-check">✓</span>
             <span>Ya estás inscripto a este evento</span>
           </div>
+          @if(!tieneCostoInscripcion){
           <button class="btn btn-warning" (click)="abrirModalCancelacion()" [disabled]="procesandoInscripcion">
             🚫 Cancelar Inscripción
           </button>
+          }
         </div>
         }
         }
@@ -232,7 +220,8 @@
         </div>
         }
 
-        @if (usuarioLogeado?.rol === 'ORGANIZADOR' && evento.organizadorId === usuarioLogeado?.id && evento.estado === 'PRÓXIMO') {
+        @if (usuarioLogeado?.rol === 'ORGANIZADOR' && evento.organizadorId === usuarioLogeado?.id && evento.estado ===
+        'PRÓXIMO') {
         <button class="btn btn-secondary" (click)="editarEvento()">
           ✏️ Editar Evento
         </button>
@@ -263,17 +252,6 @@
 
       <div class="modal-body">
         <p>¿Estás seguro de que deseas cancelar tu inscripción a este evento?</p>
-
-        @if (tieneCostoInscripcion()) {
-        <div class="advertencia-reembolso">
-          <span class="icono-advertencia">💰</span>
-          <div class="texto-advertencia">
-            <strong>Importante:</strong>
-            <p>Este evento tiene un costo de inscripción de <strong>${{ evento?.costoInscripcion }}</strong>.
-              No se realizará reembolso por la cancelación de la inscripción.</p>
-          </div>
-        </div>
-        }
       </div>
 
       <div class="modal-footer">
@@ -286,6 +264,54 @@
           Cancelando...
           } @else {
           Confirmar Cancelación
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+  <!-- Modal de confirmación de pago -->
+  @if (mostrarModalConfirmacionPago) {
+  <div class="modal-overlay" (click)="cerrarModalConfirmacionPago()">
+    <div class="modal-content modal-pago" (click)="$event.stopPropagation()">
+      <div class="modal-header modal-header-pago">
+        <h3>💳 Confirmar Compra</h3>
+        <button class="btn-close-modal" (click)="cerrarModalConfirmacionPago()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="info-pago-destacada">
+          <div class="monto-total">
+            <span class="label-monto">Total a pagar:</span>
+            <span class="valor-monto">${{ evento?.costoInscripcion }}</span>
+          </div>
+        </div>
+
+        <div class="advertencia-reembolso advertencia-pago">
+          <span class="icono-advertencia">💰</span>
+          <div class="texto-advertencia">
+            <strong>Importante:</strong>
+            <p>Este evento tiene un costo de inscripción de <strong>${{ evento?.costoInscripcion }}</strong>.
+              No se realizará reembolso por la cancelación del evento o la inasistencia al mismo.</p>
+          </div>
+        </div>
+
+        <div class="info-mercadopago">
+          <span class="icono-info">🔒</span>
+          <p>Serás redirigido a MercadoPago para completar el pago de forma segura</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary-modal" (click)="cerrarModalConfirmacionPago()" [disabled]="procesandoPago">
+          Cancelar
+        </button>
+        <button class="btn btn-success-modal" (click)="confirmarYProcesarPago()" [disabled]="procesandoPago">
+          @if (procesandoPago) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Procesando...
+          } @else {
+          Confirmar Compra
           }
         </button>
       </div>

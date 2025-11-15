@@ -118,11 +118,6 @@ export class PagoSuccess implements OnInit, OnDestroy {
 
   volverAEventos(): void {
     this.detenerVerificacion();
-    this.router.navigate(['/eventos']);
-  }
-
-  irAMisPagos(): void {
-    this.detenerVerificacion();
-    this.router.navigate(['/perfil', this.pago?.usuarioId]);
+    this.router.navigate(['/eventos/'+(this.pago?.eventoId || '')]);
   }
 }

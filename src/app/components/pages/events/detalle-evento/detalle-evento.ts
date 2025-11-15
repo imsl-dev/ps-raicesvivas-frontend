@@ -31,6 +31,7 @@ export class DetalleEvento implements OnInit {
   estaInscripto: boolean = false;
   procesandoInscripcion: boolean = false;
   mostrarModalCancelacion: boolean = false;
+  mostrarModalConfirmacionPago: boolean = false;
 
   // PAGOS
   procesandoPago = false;
@@ -136,10 +137,29 @@ export class DetalleEvento implements OnInit {
     this.pagoService.verificarPago(this.usuarioLogeado.id, this.evento.id).subscribe({
       next: (yaPago) => {
         this.yaPago = yaPago;
+        // Si ya pagó pero no está inscripto, inscribir automáticamente
+        if (yaPago && !this.estaInscripto) {
+          this.inscribirseAutomaticamente();
+        }
       },
       error: (err) => {
         console.error('Error verificando pago:', err);
         this.yaPago = false;
+      }
+    });
+  }
+
+  inscribirseAutomaticamente(): void {
+    if (!this.evento?.id || !this.usuarioLogeado?.id) return;
+
+    this.eventoService.inscribirseEvento(this.usuarioLogeado.id, this.evento.id).subscribe({
+      next: () => {
+        this.estaInscripto = true;
+        console.log('Inscripción completada automáticamente tras pago aprobado');
+      },
+      error: (err) => {
+        console.error('Error al inscribirse automáticamente:', err);
+        // Si falla la inscripción automática, no bloqueamos, el usuario podrá intentar manualmente
       }
     });
   }
@@ -149,7 +169,7 @@ export class DetalleEvento implements OnInit {
 
     // Si el evento tiene costo, redirigir a MercadoPago
     if (this.tieneCostoInscripcion() && !this.yaPago) {
-      this.procesarPago();
+      this.abrirModalConfirmacionPago();
       return;
     }
 
@@ -228,6 +248,19 @@ export class DetalleEvento implements OnInit {
     });
   }
 
+  abrirModalConfirmacionPago(): void {
+    this.mostrarModalConfirmacionPago = true;
+  }
+
+  cerrarModalConfirmacionPago(): void {
+    this.mostrarModalConfirmacionPago = false;
+  }
+
+  confirmarYProcesarPago(): void {
+    this.cerrarModalConfirmacionPago();
+    this.procesarPago();
+  }
+
   tieneCostoInscripcion(): boolean {
     return this.evento?.costoInscripcion !== undefined &&
       this.evento?.costoInscripcion !== null &&
@@ -283,8 +316,6 @@ export class DetalleEvento implements OnInit {
     }
   }
 
-  marcarFavorito(): void {
-    // TODO: Implementar lógica de favoritos
-    alert('Funcionalidad de favoritos en desarrollo');
-  }
+  realizarDonacion(): void {}
+
 }

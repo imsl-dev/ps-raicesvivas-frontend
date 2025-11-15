@@ -922,3 +922,124 @@
     padding: 0 1rem;
   }
 }
+
+/* Modal de confirmación de pago */
+.modal-pago {
+  max-width: 600px;
+}
+
+.modal-header-pago {
+  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  border-bottom: 2px solid #28a745;
+}
+
+.modal-header-pago h3 {
+  color: #155724;
+}
+
+.info-pago-destacada {
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border: 2px solid #28a745;
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.monto-total {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.label-monto {
+  color: #6c757d;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.valor-monto {
+  color: #28a745;
+  font-size: 2.5rem;
+  font-weight: 800;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.advertencia-pago {
+  margin-bottom: 1.5rem;
+}
+
+.info-mercadopago {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #28a745;
+}
+
+.icono-info {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.info-mercadopago p {
+  margin: 0;
+  color: #495057;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.btn-success-modal {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 15px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+}
+
+.btn-success-modal:hover:not(:disabled) {
+  background: linear-gradient(135deg, #218838, #1fa383);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+}
+
+.btn-success-modal:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive para modal de pago */
+@media (max-width: 768px) {
+  .valor-monto {
+    font-size: 2rem;
+  }
+  
+  .info-mercadopago {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .valor-monto {
+    font-size: 1.75rem;
+  }
+  
+  .info-pago-destacada {
+    padding: 1.25rem;
+  }
+}

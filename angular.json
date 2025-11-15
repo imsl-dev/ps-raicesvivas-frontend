@@ -55,6 +55,13 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "host": "0.0.0.0",
+            "port": 4200,
+            "allowedHosts": [
+              "raicesvivas-frontend.ngrok-free.app"
+            ]
+          },
           "configurations": {
             "production": {
               "buildTarget": "raicesvivas-frontend:build:production"
