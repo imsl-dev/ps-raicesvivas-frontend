@@ -15,6 +15,7 @@ import { PagoSuccess } from './components/pages/pago/pago-success/pago-success';
 import { PagoFailure } from './components/pages/pago/pago-failure/pago-failure';
 import { PagoPending } from './components/pages/pago/pago-pending/pago-pending';
 import { AdminPanel } from './components/pages/panels/admin-panel/admin-panel';
+import { MuralDonaciones } from './components/pages/mural-donaciones/mural-donaciones';
 
 
 export const routes: Routes = [
@@ -34,6 +35,7 @@ export const routes: Routes = [
     { path: 'pago/failure', component: PagoFailure },
     { path: 'pago/pending', component: PagoPending },
     { path: 'panel-administrador', component: AdminPanel, canActivate: [adminGuard] },
+    { path: 'donaciones', component: MuralDonaciones },
     { path: '**', component: Home }
 
 ];
