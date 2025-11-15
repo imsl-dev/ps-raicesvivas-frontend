@@ -60,9 +60,17 @@ export class Profile implements OnInit {
 
   tienePeticionAceptada = false;
 
+  tienePeticionCancelada = false;
+
+  esAdministrador = false;
+
   peticionOrganizador: PeticionOrganizador = {
     usuarioId: 1,
-    estadoPeticion: EstadoPeticion.PENDIENTE
+    estadoPeticion: EstadoPeticion.PENDIENTE,
+    image64: "",
+    nombreUsuario: "",
+    apellidoUsuario: "",
+    email: ""
   }
 
   // Edit mode properties
@@ -113,6 +121,12 @@ export class Profile implements OnInit {
           //checkear si es mi perfil
 
           this.checkIsMyProfile()
+
+          //checkear si es admin para no mostrar boton peticion
+
+          if (this.user.rol == RolUsuario.ADMIN) {
+            this.esAdministrador = true;
+          }
           //obtener peticion organizador
           this.obtenerPeticionOrganizador(id);
 
@@ -146,7 +160,10 @@ export class Profile implements OnInit {
 
     splitted.shift()
 
-    return uppercase + splitted.join("")
+    const result = uppercase + splitted.join("")
+
+
+    return result == "Admin" ? "Administrador" : result
 
   }
 
@@ -267,12 +284,24 @@ export class Profile implements OnInit {
     this.peticionService.getPeticionByUserId(id).subscribe(
       {
         next: (peticion) => {
-          this.peticionOrganizador = peticion;
-          this.tienePeticionActiva = true;
+          if (peticion) {
+            console.log("Peticion:", peticion);
+            this.peticionOrganizador = peticion;
+            this.tienePeticionActiva = true;
 
-          if (this.peticionOrganizador.estadoPeticion == EstadoPeticion.ACEPTADO) {
-            this.tienePeticionAceptada = true;
+            if (this.peticionOrganizador.estadoPeticion == EstadoPeticion.ACEPTADO) {
+              this.tienePeticionAceptada = true;
+            }
+            if (this.peticionOrganizador.estadoPeticion == EstadoPeticion.CANCELADO) {
+              this.tienePeticionCancelada = true;
+            }
+
           }
+
+          else {
+            this.tienePeticionActiva = false;
+          }
+
         }
       }
     )
