@@ -1,21 +1,28 @@
 <div class="pago-container">
   <div class="failure-content">
     <div class="failure-icon">❌</div>
-    
+
     <h1 class="failure-title">Pago Rechazado</h1>
-    
+
     <div class="failure-message">
       <p>Lo sentimos, tu pago no pudo ser procesado</p>
       <p class="mensaje-detalle">Por favor, verifica los datos de tu tarjeta e intenta nuevamente</p>
     </div>
 
     @if (pagoId) {
-      <div class="pago-details">
-        <div class="detail-row">
-          <span class="detail-label">ID de Transacción:</span>
-          <span class="detail-value">#{{ pagoId }}</span>
-        </div>
+    <div class="pago-details">
+      <div class="detail-row">
+        <span class="detail-label">ID de Transacción:</span>
+        <span class="detail-value">#{{ pagoId }}</span>
       </div>
+    </div>
+    }
+
+    @if (pago?.tipoPago === 'DONACION') {
+    <div class="mensaje-motivacional">
+      <p>Lo sentimos, ha ocurrido un error al procesar tu donación. Tu intención de ayudar es muy valiosa. Por favor,
+        intenta nuevamente o contáctanos si el problema persiste.</p>
+    </div>
     }
 
     <div class="info-box">

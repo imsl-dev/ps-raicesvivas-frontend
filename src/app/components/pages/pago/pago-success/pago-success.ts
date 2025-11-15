@@ -17,6 +17,7 @@ export class PagoSuccess implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly pagoService = inject(PagoService);
+  mostrarMensajeDonacion = false;
 
   pago: PagoResponse | null = null;
   loading = true;
@@ -29,7 +30,7 @@ export class PagoSuccess implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const pagoId = this.route.snapshot.queryParamMap.get('pagoId');
-    
+
     if (pagoId) {
       this.iniciarVerificacion(Number(pagoId));
     } else {
@@ -72,7 +73,7 @@ export class PagoSuccess implements OnInit, OnDestroy {
         error: (err) => {
           console.error('Error al verificar el pago:', err);
           this.intentos++;
-          
+
           if (this.intentos >= this.maxIntentos) {
             this.error = true;
             this.loading = false;
@@ -91,6 +92,11 @@ export class PagoSuccess implements OnInit, OnDestroy {
         // Si ya está aprobado desde el inicio, no hacer polling
         if (pago.estadoPago === 'APROBADO') {
           this.detenerVerificacion();
+        }
+
+        // Si es una donación aprobada, mostrar mensaje especial
+        if (pago.tipoPago === 'DONACION' && pago.estadoPago === 'APROBADO') {
+          this.mostrarMensajeDonacion = true;
         }
       },
       error: (err) => {
@@ -118,6 +124,14 @@ export class PagoSuccess implements OnInit, OnDestroy {
 
   volverAEventos(): void {
     this.detenerVerificacion();
-    this.router.navigate(['/eventos/'+(this.pago?.eventoId || '')]);
+    this.router.navigate(['/eventos/' + (this.pago?.eventoId || '')]);
   }
+
+  volverAlEvento(): void {
+  if (this.pago?.eventoId) {
+    this.router.navigate(['/eventos', this.pago.eventoId]);
+  } else {
+    this.router.navigate(['/eventos']);
+  }
+}
 }

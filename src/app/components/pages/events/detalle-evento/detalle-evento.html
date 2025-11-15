@@ -49,7 +49,7 @@
       <div class="titulo-section">
         <h1 class="evento-titulo">{{ evento.nombre }}</h1>
         <div class="acciones-rapidas">
-          <button class="btn-icon" (click)="realizarDonacion()" title="Agregar a favoritos">
+          <button class="btn-icon" (click)="realizarDonacion()" title="Realizar donación">
             ❤️
           </button>
           <button class="btn-icon" (click)="compartirEvento()" title="Compartir evento">
@@ -318,4 +318,84 @@
     </div>
   </div>
   }
+  <!-- Modal de donación -->
+  @if (mostrarModalDonacion) {
+  <div class="modal-overlay" (click)="confirmarCierreDonacion()">
+    <div class="modal-content modal-donacion" (click)="$event.stopPropagation()">
+      <div class="modal-header modal-header-donacion">
+        <h3>❤️ Realizar Donación</h3>
+        <button class="btn-close-modal" (click)="confirmarCierreDonacion()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group-donacion">
+          <label for="mensaje-donacion" class="label-donacion">Transmití tu mensaje al mundo</label>
+          <textarea id="mensaje-donacion" class="textarea-donacion" [(ngModel)]="mensajeDonacion"
+            placeholder="Escribe un mensaje motivacional (opcional)" rows="4" maxlength="500"
+            [disabled]="procesandoDonacion"></textarea>
+          <small class="char-count">{{ mensajeDonacion.length }}/500 caracteres</small>
+        </div>
+
+        <div class="form-group-donacion">
+          <label for="monto-donacion" class="label-donacion">Monto:</label>
+          <div class="input-monto-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="monto-donacion" class="input-monto" [(ngModel)]="montoDonacion"
+              placeholder="Ingresá el monto" min="1" step="1" [disabled]="procesandoDonacion">
+          </div>
+          <small class="helper-text">Monto mínimo: $100</small>
+        </div>
+
+        <div class="info-donacion">
+          <span class="icono-info">💚</span>
+          <p>Tu donación ayudará a seguir plantando árboles y cuidando nuestro planeta. ¡Gracias por tu generosidad!</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary-modal" (click)="confirmarCierreDonacion()" [disabled]="procesandoDonacion">
+          Cancelar
+        </button>
+        <button class="btn btn-success-modal" (click)="procesarDonacion()"
+          [disabled]="!validarMontoDonacion() || procesandoDonacion">
+          @if (procesandoDonacion) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Procesando...
+          } @else {
+          Donar! 🌱
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Modal de confirmación para cancelar donación -->
+@if (mostrarModalCancelarDonacion) {
+<div class="modal-overlay" (click)="$event.stopPropagation()">
+  <div class="modal-content modal-cancelar-donacion" (click)="$event.stopPropagation()">
+    <div class="modal-header modal-header-cancelar">
+      <h3>😢 ¿Cancelar Donación?</h3>
+      <button class="btn-close-modal" (click)="cerrarModalCancelarDonacion()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <p>¿Estás seguro de que deseas cancelar tu donación?</p>
+      <div class="mensaje-emotivo">
+        <span class="icono-triste">💚</span>
+        <p>Cada aporte cuenta para seguir plantando árboles y cuidando nuestro planeta. Tu generosidad puede hacer la diferencia.</p>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-success-modal" (click)="cerrarModalCancelarDonacion()">
+        💚 Continuar con mi Donación
+      </button>
+      <button class="btn btn-secondary-modal" (click)="confirmarCancelacionDonacion()">
+        Cancelar Donación
+      </button>
+    </div>
+  </div>
+</div>
+}
 </div>

@@ -8,10 +8,12 @@ import { AuthService } from '../../../../services/auth.service';
 import { Usuario } from '../../../../models/entities/Usuario';
 import { PagoService } from '../../../../services/pago.service';
 import { PagoRequest } from '../../../../models/dtos/pagos/PagoRequest';
+import { DonacionService } from '../../../../services/donacion.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-detalle-evento',
-  imports: [CommonModule, TipoEventoPipe],
+  imports: [CommonModule, TipoEventoPipe, FormsModule],
   templateUrl: './detalle-evento.html',
   styleUrl: './detalle-evento.css'
 })
@@ -21,6 +23,7 @@ export class DetalleEvento implements OnInit {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly pagoService = inject(PagoService);
+  private readonly donacionService = inject(DonacionService);
 
   evento: Evento | null = null;
   loading: boolean = true;
@@ -36,6 +39,13 @@ export class DetalleEvento implements OnInit {
   // PAGOS
   procesandoPago = false;
   yaPago = false;
+
+  // DONACIONES
+  mostrarModalDonacion: boolean = false;
+  mensajeDonacion: string = '';
+  montoDonacion: number | null = null;
+  procesandoDonacion: boolean = false;
+  mostrarModalCancelarDonacion: boolean = false;
 
   ngOnInit(): void {
     this.loadUsuarioLogeado();
@@ -316,6 +326,75 @@ export class DetalleEvento implements OnInit {
     }
   }
 
-  realizarDonacion(): void {}
+  realizarDonacion(): void {
+    this.mostrarModalDonacion = true;
+    this.mensajeDonacion = '';
+    this.montoDonacion = null;
+  }
+
+  cerrarModalDonacion(): void {
+    if (this.procesandoDonacion) {
+      return; // No permitir cerrar si está procesando
+    }
+
+    this.mostrarModalDonacion = false;
+    this.mensajeDonacion = '';
+    this.montoDonacion = null;
+  }
+
+  confirmarCierreDonacion(): void {
+  if (this.procesandoDonacion) {
+    return;
+  }
+  
+  this.mostrarModalCancelarDonacion = true;
+}
+
+cerrarModalCancelarDonacion(): void {
+  this.mostrarModalCancelarDonacion = false;
+}
+
+confirmarCancelacionDonacion(): void {
+  this.mostrarModalCancelarDonacion = false;
+  this.cerrarModalDonacion();
+}
+
+  procesarDonacion(): void {
+    if (!this.montoDonacion || this.montoDonacion <= 0 || !this.usuarioLogeado?.id || !this.evento?.id) {
+      return;
+    }
+
+    this.procesandoDonacion = true;
+
+    const donacionRequest: any = {
+      usuarioId: this.usuarioLogeado.id,
+      eventoId: this.evento.id,
+      monto: this.montoDonacion,
+      mensaje: this.mensajeDonacion || undefined
+    };
+
+    this.donacionService.crearDonacion(donacionRequest).subscribe({
+      next: (response) => {
+        this.procesandoDonacion = false;
+        this.cerrarModalDonacion();
+
+        // Redirigir a MercadoPago
+        if (response.initPoint) {
+          window.location.href = response.initPoint;
+        } else {
+          alert('Error: No se recibió la URL de pago');
+        }
+      },
+      error: (err) => {
+        this.procesandoDonacion = false;
+        console.error('Error al procesar donación:', err);
+        alert('Lo sentimos, ha ocurrido un error al procesar tu donación. Por favor, intenta nuevamente.');
+      }
+    });
+  }
+
+  validarMontoDonacion(): boolean {
+    return this.montoDonacion !== null && this.montoDonacion > 0;
+  }
 
 }

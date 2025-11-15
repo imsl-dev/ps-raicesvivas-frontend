@@ -1027,7 +1027,7 @@
   .valor-monto {
     font-size: 2rem;
   }
-  
+
   .info-mercadopago {
     flex-direction: column;
     text-align: center;
@@ -1038,8 +1038,259 @@
   .valor-monto {
     font-size: 1.75rem;
   }
-  
+
   .info-pago-destacada {
     padding: 1.25rem;
+  }
+}
+
+/* ========================================
+   MODAL DE DONACIÓN
+   ======================================== */
+
+.modal-donacion {
+  max-width: 600px;
+}
+
+.modal-header-donacion {
+  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  border-bottom: 2px solid #28a745;
+}
+
+.modal-header-donacion h3 {
+  color: #155724;
+}
+
+.form-group-donacion {
+  margin-bottom: 1.5rem;
+}
+
+.label-donacion {
+  display: block;
+  color: #495057;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.textarea-donacion {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #ced4da;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.3s ease;
+}
+
+.textarea-donacion:focus {
+  outline: none;
+  border-color: #28a745;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.textarea-donacion:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+.char-count {
+  display: block;
+  text-align: right;
+  color: #6c757d;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.input-monto-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency-symbol {
+  position: absolute;
+  left: 1rem;
+  color: #495057;
+  font-weight: 600;
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+
+.input-monto {
+  width: 100%;
+  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+  border: 2px solid #ced4da;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.input-monto:focus {
+  outline: none;
+  border-color: #28a745;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.input-monto:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+/* Eliminar flechas de input number */
+.input-monto::-webkit-outer-spin-button,
+.input-monto::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-monto[type=number] {
+  -moz-appearance: textfield;
+}
+
+.helper-text {
+  display: block;
+  color: #6c757d;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.info-donacion {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  border-radius: 12px;
+  border-left: 4px solid #28a745;
+  margin-top: 1.5rem;
+}
+
+.info-donacion .icono-info {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.info-donacion p {
+  margin: 0;
+  color: #155724;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Responsive para modal de donación */
+@media (max-width: 768px) {
+  .modal-donacion {
+    max-width: 90%;
+  }
+
+  .textarea-donacion {
+    font-size: 0.9rem;
+  }
+
+  .input-monto {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-header-donacion h3 {
+    font-size: 1.3rem;
+  }
+
+  .label-donacion {
+    font-size: 0.95rem;
+  }
+
+  .textarea-donacion {
+    font-size: 0.85rem;
+    padding: 0.65rem;
+  }
+
+  .input-monto {
+    font-size: 0.95rem;
+    padding: 0.65rem 0.65rem 0.65rem 2.25rem;
+  }
+
+  .currency-symbol {
+    left: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .info-donacion {
+    flex-direction: column;
+    text-align: center;
+    padding: 0.85rem;
+  }
+
+  .info-donacion p {
+    font-size: 0.85rem;
+  }
+}
+
+/* ========================================
+   MODAL DE CANCELAR DONACIÓN
+   ======================================== */
+
+.modal-cancelar-donacion {
+  max-width: 550px;
+}
+
+.modal-header-cancelar {
+  background: linear-gradient(135deg, #fff3cd, #ffe69c);
+  border-bottom: 2px solid #ffc107;
+}
+
+.modal-header-cancelar h3 {
+  color: #856404;
+}
+
+.mensaje-emotivo {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  border-radius: 15px;
+  border-left: 4px solid #28a745;
+  margin-top: 1rem;
+}
+
+.icono-triste {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.mensaje-emotivo p {
+  margin: 0;
+  color: #155724;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+/* Responsive para modal de cancelar donación */
+@media (max-width: 768px) {
+  .modal-cancelar-donacion {
+    max-width: 90%;
+  }
+
+  .mensaje-emotivo {
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-header-cancelar h3 {
+    font-size: 1.3rem;
+  }
+
+  .mensaje-emotivo p {
+    font-size: 0.85rem;
   }
 }

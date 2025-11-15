@@ -201,3 +201,18 @@
     text-align: left;
   }
 }
+
+.mensaje-motivacional {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #fff3cd, #ffe69c);
+  border-radius: 12px;
+  border-left: 4px solid #ffc107;
+}
+
+.mensaje-motivacional p {
+  margin: 0;
+  color: #856404;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
