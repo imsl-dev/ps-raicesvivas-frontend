@@ -83,7 +83,8 @@ export class FrmSolicitudOrganizador implements OnInit {
       const peticion: PeticionOrganizadorPostDTO = {
         idUsuario: this.user.id || 1,
         mensajeUsuario: this.formSolicitud.get('motivo')?.value!,
-        image64: this.selectedImage as string
+        image64: this.selectedImage as string,
+        userImage: this.user.rutaImg as string
       }
       console.log("Image data:", this.formSolicitud.get('idImage')?.value!);
       this.peticionService.postPeticion(peticion).subscribe({

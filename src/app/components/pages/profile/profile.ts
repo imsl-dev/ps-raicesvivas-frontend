@@ -70,7 +70,8 @@ export class Profile implements OnInit {
     image64: "",
     nombreUsuario: "",
     apellidoUsuario: "",
-    email: ""
+    email: "",
+    userImage: ""
   }
 
   // Edit mode properties
