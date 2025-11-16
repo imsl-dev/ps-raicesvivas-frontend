@@ -60,14 +60,19 @@
 
       <!-- Información destacada -->
       <div class="info-destacada">
-        <!-- Fecha y hora -->
+        <!-- Ubicación, Fecha y Hora -->
         <div class="info-card">
           <div class="info-header">
-            <span class="info-icon">📅</span>
-            <h3>Fecha y Hora</h3>
+            <span class="info-icon">📍</span>
+            <h3>Ubicación, Fecha y Hora</h3>
           </div>
           <div class="info-body">
-            <p class="info-principal">{{ formatDate(evento.horaInicio) }}</p>
+            <p class="info-principal">{{ evento.provincia?.nombre }}</p>
+            @if (evento.direccion) {
+            <p class="info-secundaria">{{ evento.direccion }}</p>
+            }
+            <div class="info-separador"></div>
+            <p class="info-fecha">{{ formatDate(evento.horaInicio) }}</p>
             <div class="info-horario">
               <div class="horario-item">
                 <span class="horario-label">⏰ Inicio:</span>
@@ -81,26 +86,35 @@
           </div>
         </div>
 
-        <!-- Ubicación -->
+        <!-- Organizador -->
+        @if (evento.organizador) {
         <div class="info-card">
           <div class="info-header">
-            <span class="info-icon">📍</span>
-            <h3>Ubicación</h3>
+            <span class="info-icon">👤</span>
+            <h3>Organizador</h3>
           </div>
-          <div class="info-body">
-            <p class="info-principal">{{ evento.provincia?.nombre }}</p>
-            @if (evento.direccion) {
-            <p class="info-secundaria">{{ evento.direccion }}</p>
-            }
+          <div class="info-body organizador-body">
+            <div class="organizador-foto">
+              @if (evento.organizador.rutaImg) {
+              <img [src]="evento.organizador.rutaImg" [alt]="evento.organizador.nombre" class="foto-perfil">
+              }
+            </div>
+            <div class="organizador-info">
+              <p class="organizador-nombre">{{ evento.organizador.nombre }} {{ evento.organizador.apellido }}</p>
+              @if (evento.organizador.email) {
+              <p class="organizador-email">✉️ {{ evento.organizador.email }}</p>
+              }
+            </div>
           </div>
         </div>
+        }
 
-        <!-- Organizador -->
+        <!-- Sponsoreado por -->
         @if (evento.sponsor) {
         <div class="info-card">
           <div class="info-header">
             <span class="info-icon">🤝</span>
-            <h3>Organiza</h3>
+            <h3>Sponsoreado por</h3>
           </div>
           <div class="info-body">
             <p class="info-principal">{{ evento.sponsor.nombre }}</p>
@@ -371,31 +385,32 @@
   }
 
   <!-- Modal de confirmación para cancelar donación -->
-@if (mostrarModalCancelarDonacion) {
-<div class="modal-overlay" (click)="$event.stopPropagation()">
-  <div class="modal-content modal-cancelar-donacion" (click)="$event.stopPropagation()">
-    <div class="modal-header modal-header-cancelar">
-      <h3>😢 ¿Cancelar Donación?</h3>
-      <button class="btn-close-modal" (click)="cerrarModalCancelarDonacion()">✕</button>
-    </div>
+  @if (mostrarModalCancelarDonacion) {
+  <div class="modal-overlay" (click)="$event.stopPropagation()">
+    <div class="modal-content modal-cancelar-donacion" (click)="$event.stopPropagation()">
+      <div class="modal-header modal-header-cancelar">
+        <h3>😢 ¿Cancelar Donación?</h3>
+        <button class="btn-close-modal" (click)="cerrarModalCancelarDonacion()">✕</button>
+      </div>
 
-    <div class="modal-body">
-      <p>¿Estás seguro de que deseas cancelar tu donación?</p>
-      <div class="mensaje-emotivo">
-        <span class="icono-triste">💚</span>
-        <p>Cada aporte cuenta para seguir plantando árboles y cuidando nuestro planeta. Tu generosidad puede hacer la diferencia.</p>
+      <div class="modal-body">
+        <p>¿Estás seguro de que deseas cancelar tu donación?</p>
+        <div class="mensaje-emotivo">
+          <span class="icono-triste">💚</span>
+          <p>Cada aporte cuenta para seguir plantando árboles y cuidando nuestro planeta. Tu generosidad puede hacer la
+            diferencia.</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-success-modal" (click)="cerrarModalCancelarDonacion()">
+          💚 Continuar con mi Donación
+        </button>
+        <button class="btn btn-secondary-modal" (click)="confirmarCancelacionDonacion()">
+          Cancelar Donación
+        </button>
       </div>
     </div>
-
-    <div class="modal-footer">
-      <button class="btn btn-success-modal" (click)="cerrarModalCancelarDonacion()">
-        💚 Continuar con mi Donación
-      </button>
-      <button class="btn btn-secondary-modal" (click)="confirmarCancelacionDonacion()">
-        Cancelar Donación
-      </button>
-    </div>
   </div>
-</div>
-}
+  }
 </div>

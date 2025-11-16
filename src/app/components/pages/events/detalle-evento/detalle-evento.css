@@ -1293,4 +1293,97 @@
   .mensaje-emotivo p {
     font-size: 0.85rem;
   }
+
+  /* Separador para la tarjeta combinada */
+  .info-separador {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #ddd, transparent);
+    margin: 1rem 0;
+  }
+
+  .info-fecha {
+    font-size: 1rem;
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Estilos para el organizador */
+  .organizador-body {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .organizador-foto {
+    flex-shrink: 0;
+  }
+
+  .foto-perfil {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #28a745;
+  }
+
+  .foto-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    border: 3px solid #28a745;
+  }
+
+  .organizador-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .organizador-nombre {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0 0 0.5rem 0;
+    word-wrap: break-word;
+  }
+
+  .organizador-email {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin: 0;
+    word-wrap: break-word;
+  }
+
+  /* Responsive para organizador */
+  @media (max-width: 576px) {
+    .organizador-body {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .foto-perfil,
+    .foto-placeholder {
+      width: 70px;
+      height: 70px;
+    }
+
+    .foto-placeholder {
+      font-size: 1.5rem;
+    }
+
+    .organizador-nombre {
+      font-size: 1rem;
+    }
+
+    .organizador-email {
+      font-size: 0.85rem;
+    }
+  }
 }

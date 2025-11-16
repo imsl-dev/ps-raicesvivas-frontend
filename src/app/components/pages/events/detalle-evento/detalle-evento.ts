@@ -96,6 +96,13 @@ export class DetalleEvento implements OnInit {
           costoInterno: data.costoInterno ? Number(data.costoInterno) : undefined,
           costoInscripcion: data.costoInscripcion ? Number(data.costoInscripcion) : undefined,
           organizadorId: data.organizadorId,
+          organizador: data.organizadorNombre ? {
+            id: data.organizadorId,
+            nombre: data.organizadorNombre,
+            apellido: data.organizadorApellido,
+            email: data.organizadorEmail,
+            rutaImg: data.organizadorRutaImg
+          } : undefined,
           provinciaId: data.provinciaId,
           sponsorId: data.sponsorId,
           provincia: data.provinciaNombre ? { id: data.provinciaId, nombre: data.provinciaNombre } : undefined,
@@ -343,21 +350,21 @@ export class DetalleEvento implements OnInit {
   }
 
   confirmarCierreDonacion(): void {
-  if (this.procesandoDonacion) {
-    return;
+    if (this.procesandoDonacion) {
+      return;
+    }
+
+    this.mostrarModalCancelarDonacion = true;
   }
-  
-  this.mostrarModalCancelarDonacion = true;
-}
 
-cerrarModalCancelarDonacion(): void {
-  this.mostrarModalCancelarDonacion = false;
-}
+  cerrarModalCancelarDonacion(): void {
+    this.mostrarModalCancelarDonacion = false;
+  }
 
-confirmarCancelacionDonacion(): void {
-  this.mostrarModalCancelarDonacion = false;
-  this.cerrarModalDonacion();
-}
+  confirmarCancelacionDonacion(): void {
+    this.mostrarModalCancelarDonacion = false;
+    this.cerrarModalDonacion();
+  }
 
   procesarDonacion(): void {
     if (!this.montoDonacion || this.montoDonacion <= 0 || !this.usuarioLogeado?.id || !this.evento?.id) {
