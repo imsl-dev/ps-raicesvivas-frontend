@@ -267,6 +267,7 @@
     min-height: 80px;
     display: -webkit-box;
     -webkit-line-clamp: 4;
+    line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -434,7 +435,7 @@
     .titulo-mural {
         font-size: 2.5rem;
     }
-    
+
     .mural-grid {
         min-height: 1600px;
     }
@@ -476,6 +477,7 @@
         font-size: 0.95rem;
         min-height: 70px;
         -webkit-line-clamp: 3;
+        line-clamp: 3;
     }
 
     .avatar-donante {
