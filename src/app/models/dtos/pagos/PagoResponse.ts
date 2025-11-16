@@ -12,4 +12,5 @@ export interface PagoResponse {
   mercadoPagoStatus?: string;
   nombreEvento?: string;
   nombreUsuario?: string;
+  mensaje?: string;
 }

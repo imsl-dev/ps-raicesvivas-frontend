@@ -1,0 +1,94 @@
+<div class="mural-container">
+    <!-- Fondo con overlay -->
+    <div class="fondo-mural"></div>
+    <div class="overlay-oscuro"></div>
+
+    <!-- Contenido principal -->
+    <div class="contenido-mural">
+        <!-- Header -->
+        <header class="mural-header">
+            <div class="header-content">
+                <div class="icono-header">🌱</div>
+                <h1 class="titulo-mural">Mural de Esperanza</h1>
+                <p class="subtitulo-mural">Mensajes de quienes creen en un futuro más verde</p>
+            </div>
+        </header>
+
+        <!-- Loading State -->
+        @if (loading) {
+        <div class="loading-container">
+            <div class="spinner-grow"></div>
+            <p class="loading-text">Cargando mensajes de esperanza...</p>
+        </div>
+        }
+
+        <!-- Error State -->
+        @if (error && !loading) {
+        <div class="error-container">
+            <div class="error-icon">⚠️</div>
+            <p class="error-text">{{ error }}</p>
+            <button class="btn-reintentar" (click)="cargarDonaciones()">
+                🔄 Reintentar
+            </button>
+        </div>
+        }
+
+        <!-- Mural de Donaciones -->
+        @if (!loading && !error && donaciones.length > 0) {
+        <div class="mural-grid">
+            @for (donacion of donaciones; track donacion.id) {
+            <div class="tarjeta-donacion" [style.left.%]="donacion.posicionX" [style.top.%]="donacion.posicionY"
+                [style.transform]="'rotate(' + donacion.rotacion + 'deg) scale(' + donacion.tamano + ')'">
+                <!-- Decoración de hoja -->
+                <div class="decoracion-hoja">🍃</div>
+
+                <!-- Contenido de la tarjeta -->
+                <div class="tarjeta-contenido">
+                    <!-- Mensaje -->
+                    <p class="mensaje-donacion">"{{ donacion.mensaje }}"</p>
+
+                    <!-- Info del donante -->
+                    <div class="info-donante">
+                        <div class="avatar-donante">
+                            {{ (donacion.nombreUsuario || 'Anónimo').charAt(0).toUpperCase() }}
+                        </div>
+                        <div class="datos-donante">
+                            <p class="nombre-donante">{{ donacion.nombreUsuario || 'Donante Anónimo' }}</p>
+                            <p class="fecha-donacion">{{ formatearFecha(donacion.fechaCreacion) }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Monto donado -->
+                    <div class="monto-badge">
+                        <span class="icono-monto">💚</span>
+                        <span class="monto-valor">{{ formatearMonto(donacion.monto) }}</span>
+                    </div>
+                </div>
+
+                <!-- Efecto de luz -->
+                <div class="efecto-luz"></div>
+            </div>
+            }
+        </div>
+        }
+
+        <!-- Estado vacío -->
+        @if (!loading && !error && donaciones.length === 0) {
+        <div class="empty-container">
+            <div class="empty-icon">🌱</div>
+            <h3 class="empty-title">Aún no hay mensajes</h3>
+            <p class="empty-text">Sé el primero en dejar tu mensaje de esperanza con una donación</p>
+        </div>
+        }
+
+        <!-- Footer decorativo -->
+        <footer class="mural-footer">
+            <div class="footer-decoration">
+                <span class="planta-icon">🌿</span>
+                <span class="gota-icon">💧</span>
+                <span class="arbol-icon">🌳</span>
+            </div>
+            <p class="footer-text">Juntos estamos construyendo un futuro más verde</p>
+        </footer>
+    </div>
+</div>
