@@ -1,6 +1,6 @@
 export interface DonacionRequest {
   usuarioId: number;
-  eventoId?: number;
+  eventoId: number;
   monto: number;
   mensaje?: string;
 }
