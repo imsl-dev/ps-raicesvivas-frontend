@@ -89,7 +89,12 @@ export class FrmSolicitudOrganizador implements OnInit {
       console.log("Image data:", this.formSolicitud.get('idImage')?.value!);
       this.peticionService.postPeticion(peticion).subscribe({
         next: (response) => {
-
+          // Close dialog and pass success result
+          this.dialogRef.close({ success: true, peticion: response });
+        },
+        error: (err) => {
+          console.log("Error enviando peticion");
+          this.dialogRef.close({ success: false, err });
         }
       })
 
