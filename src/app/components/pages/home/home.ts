@@ -2,6 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+// Interfaz para Preguntas Frecuentes
+interface FAQ {
+  id: number;
+  pregunta: string;
+  respuesta: string;
+  expanded: boolean;
+}
 
 @Component({
   selector: 'app-home',
@@ -66,10 +73,51 @@ export class Home {
     }
   ];
 
+  // Preguntas frecuentes
+  faqs: FAQ[] = [
+    {
+      id: 1,
+      pregunta: '¿Me inscribí a un evento pero no sumé puntos, por qué pasa esto?',
+      respuesta: 'Los puntos no se otorgan al momento de inscribirse a un evento, independientemente de si este es pago o gratuito. Los puntos son otorgados una vez que asista al evento y el organizador le cargue la asistencia a través de la web, esto puede demorar algunos días luego del evento.',
+      expanded: false
+    },
+    {
+      id: 2,
+      pregunta: '¿Asistí a un evento pero nunca me cargaron la asistencia, qué puedo hacer?',
+      respuesta: 'En caso de que el organizador no le haya cargado la asistencia, puede encontrar su email en el detalle del evento y comunicarse de forma personal con él.',
+      expanded: false
+    },
+    {
+      id: 3,
+      pregunta: '¿Qué pasará con mis puntos si solicito ser organizador?',
+      respuesta: 'Por realizar la solicitud no pasará nada, pero de ser aceptado como organizador, su perfil cambiará al de organizador y los puntos acumulados se perderán. Por eso recomendamos fuertemente tener un perfil personal aparte si desea aprovechar el sistema de puntos.',
+      expanded: false
+    },
+    {
+      id: 4,
+      pregunta: '¿Qué pasa si pago un evento y no asisto?',
+      respuesta: 'Los eventos pagos y donaciones no tienen reembolso, por lo que al pagar la inscripción a un evento y luego no asistir, no se podrá solicitar el reintegro de la inscripción.',
+      expanded: false
+    },
+    {
+      id: 5,
+      pregunta: '¿Qué sucede si realizo una donación por equivocación o dono más dinero del que quería?',
+      respuesta: 'Las donaciones no cuentan con reembolsos y el organizador no tiene la obligación de devolver el dinero. Sin embargo, puede apelar a la buena fe del organizador y comunicarse con él a través del email que se encuentra en el detalle del evento.',
+      expanded: false
+    }
+  ];
+
   scrollToSection(sectionId: string): void {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  toggleFaq(id: number): void {
+    const faq = this.faqs.find(f => f.id === id);
+    if (faq) {
+      faq.expanded = !faq.expanded;
     }
   }
 

@@ -121,6 +121,32 @@
     </div>
   </section>
 
+  <!-- Preguntas Frecuentes -->
+  <section id="faq" class="py-5 bg-light">
+    <div class="container">
+      <h2 class="text-center mb-5 fw-bold text-success">Preguntas Frecuentes</h2>
+      
+      <div class="faq-container">
+        @for (faq of faqs; track faq.id) {
+          <div class="faq-item" [class.expanded]="faq.expanded">
+            <div class="faq-header" (click)="toggleFaq(faq.id)">
+              <div class="faq-question">
+                <span class="faq-icon">❓</span>
+                <h4>{{ faq.pregunta }}</h4>
+              </div>
+              <span class="expand-icon">▼</span>
+            </div>
+            @if (faq.expanded) {
+              <div class="faq-body">
+                <p>{{ faq.respuesta }}</p>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="bg-dark text-white py-4">
     <div class="container">
