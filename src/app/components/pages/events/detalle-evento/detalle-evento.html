@@ -86,6 +86,21 @@
           </div>
         </div>
 
+        <!-- Mapa de ubicación -->
+        @if (evento.latitud && evento.longitud) {
+        <div class="info-card mapa-card">
+          <div class="info-header">
+            <span class="info-icon">🗺️</span>
+            <h3>Ubicación en el Mapa</h3>
+          </div>
+          <div class="info-body">
+            <app-mapa-detalle-evento [latitud]="evento.latitud" [longitud]="evento.longitud"
+              [nombreEvento]="evento.nombre" [direccion]="evento.direccion || ''"
+              [mapId]="'mapa-detalle-' + evento.id" />
+          </div>
+        </div>
+        }
+
         <!-- Organizador -->
         @if (evento.organizador) {
         <div class="info-card">

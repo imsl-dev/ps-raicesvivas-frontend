@@ -10,10 +10,11 @@ import { PagoService } from '../../../../services/pago.service';
 import { PagoRequest } from '../../../../models/dtos/pagos/PagoRequest';
 import { DonacionService } from '../../../../services/donacion.service';
 import { FormsModule } from '@angular/forms';
+import { MapaDetalleEvento } from '../../../shared/mapa-detalle-evento/mapa-detalle-evento';
 
 @Component({
   selector: 'app-detalle-evento',
-  imports: [CommonModule, TipoEventoPipe, FormsModule],
+  imports: [CommonModule, TipoEventoPipe, FormsModule, MapaDetalleEvento],
   templateUrl: './detalle-evento.html',
   styleUrl: './detalle-evento.css'
 })

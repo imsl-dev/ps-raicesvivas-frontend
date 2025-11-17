@@ -11,10 +11,12 @@ import { AuthService } from '../../../../services/auth.service';
 import { EventoService } from '../../../../services/evento.service';
 import { T } from '@angular/cdk/keycodes';
 import { TipoEventoPipe } from '../../../../pipes/tipo-evento.pipe';
+import { MapaSelector } from '../../../shared/mapa-selector/mapa-selector';
+import { CoordenadaResult, GeocodingService } from '../../../../services/geocoding.service';
 
 @Component({
   selector: 'app-nuevo-evento',
-  imports: [FormsModule, CommonModule, ReactiveFormsModule, TipoEventoPipe],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule, TipoEventoPipe, MapaSelector],
   templateUrl: './nuevo-evento.html',
   styleUrl: './nuevo-evento.css'
 })
@@ -26,6 +28,7 @@ export class NuevoEvento implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(FormBuilder);
+  private readonly geocodingService = inject(GeocodingService);
 
   // Mostrar solo CANCELADO en modo edición
   estadosEventoEdicion: EstadoEvento[] = [];
@@ -45,6 +48,12 @@ export class NuevoEvento implements OnInit {
   // De esta manera el sponsor que actualmente se encuentra inactivo se muestra igual en el select
   // Por regla de negocio, al momento de crear el evento ya se pudo haber "cerrado" el sponsor y por lo tanto no debería obligarte a desvincularlo del evento.
   sponsorInactivoEvento: Sponsor | null = null;
+
+  // Mapa y coordenadas
+  coordenadasSugeridas: CoordenadaResult[] = [];
+  mostrandoSugerencias: boolean = false;
+  mostrarMapa: boolean = false;
+  coordenadasMapa = { lat: -31.4201, lng: -64.1888 }; // Córdoba por defecto
 
   constructor() { }
 
@@ -80,6 +89,8 @@ export class NuevoEvento implements OnInit {
       descripcion: '',
       rutaImg: '',
       direccion: ['', Validators.maxLength(500)],
+      latitud: [null],
+      longitud: [null],
       horaInicio: ['', Validators.required],
       horaFin: ['', Validators.required],
       puntosAsistencia: [0, Validators.min(0)],
@@ -199,6 +210,8 @@ export class NuevoEvento implements OnInit {
           descripcion: evento.descripcion || '',
           rutaImg: evento.rutaImg || '',
           direccion: evento.direccion || '',
+          latitud: evento.latitud,
+          longitud: evento.longitud,
           horaInicio: this.formatDateForInput(evento.horaInicio),
           horaFin: this.formatDateForInput(evento.horaFin),
           puntosAsistencia: evento.puntosAsistencia || 0,
@@ -207,6 +220,12 @@ export class NuevoEvento implements OnInit {
         });
 
         this.imagenPreview = evento.rutaImg || null;
+
+        // Si tiene coordenadas, mostrar mapa y configurar posición
+        if (evento.latitud && evento.longitud) {
+          this.mostrarMapa = true;
+          this.coordenadasMapa = { lat: evento.latitud, lng: evento.longitud };
+        }
 
         setTimeout(() => {
           this.markFormGroupTouched(this.eventoForm);
@@ -266,6 +285,8 @@ export class NuevoEvento implements OnInit {
         descripcion: formValue.descripcion,
         rutaImg: formValue.rutaImg,
         direccion: formValue.direccion,
+        latitud: formValue.latitud,
+        longitud: formValue.longitud,
         horaInicio: new Date(formValue.horaInicio).toISOString(),
         horaFin: new Date(formValue.horaFin).toISOString(),
         puntosAsistencia: formValue.puntosAsistencia,
@@ -334,5 +355,80 @@ export class NuevoEvento implements OnInit {
   get diferenciaHorasInvalida() {
     return this.eventoForm.errors?.['diferenciaHorasMenor'] &&
       (this.horaInicio?.touched || this.horaFin?.touched);
+  }
+
+  // Métodos para mapa y geocodificación
+  buscarCoordenadas(): void {
+    const direccion = this.eventoForm.get('direccion')?.value;
+    if (!direccion || direccion.trim() === '') {
+      this.coordenadasSugeridas = [];
+      this.mostrandoSugerencias = false;
+      return;
+    }
+
+    this.geocodingService.buscarCoordenadas(direccion).subscribe({
+      next: (resultados) => {
+        this.coordenadasSugeridas = resultados;
+        this.mostrandoSugerencias = resultados.length > 0;
+      },
+      error: (error) => {
+        console.error('Error al buscar coordenadas:', error);
+        this.coordenadasSugeridas = [];
+        this.mostrandoSugerencias = false;
+      }
+    });
+  }
+
+  seleccionarCoordenada(coordenada: CoordenadaResult): void {
+    this.eventoForm.patchValue({
+      direccion: coordenada.direccionCompleta,
+      latitud: coordenada.latitud,
+      longitud: coordenada.longitud
+    });
+
+    this.coordenadasMapa = { lat: coordenada.latitud, lng: coordenada.longitud };
+    this.mostrandoSugerencias = false;
+
+    if (!this.mostrarMapa) {
+      this.mostrarMapa = true;
+      setTimeout(() => {
+        this.coordenadasMapa = { lat: coordenada.latitud, lng: coordenada.longitud };
+      }, 100);
+    }
+  }
+
+  toggleMapa(): void {
+    this.mostrarMapa = !this.mostrarMapa;
+  }
+
+  onUbicacionCambiada(coords: { lat: number, lng: number }): void {
+    if (coords.lat === 0 && coords.lng === 0) {
+      // Limpiar coordenadas
+      this.eventoForm.patchValue({
+        latitud: null,
+        longitud: null
+      });
+    } else {
+      this.eventoForm.patchValue({
+        latitud: coords.lat,
+        longitud: coords.lng
+      });
+
+      // Buscar dirección por coordenadas
+      this.geocodingService.buscarDireccionPorCoordenadas(coords.lat, coords.lng).subscribe({
+        next: (direccion) => {
+          if (!this.eventoForm.get('direccion')?.value) {
+            this.eventoForm.patchValue({ direccion });
+          }
+        }
+      });
+    }
+  }
+
+  // Método para ocultar sugerencias con delay
+  ocultarSugerencias(): void {
+    setTimeout(() => {
+      this.mostrandoSugerencias = false;
+    }, 200);
   }
 }

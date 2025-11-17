@@ -127,21 +127,45 @@
             </div>
             }
 
-            <!-- Dirección -->
+            
+            <!-- Dirección y Mapa -->
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label for="direccion">Dirección del Evento</label>
-                        <input type="text" id="direccion" formControlName="direccion" class="form-control" [ngClass]="{
-                'is-invalid': direccion?.invalid && direccion?.touched,
-                'is-valid': direccion?.valid && direccion?.touched
-              }" placeholder="Ej: Av. Principal 1234, Ciudad">
-                        @if (direccion?.invalid && direccion?.touched) {
-                        <div class="error-message">
-                            @if (direccion?.errors?.['maxlength']) {
-                            <small>⚠️ La dirección no puede exceder 500 caracteres</small>
+                        <label for="direccion">
+                            Dirección del Evento
+                        </label>
+                        <div style="position: relative;">
+                            <input type="text" id="direccion" formControlName="direccion" class="form-control"
+                                placeholder="Ej: Av. Colón 123, Córdoba, Argentina" (input)="buscarCoordenadas()"
+                                (focus)="buscarCoordenadas()" (blur)="ocultarSugerencias()" />
+
+                            @if (mostrandoSugerencias && coordenadasSugeridas.length > 0) {
+                            <div class="sugerencias-direccion">
+                                @for (sugerencia of coordenadasSugeridas; track sugerencia.latitud +
+                                sugerencia.longitud) {
+                                <div class="sugerencia-item" (click)="seleccionarCoordenada(sugerencia)">
+                                    <span class="sugerencia-icono">📍</span>
+                                    <span class="sugerencia-texto">{{ sugerencia.direccionCompleta }}</span>
+                                </div>
+                                }
+                            </div>
                             }
                         </div>
+
+                        <div class="mapa-toggle-container">
+                            <button type="button" class="btn-toggle-mapa" (click)="toggleMapa()">
+                                @if (mostrarMapa) {
+                                <span>🗺️ Ocultar Mapa</span>
+                                } @else {
+                                <span>🗺️ Seleccionar Ubicación en el Mapa</span>
+                                }
+                            </button>
+                        </div>
+
+                        @if (mostrarMapa) {
+                        <app-mapa-selector [latitud]="coordenadasMapa.lat" [longitud]="coordenadasMapa.lng"
+                            (ubicacionCambiada)="onUbicacionCambiada($event)" />
                         }
                     </div>
                 </div>

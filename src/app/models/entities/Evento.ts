@@ -11,21 +11,23 @@ export interface Evento {
     tipo: TipoEvento;
     estado: EstadoEvento;
     organizador?: Usuario;
-    organizadorId?: number; 
+    organizadorId?: number;
     cuentaBancaria?: CuentaBancaria;
-    cuentaBancariaId?: number; 
+    cuentaBancariaId?: number;
     provincia?: Provincia;
-    provinciaId?: number; 
+    provinciaId?: number;
     nombre: string;
     descripcion?: string;
     rutaImg?: string;
     direccion?: string;
+    latitud?: number;
+    longitud?: number;
     horaInicio: string;
     horaFin: string;
     puntosAsistencia?: number;
     costoInterno?: number;
     costoInscripcion?: number;
     sponsor?: Sponsor;
-    sponsorId?: number; 
+    sponsorId?: number;
     participantes?: Usuario[];
 }
