@@ -14,5 +14,4 @@ export interface Usuario {
     puntos?: number;
     rutaImg?: string
     email?: string;
-    estadoPeticionOrganizador?: EstadoPeticion
 }
