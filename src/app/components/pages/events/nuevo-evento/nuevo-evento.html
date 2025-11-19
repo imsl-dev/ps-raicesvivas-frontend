@@ -127,47 +127,33 @@
             </div>
             }
 
-            
+
             <!-- Dirección y Mapa -->
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label for="direccion">
+                        <label>
+                            <span class="label-icon">📍</span>
                             Dirección del Evento
                         </label>
-                        <div style="position: relative;">
-                            <input type="text" id="direccion" formControlName="direccion" class="form-control"
-                                placeholder="Ej: Av. Colón 123, Córdoba, Argentina" (input)="buscarCoordenadas()"
-                                (focus)="buscarCoordenadas()" (blur)="ocultarSugerencias()" />
-
-                            @if (mostrandoSugerencias && coordenadasSugeridas.length > 0) {
-                            <div class="sugerencias-direccion">
-                                @for (sugerencia of coordenadasSugeridas; track sugerencia.latitud +
-                                sugerencia.longitud) {
-                                <div class="sugerencia-item" (click)="seleccionarCoordenada(sugerencia)">
-                                    <span class="sugerencia-icono">📍</span>
-                                    <span class="sugerencia-texto">{{ sugerencia.direccionCompleta }}</span>
-                                </div>
-                                }
-                            </div>
-                            }
-                        </div>
-
-                        <div class="mapa-toggle-container">
-                            <button type="button" class="btn-toggle-mapa" (click)="toggleMapa()">
-                                @if (mostrarMapa) {
-                                <span>🗺️ Ocultar Mapa</span>
-                                } @else {
-                                <span>🗺️ Seleccionar Ubicación en el Mapa</span>
-                                }
-                            </button>
-                        </div>
-
-                        @if (mostrarMapa) {
-                        <app-mapa-selector [latitud]="coordenadasMapa.lat" [longitud]="coordenadasMapa.lng"
-                            (ubicacionCambiada)="onUbicacionCambiada($event)" />
-                        }
+                        <input type="text" class="form-control" formControlName="direccion"
+                            placeholder="Ej: Av. Colón 123, Córdoba, Argentina" />
                     </div>
+
+                    <div class="mapa-toggle-container">
+                        <button type="button" class="btn-toggle-mapa" (click)="toggleMapa()">
+                            @if (mostrarMapa) {
+                            <span>🗺️ Ocultar Mapa</span>
+                            } @else {
+                            <span>🗺️ Seleccionar Coordenadas en el Mapa</span>
+                            }
+                        </button>
+                    </div>
+
+                    @if (mostrarMapa) {
+                    <app-mapa-selector [latitud]="coordenadasMapa.lat" [longitud]="coordenadasMapa.lng"
+                        (ubicacionCambiada)="onUbicacionCambiada($event)" />
+                    }
                 </div>
             </div>
 

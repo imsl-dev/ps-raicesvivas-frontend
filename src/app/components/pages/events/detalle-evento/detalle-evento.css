@@ -1387,3 +1387,21 @@
     }
   }
 }
+
+/* Sección de mapa */
+.mapa-section {
+  margin-bottom: 2.5rem;
+}
+
+.mapa-container {
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.mapa-container app-mapa-detalle-evento {
+  display: block;
+  border-radius: 10px;
+  overflow: hidden;
+}

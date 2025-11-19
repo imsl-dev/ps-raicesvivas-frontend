@@ -91,6 +91,8 @@ export class DetalleEvento implements OnInit {
           descripcion: data.descripcion,
           rutaImg: data.rutaImg,
           direccion: data.direccion,
+          latitud: data.latitud,
+          longitud: data.longitud,
           horaInicio: data.horaInicio.toString(),
           horaFin: data.horaFin.toString(),
           puntosAsistencia: data.puntosAsistencia,

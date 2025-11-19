@@ -14,11 +14,7 @@ import * as L from 'leaflet';
       </div>
       <div [id]="mapId" class="mapa-contenedor"></div>
       @if (ubicacionSeleccionada) {
-        <div class="ubicacion-confirmada">
-          <span class="check-icon">✅</span>
-          <span>Ubicación seleccionada: {{ latitud.toFixed(6) }}, {{ longitud.toFixed(6) }}</span>
-          <button type="button" class="btn-limpiar" (click)="limpiarUbicacion()">🗑️ Limpiar</button>
-        </div>
+          <button type="button" class="btn-limpiar" (click)="limpiarUbicacion()">🗑️ Limpiar</button>       
       }
     </div>
   `,
@@ -119,11 +115,11 @@ import * as L from 'leaflet';
   `]
 })
 export class MapaSelector implements AfterViewInit, OnDestroy {
-  @Input() latitud: number = -31.4201; // Córdoba por defecto
-  @Input() longitud: number = -64.1888;
+  @Input() latitud: number = 0;
+  @Input() longitud: number = 0;
   @Input() mapId: string = 'mapa-selector';
-  
-  @Output() ubicacionCambiada = new EventEmitter<{lat: number, lng: number}>();
+
+  @Output() ubicacionCambiada = new EventEmitter<{ lat: number, lng: number }>();
 
   private map: L.Map | null = null;
   private marcador: L.Marker | null = null;
@@ -142,15 +138,19 @@ export class MapaSelector implements AfterViewInit, OnDestroy {
   }
 
   private inicializarMapa(): void {
-    this.map = L.map(this.mapId).setView([this.latitud, this.longitud], 13);
+    // Si no hay coordenadas válidas, usar 0,0 como centro temporal
+    const centerLat = (this.latitud && this.latitud !== 0) ? this.latitud : 0;
+    const centerLng = (this.longitud && this.longitud !== 0) ? this.longitud : 0;
+
+    this.map = L.map(this.mapId).setView([centerLat, centerLng], 2);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
 
-    // Si ya hay coordenadas, mostrar marcador
-    if (this.latitud && this.longitud) {
+    // Solo mostrar marcador si hay coordenadas válidas
+    if (this.latitud && this.longitud && this.latitud !== 0 && this.longitud !== 0) {
       this.agregarMarcador(this.latitud, this.longitud);
       this.ubicacionSeleccionada = true;
     }
@@ -182,9 +182,6 @@ export class MapaSelector implements AfterViewInit, OnDestroy {
       .addTo(this.map!)
       .bindPopup('📍 Ubicación del evento')
       .openPopup();
-
-    this.latitud = lat;
-    this.longitud = lng;
 
     this.map!.setView([lat, lng], this.map!.getZoom());
   }

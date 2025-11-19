@@ -30,6 +30,9 @@ export class NuevoEvento implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly geocodingService = inject(GeocodingService);
 
+
+  organizadorId: number | null = null;
+
   // Mostrar solo CANCELADO en modo edición
   estadosEventoEdicion: EstadoEvento[] = [];
   mostrarCampoEstado: boolean = false;
@@ -50,10 +53,8 @@ export class NuevoEvento implements OnInit {
   sponsorInactivoEvento: Sponsor | null = null;
 
   // Mapa y coordenadas
-  coordenadasSugeridas: CoordenadaResult[] = [];
-  mostrandoSugerencias: boolean = false;
   mostrarMapa: boolean = false;
-  coordenadasMapa = { lat: -31.4201, lng: -64.1888 }; // Córdoba por defecto
+  coordenadasMapa = { lat: 0, lng: 0 }; // Córdoba por defecto
 
   constructor() { }
 
@@ -64,17 +65,27 @@ export class NuevoEvento implements OnInit {
   ngOnInit(): void {
     this.initForm();
 
-    this.route.params.subscribe(params => {
-      const id = params['id'];
-      if (id) {
-        this.eventoId = +id;
-        // Primero cargar los datos de los selects, luego el evento
-        this.loadSelectData(() => {
-          this.loadEvento(id);
+    // Primero cargar el usuario logueado
+    this.authService.obtenerUsuarioLogueado().subscribe({
+      next: (usuario) => {
+        this.organizadorId = usuario.id || null;
+
+        // Luego proceder con la carga del formulario
+        this.route.params.subscribe(params => {
+          const id = params['id'];
+          if (id) {
+            this.eventoId = +id;
+            this.loadSelectData(() => {
+              this.loadEvento(id);
+            });
+          } else {
+            this.loadSelectData();
+          }
         });
-      } else {
-        // Si es nuevo evento, solo cargar los selects
-        this.loadSelectData();
+      },
+      error: (err) => {
+        console.error('Error cargando usuario logueado:', err);
+        alert('Error al cargar el usuario logueado');
       }
     });
   }
@@ -85,6 +96,7 @@ export class NuevoEvento implements OnInit {
       estado: EstadoEvento.PROXIMO,
       provinciaId: ['', Validators.required],
       sponsorId: '',
+      organizadorId: [null],
       nombre: ['', [Validators.required, Validators.maxLength(255)]],
       descripcion: '',
       rutaImg: '',
@@ -100,7 +112,6 @@ export class NuevoEvento implements OnInit {
       validators: this.validarFechas
     });
   }
-
   validarFechas(control: AbstractControl): { [key: string]: any } | null {
     const formGroup = control as FormGroup;
     const horaInicio = formGroup.get('horaInicio')?.value;
@@ -200,12 +211,13 @@ export class NuevoEvento implements OnInit {
           }
         }
 
-        // Ahora los IDs vienen directamente en el objeto
+
         this.eventoForm.patchValue({
           tipo: evento.tipo,
           estado: evento.estado,
           provinciaId: evento.provinciaId || '',
           sponsorId: evento.sponsorId || '',
+          organizadorId: evento.organizadorId,
           nombre: evento.nombre,
           descripcion: evento.descripcion || '',
           rutaImg: evento.rutaImg || '',
@@ -273,9 +285,19 @@ export class NuevoEvento implements OnInit {
     if (this.eventoForm.valid) {
       const formValue = this.eventoForm.value;
 
-      // Obtener email del usuario logueado (por ahora hardcodeado a 1)
-      // TODO: Implementar lógica para obtener ID del usuario actual desde AuthService
-      const organizadorId = 1;
+      // Determinar el organizadorId
+      let organizadorId: number;
+      if (this.eventoId) {
+        // Si estamos editando, mantener el organizadorId original
+        organizadorId = formValue.organizadorId;
+      } else {
+        // Si estamos creando, usar el ID del usuario logueado
+        if (!this.organizadorId) {
+          alert('❌ Error: No se pudo obtener el usuario logueado');
+          return;
+        }
+        organizadorId = this.organizadorId;
+      }
 
       const eventoData: any = {
         id: this.eventoId || undefined,
@@ -287,8 +309,8 @@ export class NuevoEvento implements OnInit {
         direccion: formValue.direccion,
         latitud: formValue.latitud,
         longitud: formValue.longitud,
-        horaInicio: new Date(formValue.horaInicio).toISOString(),
-        horaFin: new Date(formValue.horaFin).toISOString(),
+        horaInicio: formValue.horaInicio,
+        horaFin: formValue.horaFin,
         puntosAsistencia: formValue.puntosAsistencia,
         costoInterno: formValue.costoInterno,
         costoInscripcion: formValue.costoInscripcion,
@@ -303,17 +325,20 @@ export class NuevoEvento implements OnInit {
 
       request.subscribe({
         next: (response) => {
-          const mensaje = this.eventoId ? 'actualizado' : 'creado';
-          alert(`Evento ${mensaje} exitosamente`);
+          const mensaje = this.eventoId
+            ? '✅ Evento modificado exitosamente'
+            : '✅ Evento creado exitosamente';
+          alert(mensaje);
           this.router.navigate(['/eventos']);
         },
-        error: (error) => {
-          console.error('Error al guardar el evento:', error);
-          alert('Error al guardar el evento. Por favor, intente nuevamente.');
+        error: (err) => {
+          console.error('Error al guardar evento:', err);
+          alert('❌ Error al guardar el evento. Por favor, revisa los datos ingresados.');
         }
       });
     } else {
       this.markFormGroupTouched(this.eventoForm);
+      alert('❌ Por favor completa todos los campos obligatorios correctamente');
     }
   }
 
@@ -357,45 +382,7 @@ export class NuevoEvento implements OnInit {
       (this.horaInicio?.touched || this.horaFin?.touched);
   }
 
-  // Métodos para mapa y geocodificación
-  buscarCoordenadas(): void {
-    const direccion = this.eventoForm.get('direccion')?.value;
-    if (!direccion || direccion.trim() === '') {
-      this.coordenadasSugeridas = [];
-      this.mostrandoSugerencias = false;
-      return;
-    }
 
-    this.geocodingService.buscarCoordenadas(direccion).subscribe({
-      next: (resultados) => {
-        this.coordenadasSugeridas = resultados;
-        this.mostrandoSugerencias = resultados.length > 0;
-      },
-      error: (error) => {
-        console.error('Error al buscar coordenadas:', error);
-        this.coordenadasSugeridas = [];
-        this.mostrandoSugerencias = false;
-      }
-    });
-  }
-
-  seleccionarCoordenada(coordenada: CoordenadaResult): void {
-    this.eventoForm.patchValue({
-      direccion: coordenada.direccionCompleta,
-      latitud: coordenada.latitud,
-      longitud: coordenada.longitud
-    });
-
-    this.coordenadasMapa = { lat: coordenada.latitud, lng: coordenada.longitud };
-    this.mostrandoSugerencias = false;
-
-    if (!this.mostrarMapa) {
-      this.mostrarMapa = true;
-      setTimeout(() => {
-        this.coordenadasMapa = { lat: coordenada.latitud, lng: coordenada.longitud };
-      }, 100);
-    }
-  }
 
   toggleMapa(): void {
     this.mostrarMapa = !this.mostrarMapa;
@@ -409,26 +396,12 @@ export class NuevoEvento implements OnInit {
         longitud: null
       });
     } else {
+      // Solo actualizar coordenadas, NO tocar la dirección
       this.eventoForm.patchValue({
         latitud: coords.lat,
         longitud: coords.lng
       });
-
-      // Buscar dirección por coordenadas
-      this.geocodingService.buscarDireccionPorCoordenadas(coords.lat, coords.lng).subscribe({
-        next: (direccion) => {
-          if (!this.eventoForm.get('direccion')?.value) {
-            this.eventoForm.patchValue({ direccion });
-          }
-        }
-      });
     }
   }
 
-  // Método para ocultar sugerencias con delay
-  ocultarSugerencias(): void {
-    setTimeout(() => {
-      this.mostrandoSugerencias = false;
-    }, 200);
-  }
 }
