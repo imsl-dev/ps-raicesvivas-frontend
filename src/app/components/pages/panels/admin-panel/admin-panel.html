@@ -19,12 +19,18 @@
             <nav class="sidebar-nav">
                 <button class="nav-item" [class.active]="isSelected('peticiones')" (click)="selectOption('peticiones')">
                     <span class="nav-icon">📝</span>
-                    <span class="nav-text">Peticiones para Organizadores</span>
+                    <span class="nav-text">Peticiones de Organizadores</span>
                 </button>
 
                 <button class="nav-item" [class.active]="isSelected('permisos')" (click)="selectOption('permisos')">
                     <span class="nav-icon">🔐</span>
                     <span class="nav-text">Gestión de Permisos</span>
+                </button>
+
+
+                <button class="nav-item" [class.active]="isSelected('canjeables')" (click)="selectOption('canjeables')">
+                    <span class="nav-icon">⭐</span>
+                    <span class="nav-text">Gestión de Canjeables</span>
                 </button>
             </nav>
 
@@ -46,6 +52,10 @@
 
             @if (selectedOption === 'permisos') {
             <app-gestion-roles />
+            }
+
+            @if (selectedOption === 'canjeables') {
+            <app-gestion-canjeables />
             }
         </main>
     </div>

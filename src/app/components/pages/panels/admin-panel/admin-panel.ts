@@ -4,13 +4,14 @@ import { Usuario } from '../../../../models/entities/Usuario';
 import { AuthService } from '../../../../services/auth.service';
 import { GestionRoles } from './gestion-roles/gestion-roles';
 import { GestionPeticiones } from "./gestion-peticiones/gestion-peticiones";
+import { GestionCanjeables } from './gestion-canjeables/gestion-canjeables';
 
 
-type MenuOption = 'peticiones' | 'permisos';
+type MenuOption = 'peticiones' | 'permisos' | 'canjeables';
 
 @Component({
   selector: 'app-admin-panel',
-  imports: [CommonModule, GestionPeticiones, GestionRoles],
+  imports: [CommonModule, GestionPeticiones, GestionRoles, GestionCanjeables],
   templateUrl: './admin-panel.html',
   styleUrl: './admin-panel.css'
 })
