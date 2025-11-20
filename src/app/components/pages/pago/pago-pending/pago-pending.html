@@ -1,0 +1,83 @@
+<div class="pago-container">
+  @if (loading) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Verificando tu pago...</p>
+    </div>
+  }
+  
+  @if (error) {
+    <div class="error-state">
+      <div class="error-icon">❌</div>
+      <h2>Error al verificar el pago</h2>
+      <p>No pudimos consultar el estado de tu transacción</p>
+      <button class="btn btn-primary" (click)="volverAEventos()">Volver a Eventos</button>
+    </div>
+  }
+  
+  @if (!loading && !error && pago) {
+    <div class="pending-content">
+      <div class="pending-icon">⏳</div>
+      
+      <h1 class="pending-title">Pago Pendiente</h1>
+      
+      <div class="pending-message">
+        <p>Tu pago está siendo procesado</p>
+        @if (pago.nombreEvento) {
+          <p class="evento-name">{{ pago.nombreEvento }}</p>
+        }
+      </div>
+
+      <div class="pago-details">
+        <div class="detail-row">
+          <span class="detail-label">ID de Pago:</span>
+          <span class="detail-value">#{{ pago.id }}</span>
+        </div>
+        
+        <div class="detail-row">
+          <span class="detail-label">Monto:</span>
+          <span class="detail-value amount">${{ pago.monto }}</span>
+        </div>
+        
+        <div class="detail-row">
+          <span class="detail-label">Estado:</span>
+          <span class="detail-value estado-pendiente">{{ pago.estadoPago }}</span>
+        </div>
+        
+        <div class="detail-row">
+          <span class="detail-label">Fecha:</span>
+          <span class="detail-value">{{ pago.fechaCreacion | date: 'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h3>¿Qué significa "Pendiente"?</h3>
+        <ul>
+          <li>⏱️ El pago está siendo procesado por la entidad bancaria</li>
+          <li>📧 Recibirás una confirmación por email cuando se apruebe</li>
+          <li>⏳ Puede tomar entre 1 y 48 horas hábiles</li>
+          <li>🔍 Puedes verificar el estado en tu perfil</li>
+        </ul>
+      </div>
+
+      <div class="warning-box">
+        <p>⚠️ No realices un nuevo pago para el mismo evento</p>
+        <p>Espera la confirmación de esta transacción primero</p>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-primary" (click)="verificarEstado()">
+          🔄 Verificar Estado
+        </button>
+        <button class="btn btn-secondary" (click)="volverAEventos()">
+          ← Volver a Eventos
+        </button>
+      </div>
+
+      <div class="help-box">
+        <p>¿Necesitas ayuda? Contacta a soporte:</p>
+        <p class="email">📧 raicesvivasorg@gmail.com</p>
+      </div>
+    </div>
+  }
+</div>

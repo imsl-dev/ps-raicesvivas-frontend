@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>Organización de eventos</h2>
+
+
+<mat-dialog-content class="mat-typography">
+
+    <div class="row text-center mb-2">
+        <h3>¿De qué se trata?</h3>
+
+    </div>
+    <p>Podés enviar una postulación para ser un organizador de eventos, te pediremos tus datos para poder vefiricar
+        tu identidad.
+    </p>
+
+    <div class="row text-center mb-2">
+        <h3>¿Cómo funciona el proceso?</h3>
+    </div>
+
+    <p>Desde esta pestaña vas a poder ingresar tus datos para enviar una postulación. Tu solicutud será enviada y
+        revisada
+        por un administrador de Raices Vivas. Recibirás un correo electrónico cuando el administrador revise tus datos.
+
+    </p>
+    <p>En caso de ser aceptada, se te otorgara acceso al Panel de Organizadores donde podrás crear tus eventos
+        benéficos.</p>
+    <p>En caso de ser rechazada, no tendrás la posibilidad de apelar la decisión de los administradores.</p>
+
+    <p>⚠️<strong> Importante: </strong>Al volverte un organizador, perderás tus puntos obtenidos por participar en
+        eventos
+        y no podrás recuperarlos.</p>
+
+    <div class="d-flex row text-center mt-5">
+        <h3>¿Te interesa?</h3>
+        <button class="btn btn-success mt-3 btn-postularme" title="Postularme" (click)="openDialog()">
+            Postularme
+        </button>
+    </div>
+
+
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button matButton mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

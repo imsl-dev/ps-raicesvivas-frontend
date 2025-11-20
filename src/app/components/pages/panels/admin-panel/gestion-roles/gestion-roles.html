@@ -1,0 +1,247 @@
+<div class="content-wrapper">
+    <div class="header">
+        <h2>🔐 Gestión de Permisos</h2>
+        <p class="subtitle">Administra los permisos y roles de los usuarios del sistema</p>
+    </div>
+
+    <div class="content-body">
+        <!-- Loading state -->
+        @if (loading) {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Cargando usuarios...</p>
+        </div>
+        }
+
+        @if (!loading) {
+        <!-- Filtros -->
+        <div class="filtros-container">
+            <div class="filtro-search">
+                <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar por nombre, apellido o email..."
+                    class="search-input">
+            </div>
+
+            <div class="filtro-rol">
+                <select [(ngModel)]="filtroRol" class="select-input">
+                    <option value="TODOS">Todos los roles</option>
+                    @for (rol of roles; track rol) {
+                    <option [value]="rol">{{ rol }}</option>
+                    }
+                </select>
+            </div>
+
+            <button class="btn-limpiar" (click)="limpiarFiltros()">
+                🔄 Limpiar Filtros
+            </button>
+        </div>
+
+        <!-- Info de resultados -->
+        <div class="results-info">
+            <span class="results-count">
+                📊 Mostrando {{ paginatedUsuarios.length }} de {{ filteredUsuarios.length }} usuario(s)
+            </span>
+        </div>
+
+        <!-- Tabla de usuarios (Desktop) -->
+        @if (filteredUsuarios.length === 0) {
+        <div class="empty-state">
+            <span class="empty-icon">🔍</span>
+            <p>No se encontraron usuarios con los filtros aplicados</p>
+        </div>
+        } @else {
+        <div class="table-container">
+            <table class="usuarios-table">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Documento</th>
+                        <th>Provincia</th>
+                        <th>Puntos</th>
+                        <th>Rol Actual</th>
+                        <th>Cambiar Rol</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (usuario of paginatedUsuarios; track usuario.id) {
+                    <tr class="user-row" (click)="navigateToProfile(usuario.id)">
+                        <td class="user-cell">
+                            <div class="user-info">
+                                @if (usuario.rutaImg) {
+                                <img [src]="usuario.rutaImg" [alt]="usuario.nombre" class="user-avatar">
+                                } @else {
+                                <div class="user-avatar-placeholder">
+                                    {{ getUserInitials(usuario) }}
+                                </div>
+                                }
+                                <div class="user-details">
+                                    <span class="user-name">{{ usuario.nombre }} {{ usuario.apellido }}</span>
+                                    <span class="user-id">ID: {{ usuario.id }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ usuario.email }}</td>
+                        <td>
+                            @if (usuario.tipoDocumento && usuario.nroDocumento) {
+                            <span>{{ usuario.tipoDocumento }}: {{ usuario.nroDocumento }}</span>
+                            } @else {
+                            <span class="text-muted">-</span>
+                            }
+                        </td>
+                        <td>{{ usuario.provincia?.nombre || '-' }}</td>
+                        <td>
+                            @if (usuario.rol === 'USUARIO') {
+                            <span class="puntos-badge">⭐ {{ usuario.puntos || 0 }}</span>
+                            } @else {
+                            <span class="na-badge">N/A</span>
+                            }
+                        </td>
+                        <td>
+                            <span class="badge" [ngClass]="getRolBadgeClass(usuario.rol)">
+                                {{ usuario.rol }}
+                            </span>
+                        </td>
+                        <td>
+                            <select class="rol-select" [(ngModel)]="usuario.rol"
+                                (ngModelChange)="onRoleChange(usuario, $event)" (click)="$event.stopPropagation()">
+                                @for (rol of roles; track rol) {
+                                <option [value]="rol">{{ rol }}</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Vista móvil (Cards) -->
+        <div class="mobile-cards">
+            @for (usuario of paginatedUsuarios; track usuario.id) {
+            <div class="user-card" (click)="navigateToProfile(usuario.id)">
+                <div class="card-header">
+                    <div class="user-info">
+                        @if (usuario.rutaImg) {
+                        <img [src]="usuario.rutaImg" [alt]="usuario.nombre" class="user-avatar">
+                        } @else {
+                        <div class="user-avatar-placeholder">
+                            {{ getUserInitials(usuario) }}
+                        </div>
+                        }
+                        <div class="user-details">
+                            <span class="user-name">{{ usuario.nombre }} {{ usuario.apellido }}</span>
+                            <span class="user-email">{{ usuario.email }}</span>
+                        </div>
+                    </div>
+                    <span class="badge" [ngClass]="getRolBadgeClass(usuario.rol)">
+                        {{ usuario.rol }}
+                    </span>
+                </div>
+
+                <div class="card-body">
+                    <div class="info-row">
+                        <span class="info-label">ID:</span>
+                        <span class="info-value">{{ usuario.id }}</span>
+                    </div>
+                    @if (usuario.tipoDocumento && usuario.nroDocumento) {
+                    <div class="info-row">
+                        <span class="info-label">Documento:</span>
+                        <span class="info-value">{{ usuario.tipoDocumento }}: {{ usuario.nroDocumento }}</span>
+                    </div>
+                    }
+                    <div class="info-row">
+                        <span class="info-label">Provincia:</span>
+                        <span class="info-value">{{ usuario.provincia?.nombre || '-' }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Puntos:</span>
+                        @if (usuario.rol === 'USUARIO') {
+                        <span class="puntos-badge">⭐ {{ usuario.puntos || 0 }}</span>
+                        } @else {
+                        <span class="na-badge">N/A</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <label class="rol-label">Cambiar Rol:</label>
+                    <select class="rol-select-mobile" [(ngModel)]="usuario.rol"
+                        (ngModelChange)="onRoleChange(usuario, $event)" (click)="$event.stopPropagation()">
+                        @for (rol of roles; track rol) {
+                        <option [value]="rol">{{ rol }}</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- Paginación -->
+        @if (totalPages > 1) {
+        <div class="pagination">
+            <button class="pagination-btn" [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">
+                ← Anterior
+            </button>
+            <span class="pagination-info">
+                Página {{ currentPage }} de {{ totalPages }}
+            </span>
+            <button class="pagination-btn" [disabled]="currentPage === totalPages"
+                (click)="changePage(currentPage + 1)">
+                Siguiente →
+            </button>
+        </div>
+        }
+        }
+        }
+    </div>
+</div>
+
+<!-- Modal de confirmación -->
+@if (showModal && pendingRoleChange) {
+<div class="modal-overlay" (click)="cancelarCambioRol()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>⚠️ Confirmar Cambio de Rol</h3>
+            <button class="modal-close" (click)="cancelarCambioRol()">✖</button>
+        </div>
+
+        <div class="modal-body">
+            <p class="modal-message">
+                ¿Está seguro que desea cambiar el rol de
+                <strong>{{ pendingRoleChange.usuario.nombre }} {{ pendingRoleChange.usuario.apellido }}</strong>?
+            </p>
+
+            <div class="role-change-preview">
+                <div class="role-box">
+                    <span class="role-label">Rol Actual:</span>
+                    <span class="badge" [ngClass]="getRolBadgeClass(pendingRoleChange.usuario.rol)">
+                        {{ pendingRoleChange.usuario.rol }}
+                    </span>
+                </div>
+
+                <div class="arrow">→</div>
+
+                <div class="role-box">
+                    <span class="role-label">Nuevo Rol:</span>
+                    <span class="badge" [ngClass]="getRolBadgeClass(pendingRoleChange.nuevoRol)">
+                        {{ pendingRoleChange.nuevoRol }}
+                    </span>
+                </div>
+            </div>
+
+            <p class="modal-warning">
+                Este cambio afectará los permisos y accesos del usuario en el sistema.
+            </p>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="cancelarCambioRol()">
+                Cancelar
+            </button>
+            <button class="btn btn-primary" (click)="confirmarCambioRol()">
+                Confirmar Cambio
+            </button>
+        </div>
+    </div>
+</div>
+}

@@ -1,0 +1,37 @@
+export enum EstadoEvento {
+  PROXIMO = 'PRÓXIMO',
+  EN_CURSO = 'EN CURSO',
+  CANCELADO = 'CANCELADO',
+  FINALIZADO = 'FINALIZADO'
+}
+
+export enum EstadoInscripcion {
+  PENDIENTE = 'PENDIENTE',
+  PRESENTE = 'PRESENTE',
+  AUSENTE = 'AUSENTE',
+  CANCELADO = 'CANCELADO'
+}
+
+export enum EstadoPeticion {
+  ACEPTADO = 'ACEPTADO',
+  CANCELADO = 'CANCELADO',
+  PENDIENTE = 'PENDIENTE'
+}
+
+export enum RolUsuario {
+  ADMIN = 'ADMIN',
+  USUARIO = 'USUARIO',
+  ORGANIZADOR = 'ORGANIZADOR'
+}
+
+export enum TipoDocumento {
+  DNI = 'DNI',
+  PASAPORTE = 'PASAPORTE'
+}
+
+export enum TipoEvento {
+  REFORESTACION = 'REFORESTACION',
+  RECOLECCION_BASURA = 'RECOLECCION_BASURA',
+  JUNTA_ALIMENTOS = 'JUNTA_ALIMENTOS',
+  DONACIONES = 'DONACIONES'
+}

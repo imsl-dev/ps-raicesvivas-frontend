@@ -1,0 +1,242 @@
+<div class="content-wrapper">
+    <div class="header">
+        <h2>📝 Peticiones para Organizadores</h2>
+        <p class="subtitle">Gestiona las solicitudes de usuarios que quieren convertirse en organizadores</p>
+    </div>
+
+    <div class="content-body">
+        <!-- Loading state -->
+        @if (loading) {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Cargando peticiones...</p>
+        </div>
+        }
+
+        @if (!loading) {
+        <!-- Sección de Peticiones Pendientes -->
+        <section class="peticiones-section">
+            <div class="section-header">
+                <h3>⏳ Peticiones Pendientes</h3>
+                <span class="badge badge-info">{{ peticionesPendientes.length }}</span>
+            </div>
+
+            @if (peticionesPendientes.length === 0) {
+            <div class="empty-state">
+                <span class="empty-icon">✅</span>
+                <p>No hay peticiones pendientes en este momento</p>
+            </div>
+            } @else {
+            <div class="accordion-container">
+                @for (peticion of paginatedPendientes; track peticion.id) {
+                <div class="accordion-item" [class.expanded]="isPendienteExpanded(peticion.id)">
+                    <div class="accordion-header" (click)="togglePendiente(peticion.id)">
+                        <div class="header-left">
+                            <img [src]="peticion.userImage" [alt]="peticion.nombreUsuario" class="user-avatar">
+                            <div class="user-info">
+                                <h4>{{ peticion.nombreUsuario }} {{ peticion.apellidoUsuario }}</h4>
+                                <p class="user-email">{{ peticion.email }}</p>
+                            </div>
+                        </div>
+                        <div class="header-right">
+                            <span class="badge" [ngClass]="getEstadoBadgeClass(peticion.estadoPeticion)">
+                                {{ peticion.estadoPeticion }}
+                            </span>
+                            <span class="expand-icon">
+                                @if (isPendienteExpanded(peticion.id)) {
+                                <span>▲</span>
+                                } @else {
+                                <span>▼</span>
+                                }
+                            </span>
+                        </div>
+                    </div>
+
+                    @if (isPendienteExpanded(peticion.id)) {
+                    <div class="accordion-body">
+                        <div class="body-content">
+                            <div class="info-section">
+                                <h5>👤 Información del Usuario</h5>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <span class="info-label">ID Usuario:</span>
+                                        <span class="info-value">{{ peticion.usuarioId }}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Email:</span>
+                                        <span class="info-value">{{ peticion.email }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (peticion.mensajeUsuario) {
+                            <div class="mensaje-section">
+                                <h5>💬 Mensaje del Usuario</h5>
+                                <p class="mensaje-texto">{{ peticion.mensajeUsuario }}</p>
+                            </div>
+                            }
+
+                            <div class="image-section">
+                                <h5>📷 Imagen de Verificación</h5>
+                                <div class="image-preview">
+                                    <img [src]="peticion.image64" [alt]="peticion.nombreUsuario">
+                                </div>
+                            </div>
+
+                            <div class="actions-section">
+                                <button class="btn btn-success" (click)="aceptarPeticion(peticion)">
+                                    ✅ Aceptar Petición
+                                </button>
+                                <button class="btn btn-danger" (click)="cancelarPeticion(peticion)">
+                                    ❌ Rechazar Petición
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
+            <!-- Paginación Pendientes -->
+            @if (totalPagesPendientes > 1) {
+            <div class="pagination">
+                <button class="pagination-btn" [disabled]="currentPagePendientes === 1"
+                    (click)="changePendientesPage(currentPagePendientes - 1)">
+                    ← Anterior
+                </button>
+                <span class="pagination-info">
+                    Página {{ currentPagePendientes }} de {{ totalPagesPendientes }}
+                </span>
+                <button class="pagination-btn" [disabled]="currentPagePendientes === totalPagesPendientes"
+                    (click)="changePendientesPage(currentPagePendientes + 1)">
+                    Siguiente →
+                </button>
+            </div>
+            }
+            }
+        </section>
+
+        <!-- Sección de Peticiones Procesadas -->
+        <section class="peticiones-section">
+            <div class="section-header">
+                <h3>📋 Historial de Peticiones</h3>
+                <span class="badge badge-secondary">{{ peticionesProcesadas.length }}</span>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filtros-container">
+                <div class="filtro-search">
+                    <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar por nombre, apellido o email..."
+                        class="search-input">
+                </div>
+
+                <div class="filtro-estado">
+                    <label class="radio-label">
+                        <input type="radio" name="estado" value="TODOS" [(ngModel)]="filtroEstado">
+                        <span>Todos</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="estado" value="ACEPTADO" [(ngModel)]="filtroEstado">
+                        <span>Aceptados</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="estado" value="CANCELADO" [(ngModel)]="filtroEstado">
+                        <span>Rechazados</span>
+                    </label>
+                </div>
+
+                <button class="btn-limpiar" (click)="limpiarFiltros()">
+                    🔄 Limpiar Filtros
+                </button>
+            </div>
+
+            @if (peticionesProcesadas.length === 0) {
+            <div class="empty-state">
+                <span class="empty-icon">🔍</span>
+                <p>No se encontraron peticiones con los filtros aplicados</p>
+            </div>
+            } @else {
+            <div class="accordion-container">
+                @for (peticion of paginatedProcesadas; track peticion.id) {
+                <div class="accordion-item" [class.expanded]="isProcesadaExpanded(peticion.id)">
+                    <div class="accordion-header" (click)="toggleProcesada(peticion.id)">
+                        <div class="header-left">
+                            <img [src]="peticion.userImage" [alt]="peticion.nombreUsuario" class="user-avatar">
+                            <div class="user-info">
+                                <h4>{{ peticion.nombreUsuario }} {{ peticion.apellidoUsuario }}</h4>
+                                <p class="user-email">{{ peticion.email }}</p>
+                            </div>
+                        </div>
+                        <div class="header-right">
+                            <span class="badge" [ngClass]="getEstadoBadgeClass(peticion.estadoPeticion)">
+                                {{ peticion.estadoPeticion }}
+                            </span>
+                            <span class="expand-icon">
+                                @if (isProcesadaExpanded(peticion.id)) {
+                                <span>▲</span>
+                                } @else {
+                                <span>▼</span>
+                                }
+                            </span>
+                        </div>
+                    </div>
+
+                    @if (isProcesadaExpanded(peticion.id)) {
+                    <div class="accordion-body">
+                        <div class="body-content">
+                            <div class="info-section">
+                                <h5>👤 Información del Usuario</h5>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <span class="info-label">ID Usuario:</span>
+                                        <span class="info-value">{{ peticion.usuarioId }}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Email:</span>
+                                        <span class="info-value">{{ peticion.email }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (peticion.mensajeUsuario) {
+                            <div class="mensaje-section">
+                                <h5>💬 Mensaje del Usuario</h5>
+                                <p class="mensaje-texto">{{ peticion.mensajeUsuario }}</p>
+                            </div>
+                            }
+
+                            <div class="image-section">
+                                <h5>📷 Imagen de Verificación</h5>
+                                <div class="image-preview">
+                                    <img [src]="peticion.image64" [alt]="peticion.nombreUsuario">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
+            <!-- Paginación Procesadas -->
+            @if (totalPagesProcesadas > 1) {
+            <div class="pagination">
+                <button class="pagination-btn" [disabled]="currentPageProcesadas === 1"
+                    (click)="changeProcesadasPage(currentPageProcesadas - 1)">
+                    ← Anterior
+                </button>
+                <span class="pagination-info">
+                    Página {{ currentPageProcesadas }} de {{ totalPagesProcesadas }}
+                </span>
+                <button class="pagination-btn" [disabled]="currentPageProcesadas === totalPagesProcesadas"
+                    (click)="changeProcesadasPage(currentPageProcesadas + 1)">
+                    Siguiente →
+                </button>
+            </div>
+            }
+            }
+        </section>
+        }
+    </div>
+</div>

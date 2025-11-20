@@ -1,0 +1,617 @@
+/* ========================================
+   CONTENEDOR PRINCIPAL Y FONDO
+   ======================================== */
+
+.mural-container {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+    background: linear-gradient(135deg, #0a3d2c 0%, #1a5c45 50%, #0f2e24 100%);
+}
+
+.fondo-mural {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/images/fondo_mural_donaciones.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.15;
+    z-index: 0;
+}
+
+.overlay-oscuro {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(10, 61, 44, 0.3) 0%, rgba(10, 61, 44, 0.8) 100%);
+    z-index: 1;
+}
+
+.contenido-mural {
+    position: relative;
+    z-index: 2;
+    padding: 4rem 1rem 2rem 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   HEADER DEL MURAL
+   ======================================== */
+
+.mural-header {
+    text-align: center;
+    padding: 3rem 2rem;
+    margin-bottom: 3rem;
+    background: linear-gradient(135deg, rgba(41, 179, 199, 0.15) 0%, rgba(26, 92, 69, 0.15) 100%);
+    border-radius: 20px;
+    border: 2px solid rgba(41, 179, 199, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.header-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.icono-header {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: crecimiento 3s ease-in-out infinite;
+}
+
+@keyframes crecimiento {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.titulo-mural {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #29B3C7;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 20px rgba(41, 179, 199, 0.5),
+        0 0 40px rgba(41, 179, 199, 0.3);
+    letter-spacing: 1px;
+}
+
+.subtitulo-mural {
+    font-size: 1.2rem;
+    color: #a8d5ba;
+    font-weight: 300;
+    line-height: 1.6;
+}
+
+/* ========================================
+   ESTADOS DE CARGA Y ERROR
+   ======================================== */
+
+.loading-container,
+.error-container,
+.empty-container {
+    text-align: center;
+    padding: 4rem 2rem;
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner-grow {
+    width: 4rem;
+    height: 4rem;
+    border: 4px solid rgba(41, 179, 199, 0.3);
+    border-top-color: #29B3C7;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1.5rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-text {
+    font-size: 1.2rem;
+    color: #a8d5ba;
+    font-weight: 300;
+}
+
+.error-icon,
+.empty-icon {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.7;
+}
+
+.error-text,
+.empty-text {
+    font-size: 1.1rem;
+    color: #a8d5ba;
+    margin-bottom: 1.5rem;
+    max-width: 500px;
+}
+
+.empty-title {
+    font-size: 2rem;
+    color: #29B3C7;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.btn-reintentar {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #29B3C7 0%, #1a8599 100%);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(41, 179, 199, 0.4);
+}
+
+.btn-reintentar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(41, 179, 199, 0.6);
+}
+
+/* ========================================
+   GRID DEL MURAL (POSICIONAMIENTO ABSOLUTO)
+   ======================================== */
+
+.mural-grid {
+    position: relative;
+    width: 100%;
+    min-height: 1400px;
+    padding: 2rem;
+}
+
+/* ========================================
+   TARJETAS DE DONACIÓN
+   ======================================== */
+
+.tarjeta-donacion {
+    position: absolute;
+    width: 320px;
+    background: linear-gradient(135deg, rgba(26, 92, 69, 0.95) 0%, rgba(15, 46, 36, 0.95) 100%);
+    border: 2px solid rgba(41, 179, 199, 0.4);
+    border-radius: 20px;
+    padding: 1.75rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(41, 179, 199, 0.2);
+    backdrop-filter: blur(10px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.tarjeta-donacion:hover {
+    transform: scale(1.05) rotate(0deg) !important;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7),
+        0 0 40px rgba(41, 179, 199, 0.5);
+    border-color: #29B3C7;
+    z-index: 10 !important;
+}
+
+.tarjeta-donacion::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg,
+            transparent 30%,
+            rgba(41, 179, 199, 0.1) 50%,
+            transparent 70%);
+    transform: rotate(45deg);
+    animation: brillo 8s linear infinite;
+}
+
+@keyframes brillo {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
+}
+
+.decoracion-hoja {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 3rem;
+    opacity: 0.3;
+    transform: rotate(-15deg);
+    filter: drop-shadow(0 0 10px rgba(41, 179, 199, 0.3));
+}
+
+.tarjeta-contenido {
+    position: relative;
+    z-index: 2;
+}
+
+/* ========================================
+   MENSAJE DE DONACIÓN
+   ======================================== */
+
+.mensaje-donacion {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #e8f5e9;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+    font-weight: 400;
+    min-height: 80px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ========================================
+   INFORMACIÓN DEL DONANTE
+   ======================================== */
+
+.info-donante {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(41, 179, 199, 0.3);
+}
+
+.avatar-donante {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #29B3C7 0%, #1a8599 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(41, 179, 199, 0.4);
+    flex-shrink: 0;
+}
+
+.datos-donante {
+    flex: 1;
+    min-width: 0;
+}
+
+.nombre-donante {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #29B3C7;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fecha-donacion {
+    font-size: 0.85rem;
+    color: #81c995;
+    margin: 0.25rem 0 0 0;
+}
+
+/* ========================================
+   BADGE DEL MONTO
+   ======================================== */
+
+.monto-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, rgba(41, 179, 199, 0.3) 0%, rgba(26, 133, 153, 0.3) 100%);
+    border: 1px solid rgba(41, 179, 199, 0.5);
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #29B3C7;
+    box-shadow: 0 0 15px rgba(41, 179, 199, 0.3);
+}
+
+.icono-monto {
+    font-size: 1.2rem;
+    filter: drop-shadow(0 0 5px rgba(41, 179, 199, 0.5));
+}
+
+.monto-valor {
+    letter-spacing: 0.5px;
+}
+
+/* ========================================
+   EFECTO DE LUZ
+   ======================================== */
+
+.efecto-luz {
+    position: absolute;
+    bottom: -50%;
+    right: -50%;
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle, rgba(41, 179, 199, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.tarjeta-donacion:hover .efecto-luz {
+    opacity: 1;
+}
+
+/* ========================================
+   FOOTER DEL MURAL
+   ======================================== */
+
+.mural-footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    margin-top: 4rem;
+    border-top: 1px solid rgba(41, 179, 199, 0.2);
+}
+
+.footer-decoration {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.planta-icon,
+.gota-icon,
+.arbol-icon {
+    animation: flotar 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(41, 179, 199, 0.4));
+}
+
+.gota-icon {
+    animation-delay: 0.5s;
+}
+
+.arbol-icon {
+    animation-delay: 1s;
+}
+
+@keyframes flotar {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.footer-text {
+    font-size: 1.1rem;
+    color: #a8d5ba;
+    font-weight: 300;
+    margin: 0;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 1200px) {
+    .tarjeta-donacion {
+        width: 280px;
+    }
+
+    .titulo-mural {
+        font-size: 2.5rem;
+    }
+
+    .mural-grid {
+        min-height: 1600px;
+    }
+}
+
+@media (max-width: 768px) {
+    .contenido-mural {
+        padding: 2rem 0.5rem 2rem 0.5rem;
+    }
+
+    .mural-header {
+        padding: 2rem 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .icono-header {
+        font-size: 3rem;
+    }
+
+    .titulo-mural {
+        font-size: 2rem;
+    }
+
+    .subtitulo-mural {
+        font-size: 1rem;
+    }
+
+    .mural-grid {
+        min-height: 2000px;
+        padding: 1rem;
+    }
+
+    .tarjeta-donacion {
+        width: 260px;
+        padding: 1.5rem;
+    }
+
+    .mensaje-donacion {
+        font-size: 0.95rem;
+        min-height: 70px;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+    }
+
+    .avatar-donante {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    .nombre-donante {
+        font-size: 0.95rem;
+    }
+
+    .fecha-donacion {
+        font-size: 0.8rem;
+    }
+
+    .monto-badge {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .footer-decoration {
+        gap: 1.5rem;
+        font-size: 2rem;
+    }
+
+    .footer-text {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .contenido-mural {
+        padding: 1.5rem 0.5rem 2rem 0.5rem;
+    }
+
+    .titulo-mural {
+        font-size: 1.75rem;
+    }
+
+    .subtitulo-mural {
+        font-size: 0.9rem;
+    }
+
+    .mural-grid {
+        min-height: 2500px;
+    }
+
+    .tarjeta-donacion {
+        width: 240px;
+        padding: 1.25rem;
+    }
+
+    .mensaje-donacion {
+        font-size: 0.9rem;
+        min-height: 60px;
+    }
+
+    .decoracion-hoja {
+        font-size: 2.5rem;
+    }
+
+    .loading-text,
+    .error-text,
+    .empty-text {
+        font-size: 1rem;
+    }
+}
+
+/* ========================================
+   ANIMACIONES Y TRANSICIONES
+   ======================================== */
+
+.tarjeta-donacion {
+    animation: aparecer 0.6s ease-out backwards;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Delay escalonado para las tarjetas */
+.tarjeta-donacion:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.tarjeta-donacion:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.tarjeta-donacion:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.tarjeta-donacion:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.tarjeta-donacion:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.tarjeta-donacion:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+.tarjeta-donacion:nth-child(7) {
+    animation-delay: 0.7s;
+}
+
+.tarjeta-donacion:nth-child(8) {
+    animation-delay: 0.8s;
+}
+
+.tarjeta-donacion:nth-child(9) {
+    animation-delay: 0.9s;
+}
+
+.tarjeta-donacion:nth-child(10) {
+    animation-delay: 1s;
+}
+
+.tarjeta-donacion:nth-child(11) {
+    animation-delay: 1.1s;
+}
+
+.tarjeta-donacion:nth-child(12) {
+    animation-delay: 1.2s;
+}

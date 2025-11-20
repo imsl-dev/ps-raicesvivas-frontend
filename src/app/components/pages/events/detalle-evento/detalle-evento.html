@@ -1,0 +1,428 @@
+<div class="detalle-evento-container">
+  <!-- Estado de carga -->
+  @if (loading) {
+  <div class="loading-container">
+    <div class="spinner-border text-success mb-3" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p>Cargando detalles del evento...</p>
+  </div>
+  }
+
+  <!-- Mensaje de error -->
+  @if (error && !loading) {
+  <div class="error-container">
+    <div class="error-content">
+      <p class="error-message">{{ error }}</p>
+      <button class="btn btn-secondary" (click)="volver()">
+        ← Volver a Eventos
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- Detalle del evento -->
+  @if (evento && !loading && !error) {
+  <div class="evento-detalle">
+    <!-- Header con imagen -->
+    <div class="evento-header">
+      @if (evento.rutaImg) {
+      <img [src]="evento.rutaImg" [alt]="evento.nombre" class="evento-imagen-principal">
+      } @else {
+      <div class="evento-imagen-placeholder">
+        <span class="placeholder-icon">🌱</span>
+      </div>
+      }
+      <div class="header-overlay">
+        <div class="header-badges">
+          <span class="tipo-badge">{{ evento.tipo | tipoEvento }}</span>
+          <span class="estado-badge" [ngClass]="getEstadoClass(evento.estado)">
+            {{ evento.estado }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="evento-content">
+      <!-- Título y acciones -->
+      <div class="titulo-section">
+        <h1 class="evento-titulo">{{ evento.nombre }}</h1>
+        <div class="acciones-rapidas">
+          <button class="btn-icon" (click)="realizarDonacion()" title="Realizar donación">
+            ❤️
+          </button>
+          <button class="btn-icon" (click)="compartirEvento()" title="Compartir evento">
+            📤
+          </button>
+        </div>
+      </div>
+
+      <!-- Información destacada -->
+      <div class="info-destacada">
+        <!-- Ubicación, Fecha y Hora -->
+        <div class="info-card">
+          <div class="info-header">
+            <span class="info-icon">📍</span>
+            <h3>Ubicación, Fecha y Hora</h3>
+          </div>
+          <div class="info-body">
+            <p class="info-principal">{{ evento.provincia?.nombre }}</p>
+            @if (evento.direccion) {
+            <p class="info-secundaria">{{ evento.direccion }}</p>
+            }
+            <div class="info-separador"></div>
+            <p class="info-fecha">{{ formatDate(evento.horaInicio) }}</p>
+            <div class="info-horario">
+              <div class="horario-item">
+                <span class="horario-label">⏰ Inicio:</span>
+                <span class="horario-valor">{{ formatTime(evento.horaInicio) }}</span>
+              </div>
+              <div class="horario-item">
+                <span class="horario-label">⏱️ Fin:</span>
+                <span class="horario-valor">{{ formatTime(evento.horaFin) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Organizador -->
+        @if (evento.organizador) {
+        <div class="info-card">
+          <div class="info-header">
+            <span class="info-icon">👤</span>
+            <h3>Organizador</h3>
+          </div>
+          <div class="info-body organizador-body">
+            <div class="organizador-foto">
+              @if (evento.organizador.rutaImg) {
+              <img [src]="evento.organizador.rutaImg" [alt]="evento.organizador.nombre" class="foto-perfil">
+              }
+            </div>
+            <div class="organizador-info">
+              <p class="organizador-nombre">{{ evento.organizador.nombre }} {{ evento.organizador.apellido }}</p>
+              @if (evento.organizador.email) {
+              <p class="organizador-email">✉️ {{ evento.organizador.email }}</p>
+              }
+            </div>
+          </div>
+        </div>
+        }
+
+        <!-- Sponsoreado por -->
+        @if (evento.sponsor) {
+        <div class="info-card">
+          <div class="info-header">
+            <span class="info-icon">🤝</span>
+            <h3>Sponsoreado por</h3>
+          </div>
+          <div class="info-body">
+            <p class="info-principal">{{ evento.sponsor.nombre }}</p>
+          </div>
+        </div>
+        }
+      </div>
+
+      <!-- Descripción -->
+      @if (evento.descripcion) {
+      <div class="descripcion-section">
+        <h2 class="section-title">📋 Descripción</h2>
+        <div class="descripcion-content">
+          <p>{{ evento.descripcion }}</p>
+        </div>
+      </div>
+      }
+
+      <!-- Mapa de ubicación (si tiene coordenadas) -->
+      @if (evento.latitud && evento.longitud) {
+      <div class="mapa-section">
+        <h2 class="section-title">🗺️ Ubicación en el Mapa</h2>
+        <div class="mapa-container">
+          <app-mapa-detalle-evento [latitud]="evento.latitud" [longitud]="evento.longitud"
+            [nombreEvento]="evento.nombre" [direccion]="evento.direccion || ''" [mapId]="'mapa-detalle-' + evento.id" />
+        </div>
+      </div>
+      }
+
+
+      <!-- Información adicional -->
+      <div class="info-adicional">
+        <h2 class="section-title">ℹ️ Información Adicional</h2>
+        <div class="info-grid">
+          @if (evento.puntosAsistencia) {
+          <div class="info-item">
+            <span class="item-icon">⭐</span>
+            <div class="item-content">
+              <span class="item-label">Puntos por Asistencia</span>
+              <span class="item-valor">{{ evento.puntosAsistencia }} puntos</span>
+            </div>
+          </div>
+          }
+
+          @if (evento.costoInscripcion !== undefined && evento.costoInscripcion !== null) {
+          <div class="info-item">
+            <span class="item-icon">💰</span>
+            <div class="item-content">
+              <span class="item-label">Costo de Inscripción</span>
+              <span class="item-valor">
+                @if (evento.costoInscripcion === 0) {
+                Gratis
+                } @else {
+                ${{ evento.costoInscripcion }}
+                }
+              </span>
+            </div>
+          </div>
+          }
+
+          <div class="info-item">
+            <span class="item-icon">👥</span>
+            <div class="item-content">
+              <span class="item-label">Modalidad</span>
+              <span class="item-valor">Presencial</span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <span class="item-icon">🎫</span>
+            <div class="item-content">
+              <span class="item-label">Entrada</span>
+              <span class="item-valor">
+                @if (evento.costoInscripcion === 0 || !evento.costoInscripcion) {
+                Libre y Gratuita
+                } @else {
+                Requiere Inscripción
+                }
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="acciones-principales">
+        @if (evento.estado === 'PRÓXIMO' && usuarioLogeado?.rol === 'USUARIO') {
+        @if (!estaInscripto) {
+        @if (tieneCostoInscripcion()) {
+        <button class="btn btn-success btn-lg" (click)="abrirModalConfirmacionPago()" [disabled]="procesandoPago">
+          @if (procesandoPago) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Procesando pago...
+          } @else {
+          💳 Pagar Inscripción (${{ evento.costoInscripcion }})
+          }
+        </button>
+        <p class="texto-pago-info">
+          🔒 Serás redirigido a MercadoPago para completar el pago de forma segura
+        </p>
+        } @else {
+        <button class="btn btn-success btn-lg" (click)="inscribirseEvento()" [disabled]="procesandoInscripcion">
+          @if (procesandoInscripcion) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Procesando...
+          } @else {
+          ✅ Inscribirme al Evento (Gratis)
+          }
+        </button>
+        }
+        } @else {
+        <div class="inscripcion-confirmada">
+          <div class="mensaje-inscripto">
+            <span class="icono-check">✓</span>
+            <span>Ya estás inscripto a este evento</span>
+          </div>
+          @if(!tieneCostoInscripcion){
+          <button class="btn btn-warning" (click)="abrirModalCancelacion()" [disabled]="procesandoInscripcion">
+            🚫 Cancelar Inscripción
+          </button>
+          }
+        </div>
+        }
+        }
+
+        @if (evento.estado === 'CANCELADO') {
+        <div class="alerta-cancelado">
+          <p>⚠️ Este evento ha sido cancelado</p>
+        </div>
+        }
+
+        @if (usuarioLogeado?.rol === 'ORGANIZADOR' && evento.organizadorId === usuarioLogeado?.id && evento.estado ===
+        'PRÓXIMO') {
+        <button class="btn btn-secondary" (click)="editarEvento()">
+          ✏️ Editar Evento
+        </button>
+        }
+
+        <button class="btn btn-outline" (click)="volver()">
+          ← Volver a Eventos
+        </button>
+      </div>
+
+      <!-- Información de contacto o advertencias -->
+      <div class="info-footer">
+        <p class="texto-pequeño">
+          💡 <strong>Recordatorio:</strong> Por favor, llega 15 minutos antes del inicio del evento.
+        </p>
+      </div>
+    </div>
+  </div>
+  }
+  <!-- Modal de confirmación de cancelación -->
+  @if (mostrarModalCancelacion) {
+  <div class="modal-overlay" (click)="cerrarModalCancelacion()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>⚠️ Confirmar Cancelación</h3>
+        <button class="btn-close-modal" (click)="cerrarModalCancelacion()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p>¿Estás seguro de que deseas cancelar tu inscripción a este evento?</p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary-modal" (click)="cerrarModalCancelacion()" [disabled]="procesandoInscripcion">
+          Volver
+        </button>
+        <button class="btn btn-danger-modal" (click)="confirmarCancelacion()" [disabled]="procesandoInscripcion">
+          @if (procesandoInscripcion) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Cancelando...
+          } @else {
+          Confirmar Cancelación
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+  <!-- Modal de confirmación de pago -->
+  @if (mostrarModalConfirmacionPago) {
+  <div class="modal-overlay" (click)="cerrarModalConfirmacionPago()">
+    <div class="modal-content modal-pago" (click)="$event.stopPropagation()">
+      <div class="modal-header modal-header-pago">
+        <h3>💳 Confirmar Compra</h3>
+        <button class="btn-close-modal" (click)="cerrarModalConfirmacionPago()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="info-pago-destacada">
+          <div class="monto-total">
+            <span class="label-monto">Total a pagar:</span>
+            <span class="valor-monto">${{ evento?.costoInscripcion }}</span>
+          </div>
+        </div>
+
+        <div class="advertencia-reembolso advertencia-pago">
+          <span class="icono-advertencia">💰</span>
+          <div class="texto-advertencia">
+            <strong>Importante:</strong>
+            <p>Este evento tiene un costo de inscripción de <strong>${{ evento?.costoInscripcion }}</strong>.
+              No se realizará reembolso por la cancelación del evento o la inasistencia al mismo.</p>
+          </div>
+        </div>
+
+        <div class="info-mercadopago">
+          <span class="icono-info">🔒</span>
+          <p>Serás redirigido a MercadoPago para completar el pago de forma segura</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary-modal" (click)="cerrarModalConfirmacionPago()" [disabled]="procesandoPago">
+          Cancelar
+        </button>
+        <button class="btn btn-success-modal" (click)="confirmarYProcesarPago()" [disabled]="procesandoPago">
+          @if (procesandoPago) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Procesando...
+          } @else {
+          Confirmar Compra
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+  <!-- Modal de donación -->
+  @if (mostrarModalDonacion) {
+  <div class="modal-overlay" (click)="confirmarCierreDonacion()">
+    <div class="modal-content modal-donacion" (click)="$event.stopPropagation()">
+      <div class="modal-header modal-header-donacion">
+        <h3>❤️ Realizar Donación</h3>
+        <button class="btn-close-modal" (click)="confirmarCierreDonacion()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group-donacion">
+          <label for="mensaje-donacion" class="label-donacion">Transmití tu mensaje al mundo</label>
+          <textarea id="mensaje-donacion" class="textarea-donacion" [(ngModel)]="mensajeDonacion"
+            placeholder="Escribe un mensaje motivacional (opcional)" rows="4" maxlength="500"
+            [disabled]="procesandoDonacion"></textarea>
+          <small class="char-count">{{ mensajeDonacion.length }}/500 caracteres</small>
+        </div>
+
+        <div class="form-group-donacion">
+          <label for="monto-donacion" class="label-donacion">Monto:</label>
+          <div class="input-monto-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="monto-donacion" class="input-monto" [(ngModel)]="montoDonacion"
+              placeholder="Ingresá el monto" min="1" step="1" [disabled]="procesandoDonacion">
+          </div>
+          <small class="helper-text">Monto mínimo: $100</small>
+        </div>
+
+        <div class="info-donacion">
+          <span class="icono-info">💚</span>
+          <p>Tu donación ayudará a seguir plantando árboles y cuidando nuestro planeta. ¡Gracias por tu generosidad!</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary-modal" (click)="confirmarCierreDonacion()" [disabled]="procesandoDonacion">
+          Cancelar
+        </button>
+        <button class="btn btn-success-modal" (click)="procesarDonacion()"
+          [disabled]="!validarMontoDonacion() || procesandoDonacion">
+          @if (procesandoDonacion) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Procesando...
+          } @else {
+          Donar! 🌱
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Modal de confirmación para cancelar donación -->
+  @if (mostrarModalCancelarDonacion) {
+  <div class="modal-overlay" (click)="$event.stopPropagation()">
+    <div class="modal-content modal-cancelar-donacion" (click)="$event.stopPropagation()">
+      <div class="modal-header modal-header-cancelar">
+        <h3>😢 ¿Cancelar Donación?</h3>
+        <button class="btn-close-modal" (click)="cerrarModalCancelarDonacion()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p>¿Estás seguro de que deseas cancelar tu donación?</p>
+        <div class="mensaje-emotivo">
+          <span class="icono-triste">💚</span>
+          <p>Cada aporte cuenta para seguir plantando árboles y cuidando nuestro planeta. Tu generosidad puede hacer la
+            diferencia.</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-success-modal" (click)="cerrarModalCancelarDonacion()">
+          💚 Continuar con mi Donación
+        </button>
+        <button class="btn btn-secondary-modal" (click)="confirmarCancelacionDonacion()">
+          Cancelar Donación
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+</div>

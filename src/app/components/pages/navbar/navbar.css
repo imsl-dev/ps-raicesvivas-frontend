@@ -1,0 +1,592 @@
+/* ==========================================
+   NAVBAR - Estilos Minimalistas y Responsive
+   ========================================== */
+
+/* Contenedor principal del navbar */
+.navbar {
+    background: linear-gradient(135deg, #1e5128 0%, #2d6a4f 50%, #40916c 100%);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 0;
+    transition: all 0.3s ease;
+    min-height: 60px;
+}
+
+.navbar.scrolled {
+    padding: 0.25rem 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Logo y Brand */
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: transform 0.3s ease;
+    padding: 0.25rem 0;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.05);
+}
+
+.navbar-logo {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
+    transition: filter 0.3s ease;
+}
+
+.navbar-brand:hover .navbar-logo {
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.brand-text {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.3px;
+}
+
+/* Toggle button para móvil */
+.navbar-toggler {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.navbar-toggler:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: white;
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.2);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Menú de navegación */
+.navbar-nav {
+    gap: 0.25rem;
+}
+
+/* Links de navegación */
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.9rem !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: left 0.3s ease;
+}
+
+.nav-link:hover::before {
+    left: 0;
+}
+
+.nav-link:hover {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: white !important;
+    font-weight: 600;
+}
+
+.nav-icon {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover .nav-icon {
+    transform: scale(1.15);
+}
+
+/* Divisor */
+.nav-divider {
+    width: 1px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.3);
+    margin: 0 0.5rem;
+}
+
+/* Sección de puntos */
+.puntos-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.6rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+}
+
+.puntos-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.75rem;
+    background: linear-gradient(135deg, #ffc107, #ff9800);
+    border-radius: 50px;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+    transition: all 0.3s ease;
+}
+
+.puntos-badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+}
+
+.puntos-icon {
+    font-size: 1.1rem;
+    animation: sparkle 2s infinite ease-in-out;
+}
+
+@keyframes sparkle {
+
+    0%,
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+        transform: scale(1.15) rotate(180deg);
+    }
+}
+
+.puntos-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    line-height: 1;
+}
+
+.puntos-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.puntos-valor {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #000;
+}
+
+/* Botones */
+.btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1.2rem;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+}
+
+.btn-icon {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.btn:hover .btn-icon {
+    transform: scale(1.15);
+}
+
+.btn-canjear {
+    background: linear-gradient(135deg, #52b788, #40916c);
+    color: white;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.85rem;
+}
+
+.btn-canjear:hover {
+    background: linear-gradient(135deg, #40916c, #2d6a4f);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(82, 183, 136, 0.4);
+}
+
+.btn-login {
+    background: linear-gradient(135deg, #52b788, #40916c);
+    color: white;
+}
+
+.btn-login:hover {
+    background: linear-gradient(135deg, #40916c, #2d6a4f);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(82, 183, 136, 0.4);
+}
+
+.btn-signup {
+    background: linear-gradient(135deg, #95d5b2, #74c69d);
+    color: #1e5128;
+}
+
+.btn-signup:hover {
+    background: linear-gradient(135deg, #74c69d, #52b788);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(116, 198, 157, 0.4);
+    color: white;
+}
+
+/* ==========================================
+   DROPDOWN DE PERFIL
+   ========================================== */
+
+.dropdown-perfil {
+    position: relative;
+}
+
+.btn-perfil {
+    background: none;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.btn-perfil:hover {
+    border-color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.dropdown-menu-perfil {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    min-width: 280px;
+    z-index: 1000;
+    animation: fadeInDown 0.3s ease;
+    overflow: hidden;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    border-bottom: 1px solid #e9ecef;
+}
+
+.avatar-img-large {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+}
+
+.user-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1e5128;
+}
+
+.user-email {
+    font-size: 0.85rem;
+    color: #6c757d;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #e9ecef;
+    margin: 0;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.9rem 1.25rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    color: #495057;
+    font-weight: 500;
+    text-align: left;
+}
+
+.dropdown-item:hover {
+    background: #f8f9fa;
+}
+
+.dropdown-item .item-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-item:hover .item-icon {
+    transform: scale(1.2);
+}
+
+.logout-item {
+    color: #dc3545;
+}
+
+.logout-item:hover {
+    background: #fff5f5;
+}
+
+/* ==========================================
+   RESPONSIVE - TABLETS
+   ========================================== */
+@media (max-width: 991px) {
+    .navbar {
+        min-height: 55px;
+    }
+
+    .navbar-logo {
+        width: 40px;
+        height: 40px;
+    }
+
+    .brand-text {
+        font-size: 1.15rem;
+    }
+
+    /* Menú colapsado */
+    .navbar-collapse {
+        background: linear-gradient(135deg, #1e5128 0%, #2d6a4f 100%);
+        margin-top: 0.75rem;
+        padding: 1.25rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar-nav {
+        gap: 0.4rem;
+    }
+
+    .nav-link {
+        padding: 0.7rem 0.9rem !important;
+        justify-content: flex-start;
+    }
+
+    .nav-divider {
+        display: none !important;
+    }
+
+    .puntos-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.6rem;
+        margin: 0.4rem 0;
+        padding: 0.9rem;
+        border-radius: 12px;
+    }
+
+    .puntos-badge {
+        justify-content: center;
+        padding: 0.6rem 1rem;
+    }
+
+    .btn-canjear {
+        width: 100%;
+        justify-content: center;
+        padding: 0.6rem 1.25rem;
+    }
+
+    .btn-login,
+    .btn-signup {
+        width: 100%;
+        justify-content: center;
+        padding: 0.6rem 1.25rem;
+        margin: 0.2rem 0;
+    }
+
+    .dropdown-perfil {
+        width: 100%;
+        margin: 0.4rem 0;
+    }
+
+    .btn-perfil {
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        padding: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-perfil::after {
+        content: '▼';
+        font-size: 0.8rem;
+        color: white;
+        margin-left: auto;
+    }
+
+    .avatar-img {
+        width: 45px;
+        height: 45px;
+    }
+
+    .dropdown-menu-perfil {
+        position: static;
+        margin-top: 0.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+}
+
+/* ==========================================
+   RESPONSIVE - MÓVILES
+   ========================================== */
+@media (max-width: 576px) {
+    .navbar {
+        padding: 0.4rem 0;
+        min-height: 50px;
+    }
+
+    .container-fluid {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+
+    .navbar-logo {
+        width: 38px;
+        height: 38px;
+    }
+
+    .brand-text {
+        font-size: 1.05rem;
+    }
+
+    .navbar-collapse {
+        padding: 1rem;
+        margin-top: 0.6rem;
+    }
+
+    .nav-link {
+        padding: 0.6rem 0.75rem !important;
+        font-size: 0.9rem;
+    }
+
+    .nav-icon {
+        font-size: 1rem;
+    }
+
+    .puntos-badge {
+        padding: 0.5rem 0.85rem;
+    }
+
+    .puntos-icon {
+        font-size: 1.2rem;
+    }
+
+    .puntos-label {
+        font-size: 0.65rem;
+    }
+
+    .puntos-valor {
+        font-size: 0.95rem;
+    }
+
+    .btn {
+        padding: 0.55rem 1.1rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-icon {
+        font-size: 0.95rem;
+    }
+
+    .dropdown-header {
+        padding: 1rem;
+    }
+
+    .avatar-img-large {
+        width: 50px;
+        height: 50px;
+    }
+
+    .user-name {
+        font-size: 0.95rem;
+    }
+
+    .user-email {
+        font-size: 0.8rem;
+    }
+
+    .dropdown-item {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+}

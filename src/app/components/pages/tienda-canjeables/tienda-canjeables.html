@@ -1,0 +1,163 @@
+<div class="shop-container">
+    <div class="shop-header">
+        <h1>🛍️ Tienda de Recompensas</h1>
+        @if (usuarioLogeado) {
+        <div class="puntos-display">
+            <span class="puntos-label">Tus puntos:</span>
+            <span class="puntos-valor">⭐ {{ usuarioLogeado.puntos }}</span>
+        </div>
+        }
+    </div>
+
+    <!-- Loading State -->
+    @if (loading) {
+    <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando tienda...</p>
+    </div>
+    }
+
+    @if (!loading) {
+    <!-- Sección: Mis Canjeables -->
+    <section class="mis-canjeables-section">
+        <div class="section-header">
+            <h2>🎁 Mis Cupones</h2>
+            <span class="badge-count">{{ canjeablesUsuario.length }}</span>
+        </div>
+
+        @if (canjeablesUsuario.length === 0) {
+        <div class="empty-state">
+            <span class="empty-icon">🎫</span>
+            <p>Aún no tienes cupones</p>
+            <small>Compra canjeables abajo para empezar a ahorrar</small>
+        </div>
+        } @else {
+        <div class="canjeables-grid">
+            @for (canjeable of canjeablesUsuario; track canjeable.id) {
+            <div class="canjeable-card owned" [class.expanded]="isExpanded(canjeable.id)">
+                <div class="card-header">
+                    <div class="sponsor-info">
+                        @if (canjeable.sponsor?.rutaImg1) {
+                        <img [src]="canjeable.sponsor?.rutaImg1" [alt]="canjeable.sponsor?.nombre" class="sponsor-logo">
+                        }
+                        <span class="sponsor-name">{{ canjeable.sponsor?.nombre }}</span>
+                    </div>
+                    <span class="puntos-badge">⭐ {{ canjeable.costoPuntos }}</span>
+                </div>
+
+                <div class="card-body">
+                    <h3 class="canjeable-nombre">{{ canjeable.nombre }}</h3>
+                    <div class="canjeable-info">
+                        <span class="info-item">
+                            <span class="info-icon">📅</span>
+                            Válido hasta: {{ formatDate(canjeable.validoHasta) }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-actions">
+                    <button class="btn btn-primary" (click)="toggleQRCode(canjeable)">
+                        @if (isExpanded(canjeable.id)) {
+                        <span>▲ Ocultar QR</span>
+                        } @else {
+                        <span>▼ Mostrar QR</span>
+                        }
+                    </button>
+                </div>
+
+                <!-- QR Code Section -->
+                @if (isExpanded(canjeable.id)) {
+                <div class="qr-section">
+                    @if (generatingQR) {
+                    <div class="qr-loading">
+                        <div class="spinner-small"></div>
+                        <p>Generando código QR...</p>
+                    </div>
+                    } @else {
+                    <div class="qr-container">
+                        <img [src]="qrCodeDataUrl" alt="Código QR" class="qr-image">
+                        <p class="qr-instructions">Escanea este código para acceder a tu cupón</p>
+                        <a [href]="canjeable.url" target="_blank" class="qr-link">
+                            🔗 Abrir enlace directamente
+                        </a>
+                        <button class="btn btn-danger" (click)="canjearCupon(canjeable)">
+                            ✅ Marcar como Canjeado
+                        </button>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+            }
+        </div>
+        }
+    </section>
+
+    <!-- Sección: Canjeables Disponibles -->
+    <section class="disponibles-section">
+        <div class="section-header">
+            <h2>🏪 Canjeables Disponibles</h2>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filtros-container">
+            <div class="filtro-group">
+                <label for="filtroSponsor">Filtrar por Sponsor:</label>
+                <select id="filtroSponsor" [(ngModel)]="filtroSponsor" class="filtro-select">
+                    <option value="TODOS">Todos los sponsors</option>
+                    @for (sponsor of sponsors; track sponsor.id) {
+                    <option [value]="sponsor.id">{{ sponsor.nombre }}</option>
+                    }
+                </select>
+            </div>
+            <button class="btn btn-secondary" (click)="limpiarFiltros()">
+                🔄 Limpiar Filtros
+            </button>
+        </div>
+
+        @if (canjeablesFiltrados.length === 0) {
+        <div class="empty-state">
+            <span class="empty-icon">🔍</span>
+            <p>No hay canjeables disponibles con los filtros aplicados</p>
+        </div>
+        } @else {
+        <div class="canjeables-grid">
+            @for (canjeable of canjeablesFiltrados; track canjeable.id) {
+            <div class="canjeable-card available">
+                <div class="card-header">
+                    <div class="sponsor-info">
+                        @if (canjeable.sponsor?.rutaImg1) {
+                        <img [src]="canjeable.sponsor?.rutaImg1" [alt]="canjeable.sponsor?.nombre" class="sponsor-logo">
+                        }
+                        <span class="sponsor-name">{{ canjeable.sponsor?.nombre }}</span>
+                    </div>
+                    <span class="puntos-badge">⭐ {{ canjeable.costoPuntos }}</span>
+                </div>
+
+                <div class="card-body">
+                    <h3 class="canjeable-nombre">{{ canjeable.nombre }}</h3>
+                    <div class="canjeable-info">
+                        <span class="info-item">
+                            <span class="info-icon">📅</span>
+                            Válido hasta: {{ formatDate(canjeable.validoHasta) }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-actions">
+                    <button class="btn btn-comprar" [class.disabled]="!puedeComprar(canjeable)"
+                        [disabled]="!puedeComprar(canjeable)" (click)="comprarCanjeable(canjeable)">
+                        @if (puedeComprar(canjeable)) {
+                        <span>💰 Comprar</span>
+                        } @else {
+                        <span>❌ Puntos insuficientes</span>
+                        }
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </section>
+    }
+</div>

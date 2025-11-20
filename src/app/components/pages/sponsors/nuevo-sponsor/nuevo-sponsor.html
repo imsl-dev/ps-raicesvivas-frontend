@@ -1,1 +1,133 @@
-<p>nuevo-sponsor works!</p>
+<div class="sponsor-form-container">
+  <div class="form-content">
+    <h2>{{ tituloFormulario }}</h2>
+
+    <form [formGroup]="sponsorForm" (ngSubmit)="onSubmit()">
+
+      <!-- Nombre del Sponsor -->
+      <div class="form-group">
+        <label for="nombre">
+          Nombre del Sponsor <span class="required-asterisk">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="nombre" 
+          formControlName="nombre" 
+          class="form-control"
+          [ngClass]="{
+            'is-invalid': nombre?.invalid && nombre?.touched,
+            'is-valid': nombre?.valid && nombre?.touched
+          }"
+          placeholder="Ingrese el nombre del sponsor"
+        >
+        @if (nombre?.invalid && nombre?.touched) {
+          <div class="error-message">
+            @if (nombre?.errors?.['required']) {
+              <small>⚠️ El nombre es obligatorio</small>
+            }
+            @if (nombre?.errors?.['maxlength']) {
+              <small>⚠️ El nombre no puede exceder 255 caracteres</small>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Link del dominio -->
+      <div class="form-group">
+        <label for="linkDominio">Link del Dominio</label>
+        <input 
+          type="text" 
+          id="linkDominio" 
+          formControlName="linkDominio" 
+          class="form-control"
+          placeholder="https://ejemplo.com"
+        >
+      </div>
+
+      <!-- Imagen 1 -->
+      <div class="form-group">
+        <label for="imagen1">Imagen 1 (Opcional)</label>
+        @if (!isViewMode) {
+          <div class="image-upload-container">
+            <input 
+              type="file" 
+              id="imagen1" 
+              accept="image/*" 
+              (change)="onFileSelected($event, 1)" 
+              class="file-input"
+            >
+            <label for="imagen1" class="file-label">
+              @if (!imagenPreview1) {
+                <span>📷 Seleccionar imagen</span>
+              }
+              @if (imagenPreview1) {
+                <span>🔄 Cambiar imagen</span>
+              }
+            </label>
+          </div>
+        }
+
+        @if (imagenPreview1) {
+          <div class="image-preview">
+            <img [src]="imagenPreview1" alt="Preview 1">
+            @if (!isViewMode) {
+              <button type="button" class="btn-remove" (click)="removeImage(1)">
+                ✕ Eliminar imagen
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Imagen 2 -->
+      <div class="form-group">
+        <label for="imagen2">Imagen 2 (Opcional)</label>
+        @if (!isViewMode) {
+          <div class="image-upload-container">
+            <input 
+              type="file" 
+              id="imagen2" 
+              accept="image/*" 
+              (change)="onFileSelected($event, 2)" 
+              class="file-input"
+            >
+            <label for="imagen2" class="file-label">
+              @if (!imagenPreview2) {
+                <span>📷 Seleccionar imagen</span>
+              }
+              @if (imagenPreview2) {
+                <span>🔄 Cambiar imagen</span>
+              }
+            </label>
+          </div>
+        }
+
+        @if (imagenPreview2) {
+          <div class="image-preview">
+            <img [src]="imagenPreview2" alt="Preview 2">
+            @if (!isViewMode) {
+              <button type="button" class="btn-remove" (click)="removeImage(2)">
+                ✕ Eliminar imagen
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Botones -->
+      <div class="form-actions">
+        @if (!isViewMode) {
+          <button type="submit" class="btn btn-primary" [disabled]="sponsorForm.invalid">
+            💾 Guardar Sponsor
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="resetForm()">
+            🔄 Limpiar
+          </button>
+        }
+        <button type="button" class="btn btn-secondary" (click)="volver()">
+          ← Volver
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
