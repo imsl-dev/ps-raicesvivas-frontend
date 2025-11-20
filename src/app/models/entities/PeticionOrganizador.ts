@@ -8,5 +8,6 @@ export interface PeticionOrganizador {
     image64: string;
     nombreUsuario: string,
     apellidoUsuario: string,
-    email: string
+    email: string,
+    userImage: string
 }

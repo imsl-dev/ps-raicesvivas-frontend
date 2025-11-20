@@ -22,15 +22,13 @@ export class SolicitudOrganizador {
   ) { }
 
   openDialog() {
+    // Don't close this dialog yet, just open the form dialog
+    const formDialogRef = this.formSolicitudDialog.open(FrmSolicitudOrganizador);
 
-    this.dialogRef.close();
-
-    // Wait for closing animation before opening the new one
-    this.dialogRef.afterClosed().subscribe(() => {
-      this.formSolicitudDialog.open(FrmSolicitudOrganizador);
+    // Listen for the form dialog result
+    formDialogRef.afterClosed().subscribe((result) => {
+      // Now close THIS dialog and pass the result up to Profile
+      this.dialogRef.close(result);
     });
-
-
-
   }
 }

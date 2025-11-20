@@ -33,11 +33,22 @@ export class Profile implements OnInit {
   solicitudDialog = inject(MatDialog)
 
   openDialog() {
-    this.solicitudDialog.open(SolicitudOrganizador, {
+    const dialogRef = this.solicitudDialog.open(SolicitudOrganizador, {
       data: {
         animal: "panda"
       }
-    })
+    });
+
+    // Listen for when the dialog chain is complete
+    dialogRef.afterClosed().subscribe((result) => {
+      // Check if a petition was successfully created
+      if (result && result.success) {
+        // Refetch the petition immediately
+        if (this.user.id) {
+          this.obtenerPeticionOrganizador(this.user.id);
+        }
+      }
+    });
   }
 
 
@@ -70,7 +81,8 @@ export class Profile implements OnInit {
     image64: "",
     nombreUsuario: "",
     apellidoUsuario: "",
-    email: ""
+    email: "",
+    userImage: ""
   }
 
   // Edit mode properties
@@ -140,6 +152,8 @@ export class Profile implements OnInit {
     // Load provinces for the dropdown
     this.loadProvincias();
   }
+
+
 
   loadProvincias() {
 

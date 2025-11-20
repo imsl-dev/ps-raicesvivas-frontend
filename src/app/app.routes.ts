@@ -17,6 +17,7 @@ import { PagoPending } from './components/pages/pago/pago-pending/pago-pending';
 import { AdminPanel } from './components/pages/panels/admin-panel/admin-panel';
 import { MuralDonaciones } from './components/pages/mural-donaciones/mural-donaciones';
 import { PanelOrganizador } from './components/pages/panels/panel-organizador/panel-organizador';
+import { TiendaCanjeables } from './components/pages/tienda-canjeables/tienda-canjeables';
 
 
 export const routes: Routes = [
@@ -38,6 +39,7 @@ export const routes: Routes = [
     { path: 'panel-administrador', component: AdminPanel, canActivate: [adminGuard] },
     { path: 'panel-organizador', component: PanelOrganizador, canActivate: [authGuard, organizadorGuard] },
     { path: 'donaciones', component: MuralDonaciones },
+    { path: 'canjeables', component: TiendaCanjeables },
     { path: '**', component: Home }
 
 ];

@@ -1,0 +1,147 @@
+<div class="content-wrapper">
+    <div class="header">
+        <h2>🎁 Gestión de Canjeables</h2>
+        <p class="subtitle">Crea nuevos productos canjeables por puntos para los usuarios</p>
+    </div>
+
+    <div class="content-body">
+        <!-- Loading state -->
+        @if (loading) {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Cargando información...</p>
+        </div>
+        }
+
+        @if (!loading) {
+        <div class="form-container">
+            <form (ngSubmit)="onSubmit()" #canjeableForm="ngForm">
+
+                <!-- Name Field -->
+                <div class="form-group">
+                    <label for="nombre" class="form-label">
+                        📝 Nombre del Canjeable *
+                    </label>
+                    <input type="text" id="nombre" name="nombre" [(ngModel)]="formData.nombre" class="form-control"
+                        [class.error]="errors['nombre']" placeholder="Ej: 20% de descuento en Helados Grido" required>
+                    @if (errors['nombre']) {
+                    <span class="error-message">{{ errors['nombre'] }}</span>
+                    }
+                </div>
+
+                <!-- Sponsor Selection -->
+                <div class="form-group">
+                    <label for="sponsor" class="form-label">
+                        🏢 Sponsor *
+                    </label>
+                    <select id="sponsor" name="sponsor" [(ngModel)]="formData.sponsorId" class="form-control"
+                        [class.error]="errors['sponsorId']" required>
+                        <option [ngValue]="0">Seleccione un sponsor</option>
+                        @for (sponsor of sponsors; track sponsor.id) {
+                        <option [ngValue]="sponsor.id">{{ sponsor.nombre }}</option>
+                        }
+                    </select>
+                    @if (errors['sponsorId']) {
+                    <span class="error-message">{{ errors['sponsorId'] }}</span>
+                    }
+                </div>
+
+                <!-- URL Field -->
+                <div class="form-group">
+                    <label for="url" class="form-label">
+                        🔗 URL de Redirección *
+                    </label>
+                    <input type="text" id="url" name="url" [(ngModel)]="formData.url" class="form-control"
+                        [class.error]="errors['url']" placeholder="https://ejemplo.com/descuento" required>
+                    <small class="form-hint">
+                        URL a la que redirigirá el código QR cuando sea escaneado
+                    </small>
+                    @if (errors['url']) {
+                    <span class="error-message">{{ errors['url'] }}</span>
+                    }
+                </div>
+
+                <!-- Cost in Points -->
+                <div class="form-group">
+                    <label for="costoPuntos" class="form-label">
+                        ⭐ Costo en Puntos *
+                    </label>
+                    <input type="number" id="costoPuntos" name="costoPuntos" [(ngModel)]="formData.costoPuntos"
+                        class="form-control" [class.error]="errors['costoPuntos']" min="1" placeholder="100" required>
+                    @if (errors['costoPuntos']) {
+                    <span class="error-message">{{ errors['costoPuntos'] }}</span>
+                    }
+                </div>
+
+                <!-- Expiration Date -->
+                <div class="form-group">
+                    <label for="validoHasta" class="form-label">
+                        📅 Válido Hasta *
+                    </label>
+                    <input type="date" id="validoHasta" name="validoHasta" [(ngModel)]="formData.validoHasta"
+                        class="form-control" [class.error]="errors['validoHasta']" required>
+                    @if (errors['validoHasta']) {
+                    <span class="error-message">{{ errors['validoHasta'] }}</span>
+                    }
+                </div>
+
+                <!-- Preview Card -->
+                @if (formData.sponsorId && formData.sponsorId > 0) {
+                <div class="preview-section">
+                    <h3>👁️ Vista Previa</h3>
+                    <div class="preview-card">
+                        @if (formData.nombre) {
+                        <div class="preview-nombre">
+                            {{ formData.nombre }}
+                        </div>
+                        }
+                        <div class="preview-header">
+                            <div class="preview-sponsor-info">
+                                @if (getSponsorImage(formData.sponsorId)) {
+                                <img [src]="getSponsorImage(formData.sponsorId)"
+                                    [alt]="getSponsorName(formData.sponsorId)" class="sponsor-logo">
+                                }
+                                <span class="preview-sponsor">{{ getSponsorName(formData.sponsorId) }}</span>
+                            </div>
+                            <span class="preview-points">⭐ {{ formData.costoPuntos || 0 }} puntos</span>
+                        </div>
+                        @if (formData.url) {
+                        <div class="preview-url">
+                            <span class="url-icon">🔗</span>
+                            <span class="url-text">{{ formData.url }}</span>
+                        </div>
+                        }
+                        <div class="preview-expiry">
+                            <span class="expiry-icon">📅</span>
+                            <span>Válido hasta: {{ formData.validoHasta || 'No especificado' }}</span>
+                        </div>
+                    </div>
+                </div>
+                }
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" (click)="resetForm()">
+                        🔄 Limpiar Formulario
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        ✅ Crear Canjeable
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <h4>ℹ️ Información</h4>
+            <ul>
+                <li>Los usuarios podrán canjear puntos por estos productos en la tienda</li>
+                <li>El código QR se generará automáticamente al momento del canje</li>
+                <li>La URL de redirección es obligatoria y debe apuntar al cupón o beneficio</li>
+                <li>Todos los campos marcados con * son obligatorios</li>
+            </ul>
+        </div>
+        }
+    </div>
+</div>
