@@ -1,1 +1,254 @@
-<p>panel-organizador works!</p>
+<div class="admin-container">
+    <!-- Botón para mostrar sidebar en móvil -->
+    <button class="btn-toggle-sidebar" (click)="toggleSidebar()">
+        @if (!mostrarSidebar) {
+        <span>📋 Menú Organizador</span>
+        }
+        @if (mostrarSidebar) {
+        <span>✖ Cerrar Menú</span>
+        }
+    </button>
+
+    <div class="layout-container">
+        <!-- Sidebar de navegación -->
+        <aside class="admin-sidebar" [class.active]="mostrarSidebar">
+            <div class="sidebar-header">
+                <h3>👨‍💼 Panel de Organización</h3>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-item" [class.active]="isSelected('asistencias')" (click)="selectOption('asistencias')">
+                    <span class="nav-icon">✅</span>
+                    <span class="nav-text">Gestión de Asistencias</span>
+                </button>
+
+                <button class="nav-item" [class.active]="isSelected('reportes')" (click)="selectOption('reportes')">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Reportes</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                @if (usuarioLogeado) {
+                <div class="user-info">
+                    <p class="user-name">{{ usuarioLogeado.nombre }} {{ usuarioLogeado.apellido }}</p>
+                    <p class="user-role">{{ usuarioLogeado.rol }}</p>
+                </div>
+                }
+            </div>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="admin-main">
+            @if (selectedOption === 'asistencias') {
+            <div class="content-wrapper">
+                <div class="header">
+                    <h2>✅ Gestión de Asistencias</h2>
+                    <p class="subtitle">Administra la asistencia de participantes en tus eventos</p>
+                </div>
+
+                <div class="content-body">
+                    @if (loading) {
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Cargando eventos...</p>
+                    </div>
+                    }
+
+                    @if (!loading) {
+                    <!-- Eventos en Curso -->
+                    <section class="peticiones-section">
+                        <div class="section-header">
+                            <h3>▶️ Eventos en Curso</h3>
+                            <span class="badge badge-info">{{ eventosEnCurso.length }}</span>
+                        </div>
+
+                        @if (eventosEnCurso.length === 0) {
+                        <div class="empty-state">
+                            <span class="empty-icon">📅</span>
+                            <p>No tienes eventos en curso en este momento</p>
+                        </div>
+                        } @else {
+                        <div class="accordion-container">
+                            @for (evento of eventosEnCurso; track evento.id) {
+                            <div class="accordion-item" [class.expanded]="isEnCursoExpanded(evento.id)">
+                                <div class="accordion-header" (click)="toggleEnCurso(evento.id)">
+                                    <div class="header-left">
+                                        <div class="evento-info">
+                                            <h4>{{ evento.nombre }}</h4>
+                                            <p class="evento-meta">
+                                                👥 {{ contarInscritos(evento) }} inscriptos
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="header-right">
+                                        <span class="badge badge-success">EN CURSO</span>
+                                        <span class="expand-icon">
+                                            @if (isEnCursoExpanded(evento.id)) {
+                                            <span>▲</span>
+                                            } @else {
+                                            <span>▼</span>
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+
+                                @if (isEnCursoExpanded(evento.id)) {
+                                <div class="accordion-body">
+                                    <div class="body-content">
+                                        <div class="info-section">
+                                            <h5>📋 Información del Evento</h5>
+                                            <div class="info-grid">
+                                                <div class="info-item">
+                                                    <span class="info-label">Fecha de inicio:</span>
+                                                    <span class="info-value">{{ formatDate(evento.horaInicio) }}</span>
+                                                </div>
+                                                <div class="info-item">
+                                                    <span class="info-label">Fecha de fin:</span>
+                                                    <span class="info-value">{{ formatDate(evento.horaFin) }}</span>
+                                                </div>
+                                                <div class="info-item">
+                                                    <span class="info-label">Participantes:</span>
+                                                    <span class="info-value">{{ contarInscritos(evento) }}</span>
+                                                </div>
+                                                @if (evento.direccion) {
+                                                <div class="info-item full-width">
+                                                    <span class="info-label">Ubicación:</span>
+                                                    <span class="info-value">{{ evento.direccion }}</span>
+                                                </div>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div class="actions-section">
+                                            <button class="btn-action btn-primary" (click)="irAAsistencias(evento.id)">
+                                                📝 Gestionar Asistencias
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                            }
+                        </div>
+                        }
+                    </section>
+
+                    <!-- Eventos Finalizados -->
+                    <section class="peticiones-section">
+                        <div class="section-header">
+                            <h3>✓ Eventos Finalizados</h3>
+                            <span class="badge badge-secondary">{{ eventosFinalizados.length }}</span>
+                        </div>
+
+                        @if (eventosFinalizados.length === 0) {
+                        <div class="empty-state">
+                            <span class="empty-icon">🏁</span>
+                            <p>No tienes eventos finalizados</p>
+                        </div>
+                        } @else {
+                        <div class="accordion-container">
+                            @for (evento of eventosFinalizados; track evento.id) {
+                            <div class="accordion-item" [class.expanded]="isFinalizadoExpanded(evento.id)">
+                                <div class="accordion-header" (click)="toggleFinalizado(evento.id)">
+                                    <div class="header-left">
+                                        <div class="evento-info">
+                                            <h4>{{ evento.nombre }}</h4>
+                                            <p class="evento-meta">
+                                                👥 {{ contarInscritos(evento) }} participantes
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="header-right">
+                                        <span class="badge badge-secondary">FINALIZADO</span>
+                                        <span class="expand-icon">
+                                            @if (isFinalizadoExpanded(evento.id)) {
+                                            <span>▲</span>
+                                            } @else {
+                                            <span>▼</span>
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+
+                                @if (isFinalizadoExpanded(evento.id)) {
+                                <div class="accordion-body">
+                                    <div class="body-content">
+                                        <div class="info-section">
+                                            <h5>📋 Información del Evento</h5>
+                                            <div class="info-grid">
+                                                <div class="info-item">
+                                                    <span class="info-label">Fecha de inicio:</span>
+                                                    <span class="info-value">{{ formatDate(evento.horaInicio) }}</span>
+                                                </div>
+                                                <div class="info-item">
+                                                    <span class="info-label">Fecha de fin:</span>
+                                                    <span class="info-value">{{ formatDate(evento.horaFin) }}</span>
+                                                </div>
+                                                <div class="info-item">
+                                                    <span class="info-label">Participantes:</span>
+                                                    <span class="info-value">{{ contarInscritos(evento) }}</span>
+                                                </div>
+                                                @if (evento.direccion) {
+                                                <div class="info-item full-width">
+                                                    <span class="info-label">Ubicación:</span>
+                                                    <span class="info-value">{{ evento.direccion }}</span>
+                                                </div>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div class="actions-section">
+                                            <button class="btn-action btn-primary" (click)="irAAsistencias(evento.id)">
+                                                📝 Ver Asistencias
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                            }
+                        </div>
+                        }
+                    </section>
+                    }
+                </div>
+            </div>
+            }
+
+            @if (selectedOption === 'reportes') {
+            <div class="content-wrapper">
+                <div class="header">
+                    <h2>📊 Reportes</h2>
+                    <p class="subtitle">Visualiza estadísticas y reportes de tus eventos</p>
+                </div>
+
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">📈</div>
+                    <h3>Componente en desarrollo</h3>
+                    <p>Esta sección permitirá visualizar reportes detallados de tus eventos.</p>
+
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <span class="feature-icon">📊</span>
+                            <span>Estadísticas de asistencia</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">💰</span>
+                            <span>Reportes financieros</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📈</span>
+                            <span>Análisis de participación</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📥</span>
+                            <span>Exportación de datos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+        </main>
+    </div>
+</div>

@@ -69,6 +69,14 @@
                     </a>
                 </li>
                 }
+                @else if (esOrganizador()){
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/panel-organizador" routerLinkActive="active">
+                        <span class="nav-icon">⚙️</span>
+                        <span class="nav-text">Panel Organizador</span>
+                    </a>
+                </li>
+                }
 
                 <!-- Divisor visible solo en desktop -->
                 @if (authService.isAuthenticated$ | async) {
