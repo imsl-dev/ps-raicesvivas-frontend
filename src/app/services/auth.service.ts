@@ -17,7 +17,8 @@ export class AuthService {
     tipoDocumento: TipoDocumento.DNI,
     nroDocumento: "12345678",
     rol: RolUsuario.USUARIO,
-    email: "email@asd.com"
+    email: "email@asd.com",
+    canjeables: []
   };
 
   // Initialize from localStorage if available

@@ -1,0 +1,103 @@
+<div class="content-wrapper">
+    <div class="header">
+        <h2>📊 Reportes y Estadísticas</h2>
+        <p class="subtitle">Panel de control con métricas clave del sistema</p>
+    </div>
+
+    <div class="content-body">
+        <!-- Loading State -->
+        @if (loading) {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Cargando reportes...</p>
+        </div>
+        }
+
+        @if (!loading) {
+        <!-- KPIs Section -->
+        <section class="kpis-section">
+            <div class="kpi-card revenue">
+                <div class="kpi-icon">💰</div>
+                <div class="kpi-content">
+                    <h3 class="kpi-label">Total Recaudado (Mes Actual)</h3>
+                    <p class="kpi-value">{{ formatCurrency(kpiData.totalRecaudado) }}</p>
+                </div>
+            </div>
+
+            <div class="kpi-card inscriptions">
+                <div class="kpi-icon">📝</div>
+                <div class="kpi-content">
+                    <h3 class="kpi-label">Inscripciones Este Mes</h3>
+                    <p class="kpi-value">{{ formatNumber(kpiData.inscripcionesMes) }}</p>
+                </div>
+            </div>
+
+            <div class="kpi-card events">
+                <div class="kpi-icon">📅</div>
+                <div class="kpi-content">
+                    <h3 class="kpi-label">Eventos Activos</h3>
+                    <p class="kpi-value">{{ formatNumber(kpiData.eventosActivos) }}</p>
+                </div>
+            </div>
+
+
+        </section>
+
+        <!-- Charts Section -->
+        <section class="charts-section">
+            <!-- Event Types Pie Chart -->
+            <div class="chart-container">
+                <div class="chart-card">
+                    <google-chart [type]="pieChartType" [data]="pieChartData" [options]="pieChartOptions"
+                        [width]="pieChartWidth" [height]="pieChartHeight">
+                    </google-chart>
+                </div>
+            </div>
+
+            <!-- Monthly Revenue Bar Chart -->
+            <div class="chart-container full-width">
+                <div class="chart-card">
+                    <google-chart [type]="barChartType" [data]="barChartData" [options]="barChartOptions"
+                        [width]="barChartWidth" [height]="barChartHeight">
+                    </google-chart>
+                </div>
+            </div>
+
+            <!-- Monthly Registrations Line Chart -->
+            <div class="chart-container full-width">
+                <div class="chart-card">
+                    <google-chart [type]="lineChartType" [data]="lineChartData" [options]="lineChartOptions"
+                        [width]="lineChartWidth" [height]="lineChartHeight">
+                    </google-chart>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary Section
+        <section class="summary-section">
+            <div class="summary-card">
+                <h3>📈 Resumen del Período</h3>
+                <ul class="summary-list">
+                    <li>
+                        <span class="summary-icon">✅</span>
+                        <span>El tipo de evento más popular es <strong>Reforestación</strong> con 45 eventos</span>
+                    </li>
+                    <li>
+                        <span class="summary-icon">📊</span>
+                        <span>Noviembre fue el mes con mayor recaudación: <strong>{{ formatCurrency(23500)
+                                }}</strong></span>
+                    </li>
+                    <li>
+                        <span class="summary-icon">👤</span>
+                        <span>El mes con más inscripciones fue Noviembre con <strong>445 inscripciones</strong></span>
+                    </li>
+                    <li>
+                        <span class="summary-icon">🎯</span>
+                        <span>Promedio de inscripciones mensuales: <strong>349 usuarios</strong></span>
+                    </li>
+                </ul>
+            </div>
+        </section> -->
+        }
+    </div>
+</div>

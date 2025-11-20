@@ -1,3 +1,5 @@
+import { Sponsor } from "./Sponsor";
+
 export interface Canjeable {
   id?: number;
   nombre: string;
@@ -5,4 +7,5 @@ export interface Canjeable {
   url?: string;
   costoPuntos: number;
   validoHasta: string;
+  sponsor?: Sponsor
 }

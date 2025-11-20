@@ -3,6 +3,9 @@ import { Sponsor } from '../../../../../models/entities/Sponsor';
 import { Router } from '@angular/router';
 import { Canjeable } from '../../../../../models/entities/Canjeable';
 import { FormsModule } from '@angular/forms';
+import { SponsorService } from '../../../../../services/sponsor.service';
+import { CanjeableService } from '../../../../../services/canjeable.service';
+import { NuevoCanjeableDTO } from '../../../../../models/dtos/canjeables/NuevoCanjeableDTO';
 
 @Component({
   selector: 'app-gestion-canjeables',
@@ -12,6 +15,12 @@ import { FormsModule } from '@angular/forms';
 })
 export class GestionCanjeables implements OnInit {
   private readonly router = inject(Router);
+
+  constructor(
+    private sponsorService: SponsorService,
+    private canjeableService: CanjeableService
+  ) {
+  }
 
   loading: boolean = false;
   sponsors: Sponsor[] = [];
@@ -36,23 +45,18 @@ export class GestionCanjeables implements OnInit {
   loadSponsors(): void {
     this.loading = true;
 
-    // TODO: Replace with actual API call
-    // this.sponsorService.getAll().subscribe({
-    //   next: (data) => {
-    //     this.sponsors = data;
-    //     this.loading = false;
-    //   },
-    //   error: (err) => {
-    //     console.error('Error cargando sponsors:', err);
-    //     this.loading = false;
-    //   }
-    // });
+    this.sponsorService.getSponsor().subscribe({
+      next: (data) => {
+        this.sponsors = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error cargando sponsors:', err);
+        this.loading = false;
+      }
+    });
 
-    // Mock data for now
-    setTimeout(() => {
-      this.sponsors = this.generateMockSponsors();
-      this.loading = false;
-    }, 500);
+
   }
 
   // Mock data (remove when API is ready)
@@ -67,15 +71,13 @@ export class GestionCanjeables implements OnInit {
   }
 
   setMinDate(): void {
-    // Set minimum date to today
+    // Set minimum date to today with time
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
-    this.formData.validoHasta = `${year}-${month}-${day}`;
+    this.formData.validoHasta = `${year}-${month}-${day}T23:59:59`;
   }
-
   validateForm(): boolean {
     this.errors = {};
     let isValid = true;
@@ -134,25 +136,33 @@ export class GestionCanjeables implements OnInit {
       return;
     }
 
-    console.log('Crear canjeable:', this.formData);
+    // Convert date to LocalDateTime format (add time if not present)
+    let validoHastaFormatted = this.formData.validoHasta;
+    if (!validoHastaFormatted.includes('T')) {
+      // If only date is provided, add end of day time
+      validoHastaFormatted = `${validoHastaFormatted}T23:59:59`;
+    }
 
-    // TODO: Replace with actual API call
-    // this.canjeableService.create(this.formData).subscribe({
-    //   next: (response) => {
-    //     alert('Canjeable creado exitosamente');
-    //     this.resetForm();
-    //   },
-    //   error: (err) => {
-    //     console.error('Error creando canjeable:', err);
-    //     alert('Error al crear el canjeable');
-    //   }
-    // });
+    const canjeableDTO: NuevoCanjeableDTO = {
+      nombre: this.formData.nombre,
+      sponsorId: this.formData.sponsorId,
+      costoPuntos: this.formData.costoPuntos,
+      url: this.formData.url!,
+      validoHasta: validoHastaFormatted
+    };
 
-    // Simulate API call
-    setTimeout(() => {
-      alert('Canjeable creado exitosamente');
-      this.resetForm();
-    }, 500);
+    this.canjeableService.postCanjeable(canjeableDTO).subscribe({
+      next: (response) => {
+        alert('Canjeable creado exitosamente');
+        this.resetForm();
+      },
+      error: (err) => {
+        console.error('Error creando canjeable:', err);
+        alert('Error al crear el canjeable');
+      }
+    });
+
+
   }
 
   resetForm(): void {
@@ -170,5 +180,10 @@ export class GestionCanjeables implements OnInit {
   getSponsorName(sponsorId: number): string {
     const sponsor = this.sponsors.find(s => s.id === Number(sponsorId));
     return sponsor ? sponsor.nombre : '';
+  }
+
+  getSponsorImage(sponsorId: number): string | undefined {
+    const sponsor = this.sponsors.find(s => s.id === Number(sponsorId));
+    return sponsor?.rutaImg1;
   }
 }

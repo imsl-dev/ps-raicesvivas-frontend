@@ -1,6 +1,6 @@
 <div class="content-wrapper">
     <div class="header">
-        <h2>⭐ Gestión de Canjeables</h2>
+        <h2>🎁 Gestión de Canjeables</h2>
         <p class="subtitle">Crea nuevos productos canjeables por puntos para los usuarios</p>
     </div>
 
@@ -23,7 +23,7 @@
                         📝 Nombre del Canjeable *
                     </label>
                     <input type="text" id="nombre" name="nombre" [(ngModel)]="formData.nombre" class="form-control"
-                        [class.error]="errors['nombre']" placeholder="Ej: 20% de descuento en WaffleHouse" required>
+                        [class.error]="errors['nombre']" placeholder="Ej: 20% de descuento en Helados Grido" required>
                     @if (errors['nombre']) {
                     <span class="error-message">{{ errors['nombre'] }}</span>
                     }
@@ -96,7 +96,13 @@
                         </div>
                         }
                         <div class="preview-header">
-                            <span class="preview-sponsor">{{ getSponsorName(formData.sponsorId) }}</span>
+                            <div class="preview-sponsor-info">
+                                @if (getSponsorImage(formData.sponsorId)) {
+                                <img [src]="getSponsorImage(formData.sponsorId)"
+                                    [alt]="getSponsorName(formData.sponsorId)" class="sponsor-logo">
+                                }
+                                <span class="preview-sponsor">{{ getSponsorName(formData.sponsorId) }}</span>
+                            </div>
                             <span class="preview-points">⭐ {{ formData.costoPuntos || 0 }} puntos</span>
                         </div>
                         @if (formData.url) {
