@@ -1148,6 +1148,7 @@
 
 .input-monto[type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .helper-text {
