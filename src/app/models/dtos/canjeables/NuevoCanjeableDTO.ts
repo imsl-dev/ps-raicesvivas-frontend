@@ -3,5 +3,6 @@ export interface NuevoCanjeableDTO {
     sponsorId: number,
     url: string,
     costoPuntos: number,
-    validoHasta: string
+    validoHasta: string,
+    nombreSponsor: string
 }

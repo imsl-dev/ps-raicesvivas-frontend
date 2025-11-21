@@ -80,9 +80,6 @@
                         <a [href]="canjeable.url" target="_blank" class="qr-link">
                             🔗 Abrir enlace directamente
                         </a>
-                        <button class="btn btn-danger" (click)="canjearCupon(canjeable)">
-                            ✅ Marcar como Canjeado
-                        </button>
                     </div>
                     }
                 </div>
@@ -96,7 +93,7 @@
     <!-- Sección: Canjeables Disponibles -->
     <section class="disponibles-section">
         <div class="section-header">
-            <h2>🏪 Canjeables Disponibles</h2>
+            <h2>🏪 Cupones Disponibles</h2>
         </div>
 
         <!-- Filtros -->
@@ -110,8 +107,8 @@
                     }
                 </select>
             </div>
-            <button class="btn btn-secondary" (click)="limpiarFiltros()">
-                🔄 Limpiar Filtros
+            <button class="btn btn-limpiar" (click)="limpiarFiltros()">
+                🔄 Limpiar
             </button>
         </div>
 
@@ -148,7 +145,7 @@
                     <button class="btn btn-comprar" [class.disabled]="!puedeComprar(canjeable)"
                         [disabled]="!puedeComprar(canjeable)" (click)="comprarCanjeable(canjeable)">
                         @if (puedeComprar(canjeable)) {
-                        <span>💰 Comprar</span>
+                        <span>💰 Canjear</span>
                         } @else {
                         <span>❌ Puntos insuficientes</span>
                         }
@@ -161,3 +158,102 @@
     </section>
     }
 </div>
+
+<!-- Modal de confirmación REDEEM -->
+@if (showRedeemModal && pendingRedeemCanjeable) {
+<div class="modal-overlay" (click)="cancelarCanje()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header redeem">
+            <h3>⚠️ Confirmar Canje</h3>
+            <button class="modal-close" (click)="cancelarCanje()">✖</button>
+        </div>
+
+        <div class="modal-body">
+            <p class="modal-message">
+                ¿Está seguro que desea canjear este cupón?
+            </p>
+
+            <div class="canjeable-preview">
+                <h4>{{ pendingRedeemCanjeable.nombre }}</h4>
+                <div class="preview-info">
+                    <span class="preview-sponsor">
+                        {{ pendingRedeemCanjeable.sponsor?.nombre }}
+                    </span>
+                    <span class="preview-points">⭐ {{ pendingRedeemCanjeable.costoPuntos }} puntos</span>
+                </div>
+            </div>
+
+            <p class="modal-warning">
+                ⚠️ Esta acción no se puede deshacer. El cupón será marcado como usado y se removerá de tu lista.
+            </p>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="cancelarCanje()">
+                Cancelar
+            </button>
+            <button class="btn btn-primary" (click)="confirmarCanje()">
+                Confirmar y Mostrar QR
+            </button>
+        </div>
+    </div>
+</div>
+}
+
+<!-- Modal de confirmación PURCHASE -->
+@if (showPurchaseModal && pendingPurchaseCanjeable) {
+<div class="modal-overlay" (click)="cancelarCompra()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header purchase">
+            <h3>💰 Confirmar Compra</h3>
+            <button class="modal-close" (click)="cancelarCompra()">✖</button>
+        </div>
+
+        <div class="modal-body">
+            <p class="modal-message">
+                ¿Deseas comprar este canjeable?
+            </p>
+
+            <div class="canjeable-preview">
+                <h4>{{ pendingPurchaseCanjeable.nombre }}</h4>
+                <div class="preview-info">
+                    <span class="preview-sponsor">
+                        {{ pendingPurchaseCanjeable.sponsor?.nombre }}
+                    </span>
+                    <span class="preview-points">⭐ {{ pendingPurchaseCanjeable.costoPuntos }} puntos</span>
+                </div>
+                <div class="preview-expiry">
+                    <span class="expiry-icon">📅</span>
+                    Válido hasta: {{ formatDate(pendingPurchaseCanjeable.validoHasta) }}
+                </div>
+            </div>
+
+            <div class="puntos-info">
+                <div class="puntos-row">
+                    <span>Tus puntos actuales:</span>
+                    <strong>⭐ {{ usuarioLogeado.puntos }}</strong>
+                </div>
+                <div class="puntos-row">
+                    <span>Costo del canjeable:</span>
+                    <strong class="cost">-⭐ {{ pendingPurchaseCanjeable.costoPuntos }}</strong>
+                </div>
+                <hr class="divider">
+                <div class="puntos-row total">
+                    <span>Puntos restantes:</span>
+                    <strong class="remaining">⭐ {{ usuarioLogeado.puntos! - pendingPurchaseCanjeable.costoPuntos
+                        }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="cancelarCompra()">
+                Cancelar
+            </button>
+            <button class="btn btn-comprar" (click)="confirmarCompra()">
+                Confirmar Compra
+            </button>
+        </div>
+    </div>
+</div>
+}
