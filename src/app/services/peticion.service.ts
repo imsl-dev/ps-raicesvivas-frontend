@@ -19,4 +19,16 @@ export class PeticionService {
   postPeticion(peticion: PeticionOrganizadorPostDTO) {
     return this.http.post<PeticionOrganizador>(`${this.API_URL}/peticiones`, peticion)
   }
+
+  getPeticiones() {
+    return this.http.get<PeticionOrganizador[]>(`${this.API_URL}/peticiones`)
+  }
+
+  aceptarPeticion(peticionId: number) {
+    return this.http.put<PeticionOrganizador>(`${this.API_URL}/peticiones`, { peticionId: peticionId, nuevoEstado: "ACEPTADO" })
+  }
+
+  cancelarPeticion(peticionId: number) {
+    return this.http.put<PeticionOrganizador>(`${this.API_URL}/peticiones`, { peticionId: peticionId, nuevoEstado: "CANCELADO" })
+  }
 }

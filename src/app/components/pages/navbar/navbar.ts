@@ -42,7 +42,7 @@ export class Navbar implements OnInit {
   }
 
   canjearPuntos(): void {
-    alert('⚠️ Funcionalidad en desarrollo');
+    this.router.navigate(['canjeables'])
   }
 
   toggleDropdownPerfil(): void {

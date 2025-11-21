@@ -83,12 +83,18 @@ export class FrmSolicitudOrganizador implements OnInit {
       const peticion: PeticionOrganizadorPostDTO = {
         idUsuario: this.user.id || 1,
         mensajeUsuario: this.formSolicitud.get('motivo')?.value!,
-        image64: this.selectedImage as string
+        image64: this.selectedImage as string,
+        userImage: this.user.rutaImg as string
       }
       console.log("Image data:", this.formSolicitud.get('idImage')?.value!);
       this.peticionService.postPeticion(peticion).subscribe({
         next: (response) => {
-
+          // Close dialog and pass success result
+          this.dialogRef.close({ success: true, peticion: response });
+        },
+        error: (err) => {
+          console.log("Error enviando peticion");
+          this.dialogRef.close({ success: false, err });
         }
       })
 

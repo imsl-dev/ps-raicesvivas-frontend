@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { EstadoPeticion } from '../../../../../models/enums/Enums';
 import { PeticionOrganizador } from '../../../../../models/entities/PeticionOrganizador';
 import { FormsModule } from '@angular/forms';
+import { PeticionService } from '../../../../../services/peticion.service';
 
 @Component({
   selector: 'app-gestion-peticiones',
@@ -11,6 +12,9 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './gestion-peticiones.css'
 })
 export class GestionPeticiones implements OnInit {
+
+  constructor(private peticionService: PeticionService) { }
+
   loading: boolean = false;
   peticiones: PeticionOrganizador[] = [];
 
@@ -37,24 +41,17 @@ export class GestionPeticiones implements OnInit {
   loadPeticiones(): void {
     this.loading = true;
 
-    // TODO: Replace with actual API call
-    // this.peticionesService.getPeticiones().subscribe({
-    //   next: (data) => {
-    //     this.peticiones = data;
-    //     this.loading = false;
-    //   },
-    //   error: (err) => {
-    //     console.error('Error cargando peticiones:', err);
-    //     this.loading = false;
-    //   }
-    // });
+    this.peticionService.getPeticiones().subscribe({
+      next: (data) => {
+        this.peticiones = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error cargando peticiones:', err);
+        this.loading = false;
+      }
+    });
 
-    // Simulated data for now
-    setTimeout(() => {
-      this.peticiones = this.generateMockData();
-      this.loading = false;
-      console.log('Peticiones cargadas:', this.peticiones);
-    }, 500);
   }
 
   // Mock data generator (remove when API is ready)
@@ -68,7 +65,8 @@ export class GestionPeticiones implements OnInit {
         image64: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzI4YTc0NSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjgwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+SkQ8L3RleHQ+PC9zdmc+',
         nombreUsuario: 'Juan',
         apellidoUsuario: 'Pérez',
-        email: 'juan.perez@example.com'
+        email: 'juan.perez@example.com',
+        userImage: ""
       },
       {
         id: 2,
@@ -78,7 +76,8 @@ export class GestionPeticiones implements OnInit {
         image64: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzIwYzk5NyIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjgwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+TUc8L3RleHQ+PC9zdmc+',
         nombreUsuario: 'María',
         apellidoUsuario: 'González',
-        email: 'maria.gonzalez@example.com'
+        email: 'maria.gonzalez@example.com',
+        userImage: ""
       },
       {
         id: 3,
@@ -88,7 +87,8 @@ export class GestionPeticiones implements OnInit {
         image64: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzE3YTJiOCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjgwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+Q0w8L3RleHQ+PC9zdmc+',
         nombreUsuario: 'Carlos',
         apellidoUsuario: 'López',
-        email: 'carlos.lopez@example.com'
+        email: 'carlos.lopez@example.com',
+        userImage: ""
       },
       {
         id: 4,
@@ -98,7 +98,8 @@ export class GestionPeticiones implements OnInit {
         image64: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2RjMzU0NSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjgwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+QVI8L3RleHQ+PC9zdmc+',
         nombreUsuario: 'Ana',
         apellidoUsuario: 'Rodríguez',
-        email: 'ana.rodriguez@example.com'
+        email: 'ana.rodriguez@example.com',
+        userImage: ""
       },
       {
         id: 5,
@@ -108,7 +109,8 @@ export class GestionPeticiones implements OnInit {
         image64: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2ZmYzkwNyIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjgwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+TE08L3RleHQ+PC9zdmc+',
         nombreUsuario: 'Luis',
         apellidoUsuario: 'Martínez',
-        email: 'luis.martinez@example.com'
+        email: 'luis.martinez@example.com',
+        userImage: ""
       },
       {
         id: 6,
@@ -118,7 +120,8 @@ export class GestionPeticiones implements OnInit {
         image64: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzZmNDJjMSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjgwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+U0Y8L3RleHQ+PC9zdmc+',
         nombreUsuario: 'Sofía',
         apellidoUsuario: 'Fernández',
-        email: 'sofia.fernandez@example.com'
+        email: 'sofia.fernandez@example.com',
+        userImage: ""
       }
     ];
   }
@@ -188,49 +191,36 @@ export class GestionPeticiones implements OnInit {
   aceptarPeticion(peticion: PeticionOrganizador): void {
     console.log('Aceptar petición:', peticion);
 
-    // TODO: Replace with actual API call
-    // this.peticionesService.aceptarPeticion(peticion.id).subscribe({
-    //   next: () => {
-    //     peticion.estadoPeticion = EstadoPeticion.ACEPTADO;
-    //     this.expandedPendienteId = null;
-    //     alert('Petición aceptada exitosamente');
-    //   },
-    //   error: (err) => {
-    //     console.error('Error aceptando petición:', err);
-    //     alert('Error al aceptar la petición');
-    //   }
-    // });
+    this.peticionService.aceptarPeticion(peticion.id!).subscribe({
+      next: () => {
+        peticion.estadoPeticion = EstadoPeticion.ACEPTADO;
+        this.expandedPendienteId = null;
+        alert('Petición aceptada exitosamente');
+      },
+      error: (err) => {
+        console.error('Error aceptando petición:', err);
+        alert('Error al aceptar la petición');
+      }
+    });
 
-    // Simulate API call
-    setTimeout(() => {
-      peticion.estadoPeticion = EstadoPeticion.ACEPTADO;
-      this.expandedPendienteId = null;
-      alert('Petición aceptada exitosamente');
-    }, 500);
   }
 
   cancelarPeticion(peticion: PeticionOrganizador): void {
     console.log('Cancelar petición:', peticion);
 
-    // TODO: Replace with actual API call
-    // this.peticionesService.cancelarPeticion(peticion.id).subscribe({
-    //   next: () => {
-    //     peticion.estadoPeticion = EstadoPeticion.CANCELADO;
-    //     this.expandedPendienteId = null;
-    //     alert('Petición cancelada');
-    //   },
-    //   error: (err) => {
-    //     console.error('Error cancelando petición:', err);
-    //     alert('Error al cancelar la petición');
-    //   }
-    // });
 
-    // Simulate API call
-    setTimeout(() => {
-      peticion.estadoPeticion = EstadoPeticion.CANCELADO;
-      this.expandedPendienteId = null;
-      alert('Petición cancelada');
-    }, 500);
+    this.peticionService.cancelarPeticion(peticion.id!).subscribe({
+      next: () => {
+        peticion.estadoPeticion = EstadoPeticion.CANCELADO;
+        this.expandedPendienteId = null;
+        alert('Petición cancelada');
+      },
+      error: (err) => {
+        console.error('Error cancelando petición:', err);
+        alert('Error al cancelar la petición');
+      }
+    });
+
   }
 
   // Pagination
