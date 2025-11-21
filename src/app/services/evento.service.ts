@@ -56,4 +56,18 @@ export class EventoService {
             }
         });
     }
+
+    obtenerAsistenciasEvento(eventoId: number): Observable<any> {
+        return this.http.get<any>(`${this.API_URL}/asistencias`, {
+            params: { eventoId: eventoId.toString() }
+        });
+    }
+
+    guardarAsistenciasEvento(eventoId: number, asistencias: any[]): Observable<any> {
+        const body = {
+            eventoId: eventoId,
+            usuariosAsistencias: asistencias
+        };
+        return this.http.put<any>(`${this.API_URL}/asistencias`, body);
+    }
 }

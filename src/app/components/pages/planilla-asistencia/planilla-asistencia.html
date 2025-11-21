@@ -1,1 +1,143 @@
-<p>planilla-asistencia works!</p>
+<div class="planilla-container">
+  @if (loading) {
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando asistencias...</p>
+  </div>
+  }
+
+  @if (error && !loading) {
+  <div class="error-state">
+    <div class="error-icon">❌</div>
+    <h3>{{ error }}</h3>
+    <button class="btn btn-secondary" (click)="volver()">Volver</button>
+  </div>
+  }
+
+  @if (!loading && !error && evento) {
+  <div class="planilla-content">
+    <!-- Encabezado con información del evento -->
+    <div class="evento-header">
+      <div class="header-back">
+        <button class="btn-back" (click)="volver()">
+          <span>← Volver</span>
+        </button>
+      </div>
+
+      <div class="evento-info-card">
+        <div class="evento-titulo-section">
+          <h1 class="evento-nombre">📝 {{ evento.nombre }}</h1>
+          <span class="evento-estado" [ngClass]="getEstadoClass(evento.estado)">
+            {{ evento.estado }}
+          </span>
+        </div>
+
+        <div class="evento-detalles">
+          <div class="detalle-item">
+            <span class="detalle-icon">📅</span>
+            <div class="detalle-content">
+              <span class="detalle-label">Fecha</span>
+              <span class="detalle-valor">{{ formatDate(evento.horaInicio) }}</span>
+            </div>
+          </div>
+
+          <div class="detalle-item">
+            <span class="detalle-icon">⏰</span>
+            <div class="detalle-content">
+              <span class="detalle-label">Horario</span>
+              <span class="detalle-valor">
+                {{ formatTime(evento.horaInicio) }} - {{ formatTime(evento.horaFin) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="detalle-item">
+            <span class="detalle-icon">📊</span>
+            <div class="detalle-content">
+              <span class="detalle-label">Tipo</span>
+              <span class="detalle-valor">{{ evento.tipo | tipoEvento }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de asistencias -->
+    <div class="tabla-container">
+      <div class="tabla-header">
+        <h2>👥 Lista de Participantes</h2>
+        <p class="tabla-subtitle">Total: {{ participantes.length }} participante(s)</p>
+      </div>
+
+      @if (participantes.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">👥</div>
+        <h3>No hay participantes inscritos</h3>
+        <p>Aún no hay ningún usuario inscrito a este evento.</p>
+      </div>
+      }
+
+      @if (participantes.length > 0) {
+      <div class="tabla-responsive">
+        <table class="tabla-asistencias">
+          <thead>
+            <tr>
+              <th class="col-numero">Nro</th>
+              <th class="col-participante">Participante</th>
+              <th class="col-asistencia">Asistió</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (participante of participantes; track participante.usuarioId; let i = $index) {
+            <tr class="tabla-row">
+              <td class="col-numero">{{ i + 1 }}</td>
+              <td class="col-participante">
+                <div class="participante-info">
+                  <span class="participante-icon">👤</span>
+                  <span class="participante-nombre">{{ participante.nombreUsuario }}</span>
+                </div>
+              </td>
+              <td class="col-asistencia">
+                <label class="checkbox-container">
+                  <input 
+                    type="checkbox" 
+                    [(ngModel)]="participante.asistio"
+                    class="checkbox-input"
+                  />
+                  <span class="checkbox-custom"></span>
+                </label>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="acciones-container">
+        <button 
+          class="btn btn-secondary" 
+          (click)="volver()"
+          [disabled]="guardando"
+        >
+          Cancelar
+        </button>
+        <button 
+          class="btn btn-primary" 
+          (click)="guardarAsistencias()"
+          [disabled]="guardando"
+        >
+          @if (guardando) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+          @if (!guardando) {
+          <span>💾</span>
+          }
+          {{ guardando ? 'Guardando...' : 'Guardar Asistencias' }}
+        </button>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>

@@ -17,6 +17,7 @@ import { PagoPending } from './components/pages/pago/pago-pending/pago-pending';
 import { AdminPanel } from './components/pages/panels/admin-panel/admin-panel';
 import { MuralDonaciones } from './components/pages/mural-donaciones/mural-donaciones';
 import { PanelOrganizador } from './components/pages/panels/panel-organizador/panel-organizador';
+import { PlanillaAsistencia } from './components/pages/planilla-asistencia/planilla-asistencia';
 
 
 export const routes: Routes = [
@@ -37,6 +38,7 @@ export const routes: Routes = [
     { path: 'pago/pending', component: PagoPending },
     { path: 'panel-administrador', component: AdminPanel, canActivate: [adminGuard] },
     { path: 'panel-organizador', component: PanelOrganizador, canActivate: [authGuard, organizadorGuard] },
+    { path: 'asistencias/:id', component: PlanillaAsistencia, canActivate: [authGuard, organizadorGuard] },
     { path: 'donaciones', component: MuralDonaciones },
     { path: '**', component: Home }
 
