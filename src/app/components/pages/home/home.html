@@ -89,7 +89,7 @@
   </section>
 
   <!-- Testimonios -->
-  <section id="testimonios" class="py-5">
+  <!-- <section id="testimonios" class="py-5">
     <div class="container">
       <h2 class="text-center mb-5 fw-bold text-success">Voces de Nuestros Voluntarios</h2>
       <div class="row g-4">
@@ -110,7 +110,7 @@
         </div>
       </div>
     </div>
-  </section>
+  </section> -->
 
   <!-- Call to Action -->
   <section class="py-5 bg-success text-white">
@@ -125,23 +125,23 @@
   <section id="faq" class="py-5 bg-light">
     <div class="container">
       <h2 class="text-center mb-5 fw-bold text-success">Preguntas Frecuentes</h2>
-      
+
       <div class="faq-container">
         @for (faq of faqs; track faq.id) {
-          <div class="faq-item" [class.expanded]="faq.expanded">
-            <div class="faq-header" (click)="toggleFaq(faq.id)">
-              <div class="faq-question">
-                <span class="faq-icon">❓</span>
-                <h4>{{ faq.pregunta }}</h4>
-              </div>
-              <span class="expand-icon">▼</span>
+        <div class="faq-item" [class.expanded]="faq.expanded">
+          <div class="faq-header" (click)="toggleFaq(faq.id)">
+            <div class="faq-question">
+              <span class="faq-icon">❓</span>
+              <h4>{{ faq.pregunta }}</h4>
             </div>
-            @if (faq.expanded) {
-              <div class="faq-body">
-                <p>{{ faq.respuesta }}</p>
-              </div>
-            }
+            <span class="expand-icon">▼</span>
           </div>
+          @if (faq.expanded) {
+          <div class="faq-body">
+            <p>{{ faq.respuesta }}</p>
+          </div>
+          }
+        </div>
         }
       </div>
     </div>
@@ -177,7 +177,7 @@
 
         <!-- Right: Copyright -->
         <div class="col-md-4 text-center text-md-end">
-          <p class="mb-0 small">© 2025 Raíces Vivas. Todos los derechos reservados.</p>
+          <p class="mb-0 small">© 2025 Raíces Vivas.</p>
         </div>
       </div>
     </div>
