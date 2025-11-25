@@ -31,7 +31,8 @@ export class GestionCanjeables implements OnInit {
     sponsorId: 0,
     url: '',
     costoPuntos: 0,
-    validoHasta: ''
+    validoHasta: '',
+    nombreSponsor: ""
   };
 
   // Validación
@@ -148,10 +149,13 @@ export class GestionCanjeables implements OnInit {
       sponsorId: this.formData.sponsorId,
       costoPuntos: this.formData.costoPuntos,
       url: this.formData.url!,
-      validoHasta: validoHastaFormatted
+      validoHasta: validoHastaFormatted,
+      nombreSponsor: this.sponsors.find((sponsor) => sponsor.id === this.formData.sponsorId)?.nombre || ""
     };
 
+    console.log("[Gestion Canjeables] Posteando canjeable: ", canjeableDTO);
     this.canjeableService.postCanjeable(canjeableDTO).subscribe({
+
       next: (response) => {
         alert('Canjeable creado exitosamente');
         this.resetForm();
@@ -171,7 +175,8 @@ export class GestionCanjeables implements OnInit {
       sponsorId: 0,
       url: '',
       costoPuntos: 0,
-      validoHasta: ''
+      validoHasta: '',
+      nombreSponsor: ''
     };
     this.errors = {};
     this.setMinDate();

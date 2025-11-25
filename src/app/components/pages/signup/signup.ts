@@ -179,6 +179,7 @@ export class Signup implements OnInit {
             <li>Son voluntarias.</li>
             <li>Se realizan por MercadoPago.</li>
             <li>No admiten reembolso.</li>
+            <li>El 5% del monto es destinado para financiar el funcionamiento del sitio.</li>
           </ul>
           
           <h3>5. Organizadores</h3>

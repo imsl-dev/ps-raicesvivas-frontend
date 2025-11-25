@@ -50,15 +50,6 @@
                 </li>
                 }
 
-                <!-- Panel Organizador - Solo para organizadores -->
-                @if (esOrganizador()) {
-                <li class="nav-item">
-                    <a class="nav-link" routerLink="/panel-organizadores" routerLinkActive="active">
-                        <span class="nav-icon">👨‍💼</span>
-                        <span class="nav-text">Panel Organizador</span>
-                    </a>
-                </li>
-                }
 
                 <!-- Panel Administrador - Solo para admins -->
                 @if (esAdmin()) {
@@ -72,7 +63,7 @@
                 @else if (esOrganizador()){
                 <li class="nav-item">
                     <a class="nav-link" routerLink="/panel-organizador" routerLinkActive="active">
-                        <span class="nav-icon">⚙️</span>
+                        <span class="nav-icon">👨‍💼</span>
                         <span class="nav-text">Panel Organizador</span>
                     </a>
                 </li>

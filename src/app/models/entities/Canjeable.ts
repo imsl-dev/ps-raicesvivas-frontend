@@ -7,5 +7,6 @@ export interface Canjeable {
   url?: string;
   costoPuntos: number;
   validoHasta: string;
+  nombreSponsor: string;
   sponsor?: Sponsor
 }
