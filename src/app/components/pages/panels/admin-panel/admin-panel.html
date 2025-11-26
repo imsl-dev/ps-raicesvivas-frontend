@@ -37,6 +37,10 @@
                     <span class="nav-icon">📊</span>
                     <span class="nav-text">Reportes</span>
                 </button>
+                <button class="nav-item" [class.active]="isSelected('sponsors')" (click)="selectOption('sponsors')">
+                    <span class="nav-icon">™️</span>
+                    <span class="nav-text">Gestión de Sponsors</span>
+                </button>
             </nav>
 
             <div class="sidebar-footer">
@@ -65,6 +69,10 @@
 
             @if (selectedOption === 'reportes') {
             <app-reportes-admin></app-reportes-admin>
+            }
+
+            @if (selectedOption === 'sponsors') {
+            <app-lista-sponsors></app-lista-sponsors>
             }
         </main>
     </div>
