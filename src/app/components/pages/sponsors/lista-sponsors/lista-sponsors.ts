@@ -1,9 +1,16 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { Sponsor } from '../../../../models/entities/Sponsor';
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from '@angular/common';
 import { SponsorService } from '../../../../services/sponsor.service';
 import { Router } from '@angular/router';
+
+export type SponsorAction = 'crear' | 'editar' | 'ver';
+
+export interface SponsorEvent {
+  action: SponsorAction;
+  sponsorId?: number;
+}
 
 @Component({
   selector: 'app-lista-sponsors',
@@ -14,6 +21,10 @@ import { Router } from '@angular/router';
 export class ListaSponsors implements OnInit {
   private readonly service = inject(SponsorService);
   private readonly router = inject(Router);
+  
+  @Input() isAdminPanel: boolean = false;
+  @Output() sponsorActionRequested = new EventEmitter<SponsorEvent>();
+  
   sponsors: Sponsor[] = [];
   loading: boolean = true;
   error: string | null = null;
@@ -71,15 +82,29 @@ export class ListaSponsors implements OnInit {
 
   editSponsor(id: number | undefined): void {
     if (!id) return;
-    this.router.navigate(['/sponsors/editar', id]);
+    
+    if (this.isAdminPanel) {
+      this.sponsorActionRequested.emit({ action: 'editar', sponsorId: id });
+    } else {
+      this.router.navigate(['/sponsors/editar', id]);
+    }
   }
 
   viewDetails(id: number | undefined): void {
     if (!id) return;
-    this.router.navigate(['/sponsors/ver', id]);
+    
+    if (this.isAdminPanel) {
+      this.sponsorActionRequested.emit({ action: 'ver', sponsorId: id });
+    } else {
+      this.router.navigate(['/sponsors/ver', id]);
+    }
   }
 
   nuevoSponsor(): void {
-    this.router.navigate(['/sponsors/nuevo']);
+    if (this.isAdminPanel) {
+      this.sponsorActionRequested.emit({ action: 'crear' });
+    } else {
+      this.router.navigate(['/sponsors/nuevo']);
+    }
   }
 }

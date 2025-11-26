@@ -1,0 +1,128 @@
+<div class="content-wrapper">
+  <div class="header">
+    <h2>{{ tituloFormulario }}</h2>
+    <button class="btn btn-secondary" (click)="volver()">
+      ← Volver al Listado
+    </button>
+  </div>
+
+  <div class="content-body">
+    <form [formGroup]="sponsorForm" (ngSubmit)="onSubmit()" class="sponsor-form">
+      <!-- Nombre del sponsor -->
+      <div class="form-group">
+        <label for="nombre">
+          Nombre del Sponsor <span class="required-asterisk">*</span>
+        </label>
+        <input
+          type="text"
+          id="nombre"
+          class="form-control"
+          formControlName="nombre"
+          placeholder="Ingrese el nombre del sponsor"
+          [class.is-invalid]="nombre?.invalid && nombre?.touched"
+          [class.is-valid]="nombre?.valid && nombre?.touched"
+        >
+        @if (nombre?.invalid && nombre?.touched) {
+          <div class="invalid-feedback">
+            @if (nombre?.errors?.['required']) {
+              <span>El nombre es obligatorio</span>
+            }
+            @if (nombre?.errors?.['maxlength']) {
+              <span>El nombre no puede exceder 255 caracteres</span>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Link del dominio -->
+      <div class="form-group">
+        <label for="linkDominio">Link del Dominio</label>
+        <input
+          type="url"
+          id="linkDominio"
+          class="form-control"
+          formControlName="linkDominio"
+          placeholder="https://ejemplo.com"
+        >
+      </div>
+
+      <!-- Imagen 1 -->
+      <div class="form-group">
+        <label for="rutaImg1">Imagen 1</label>
+        <input
+          type="file"
+          id="rutaImg1"
+          class="file-input"
+          accept="image/*"
+          (change)="onFileSelected($event, 1)"
+          [disabled]="isViewMode"
+        >
+        <label for="rutaImg1" class="file-label" [class.disabled]="isViewMode">
+          📷 Seleccionar Imagen 1
+        </label>
+        
+        @if (imagenPreview1) {
+          <div class="image-preview">
+            <img [src]="imagenPreview1" alt="Preview Imagen 1">
+            @if (!isViewMode) {
+              <button type="button" class="btn-remove-image" (click)="removeImage(1)">
+                ✖
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Imagen 2 -->
+      <div class="form-group">
+        <label for="rutaImg2">Imagen 2</label>
+        <input
+          type="file"
+          id="rutaImg2"
+          class="file-input"
+          accept="image/*"
+          (change)="onFileSelected($event, 2)"
+          [disabled]="isViewMode"
+        >
+        <label for="rutaImg2" class="file-label" [class.disabled]="isViewMode">
+          📷 Seleccionar Imagen 2
+        </label>
+        
+        @if (imagenPreview2) {
+          <div class="image-preview">
+            <img [src]="imagenPreview2" alt="Preview Imagen 2">
+            @if (!isViewMode) {
+              <button type="button" class="btn-remove-image" (click)="removeImage(2)">
+                ✖
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Estado activo -->
+      <div class="form-group checkbox-group">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            formControlName="activo"
+            class="checkbox-input"
+          >
+          <span class="checkbox-text">Sponsor activo</span>
+        </label>
+      </div>
+
+      <!-- Botones de acción -->
+      @if (!isViewMode) {
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="volver()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="sponsorForm.invalid">
+            {{ sponsorId ? 'Guardar Cambios' : 'Crear Sponsor' }}
+          </button>
+        </div>
+      }
+    </form>
+  </div>
+</div>

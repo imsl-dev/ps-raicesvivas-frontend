@@ -27,7 +27,6 @@
                     <span class="nav-text">Gestión de Permisos</span>
                 </button>
 
-
                 <button class="nav-item" [class.active]="isSelected('canjeables')" (click)="selectOption('canjeables')">
                     <span class="nav-icon">⭐</span>
                     <span class="nav-text">Gestión de Canjeables</span>
@@ -37,6 +36,7 @@
                     <span class="nav-icon">📊</span>
                     <span class="nav-text">Reportes</span>
                 </button>
+                
                 <button class="nav-item" [class.active]="isSelected('sponsors')" (click)="selectOption('sponsors')">
                     <span class="nav-icon">™️</span>
                     <span class="nav-text">Gestión de Sponsors</span>
@@ -72,7 +72,18 @@
             }
 
             @if (selectedOption === 'sponsors') {
-            <app-lista-sponsors></app-lista-sponsors>
+                @if (showSponsorForm) {
+                    <app-sponsor-form-admin 
+                        [sponsorId]="sponsorFormId"
+                        [action]="sponsorFormAction"
+                        (formClosed)="handleSponsorFormClose($event)"
+                    />
+                } @else {
+                    <app-lista-sponsors 
+                        [isAdminPanel]="true"
+                        (sponsorActionRequested)="handleSponsorAction($event)"
+                    />
+                }
             }
         </main>
     </div>

@@ -1,15 +1,34 @@
 /* Lista Sponsors - Diseño mejorado y responsive */
+
+/* Cuando está dentro del admin panel */
 .sponsor-list-container {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Cuando es standalone (fuera del admin panel) */
+.sponsor-list-container.standalone {
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding: 6rem 1rem 2rem;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header con estilo de card con gradiente (matching admin panel) */
 .header {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #6f42c1, #5a32a3);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(111, 66, 193, 0.3);
   margin-bottom: 2rem;
   display: flex;
   justify-content: space-between;
@@ -31,11 +50,12 @@
 }
 
 .header h2 {
-  color: #28a745;
+  color: white;
   margin: 0;
   font-weight: 700;
   font-size: 1.8rem;
   flex: 1 1 auto;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Buscador mejorado */
@@ -46,17 +66,6 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   margin-bottom: 2rem;
   animation: fadeIn 0.8s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .search-input {
@@ -71,8 +80,8 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #28a745;
-  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  border-color: #6f42c1;
+  box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
   background-color: white;
 }
 
@@ -92,7 +101,7 @@
 }
 
 .loading {
-  color: #28a745;
+  color: #6f42c1;
   font-size: 1.2rem;
   font-weight: 500;
 }
@@ -115,7 +124,7 @@
   animation: fadeIn 1s ease-out;
 }
 
-/* Tarjeta mejorada */
+/* Tarjeta mejorada con gradiente en header */
 .sponsor-card {
   background: white;
   border-radius: 20px;
@@ -132,14 +141,14 @@
   left: 0;
   right: 0;
   height: 5px;
-  background: linear-gradient(90deg, #28a745, #20c997);
+  background: linear-gradient(90deg, #6f42c1, #5a32a3);
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
 
 .sponsor-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 15px 35px rgba(40, 167, 69, 0.2);
+  box-shadow: 0 15px 35px rgba(111, 66, 193, 0.2);
 }
 
 .sponsor-card:hover::before {
@@ -148,7 +157,7 @@
 
 .sponsor-header {
   padding: 1.5rem;
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%);
   color: white;
 }
 
@@ -284,14 +293,14 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #28a745, #20c997);
+  background: linear-gradient(135deg, #6f42c1, #5a32a3);
   color: white;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #218838, #1fa383);
+  background: linear-gradient(135deg, #5a32a3, #4a2883);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 6px 20px rgba(111, 66, 193, 0.3);
 }
 
 .btn-secondary {
@@ -318,14 +327,14 @@
 
 /* Responsive - Móviles */
 @media (max-width: 768px) {
-  .sponsor-list-container {
+  .sponsor-list-container.standalone {
     padding: 5rem 0.5rem 1rem;
   }
 
   .header {
     flex-direction: column;
     text-align: center;
-    padding: 1rem;
+    padding: 1.5rem;
   }
 
   .header h2 {
@@ -369,7 +378,7 @@
 
 /* Responsive - Móviles pequeños */
 @media (max-width: 480px) {
-  .sponsor-list-container {
+  .sponsor-list-container.standalone {
     padding: 4.5rem 0.25rem 1rem;
   }
 
