@@ -58,16 +58,12 @@ export class EventoService {
     }
 
     obtenerAsistenciasEvento(eventoId: number): Observable<any> {
-        return this.http.get<any>(`${this.API_URL}/asistencias`, {
+        return this.http.get(`${this.API_URL}/asistencias`, {
             params: { eventoId: eventoId.toString() }
         });
     }
 
-    guardarAsistenciasEvento(eventoId: number, asistencias: any[]): Observable<any> {
-        const body = {
-            eventoId: eventoId,
-            usuariosAsistencias: asistencias
-        };
-        return this.http.put<any>(`${this.API_URL}/asistencias`, body);
+    guardarAsistenciasEvento(asistencias: any): Observable<any> {
+        return this.http.put(`${this.API_URL}/asistencias`, asistencias);
     }
 }

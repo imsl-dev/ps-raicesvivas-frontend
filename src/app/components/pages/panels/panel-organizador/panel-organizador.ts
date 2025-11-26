@@ -122,7 +122,7 @@ export class PanelOrganizador implements OnInit {
     });
   }
 
-  contarInscritos(evento: Evento): number {
-    return evento.participantes?.length || 0;
+  contarInscritos(evento: any): number {
+    return evento.cantidadInscritos || 0;
   }
 }

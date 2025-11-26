@@ -37,7 +37,7 @@ export class ListadoEventos implements OnInit {
 
   filtroProvincia: string = '';
   filtroTipo: string = '';
-  filtroEstado: string = EstadoEvento.PROXIMO;
+  filtroEstado: string = '';
   filtroFechaDesde: string = '';
   filtroFechaHasta: string = '';
 
@@ -52,6 +52,7 @@ export class ListadoEventos implements OnInit {
     if (this.usuarioLogeado?.rol === RolUsuario.ORGANIZADOR) {
       this.verSoloMisEventos = true;
     }
+    this.filtroEstado = EstadoEvento.PROXIMO;
   }
 
   loadUsuarioLogeado(): void {
@@ -75,6 +76,7 @@ export class ListadoEventos implements OnInit {
       next: (data) => {
         this.eventos = data;
         this.loading = false;
+        //this.limpiarFiltros();
       },
       error: (err) => {
         this.error = 'Error al cargar los eventos';
@@ -82,6 +84,7 @@ export class ListadoEventos implements OnInit {
         console.error('Error cargando eventos:', err);
       }
     });
+
   }
 
   loadProvincias(): void {
@@ -128,7 +131,7 @@ export class ListadoEventos implements OnInit {
     this.filtroEstado = '';
     this.filtroFechaDesde = '';
     this.filtroFechaHasta = '';
-    this.verSoloMisEventos = true;
+    this.verSoloMisEventos = false;
   }
 
   toggleFiltros(): void {

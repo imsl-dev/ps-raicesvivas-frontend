@@ -1,10 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { EventoService } from '../../../services/evento.service';
-import { Evento } from '../../../models/entities/Evento';
-import { TipoEventoPipe } from '../../../pipes/tipo-evento.pipe';
+import { AuthService } from '../../../services/auth.service';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 interface ParticipanteAsistencia {
   usuarioId: number;
@@ -14,72 +13,58 @@ interface ParticipanteAsistencia {
 
 @Component({
   selector: 'app-planilla-asistencia',
-  imports: [CommonModule, FormsModule, TipoEventoPipe],
+  imports: [FormsModule, CommonModule],
   templateUrl: './planilla-asistencia.html',
   styleUrl: './planilla-asistencia.css'
 })
 export class PlanillaAsistencia implements OnInit {
-  private readonly eventoService = inject(EventoService);
-  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly eventoService = inject(EventoService);
+  private readonly authService = inject(AuthService);
 
-  evento: Evento | null = null;
+  eventoId!: number;
+  nombreEvento: string = '';
   participantes: ParticipanteAsistencia[] = [];
-  loading: boolean = true;
+  loading: boolean = false;
   guardando: boolean = false;
   error: string | null = null;
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.cargarEvento(+id);
-      this.cargarAsistencias(+id);
-    } else {
-      this.error = 'ID de evento no válido';
-      this.loading = false;
-    }
-  }
-
-  cargarEvento(id: number): void {
-    this.eventoService.getEventoById(id).subscribe({
-      next: (data: any) => {
-        this.evento = {
-          id: data.id,
-          tipo: data.tipo,
-          estado: data.estado,
-          nombre: data.nombre,
-          descripcion: data.descripcion,
-          rutaImg: data.rutaImg,
-          direccion: data.direccion,
-          latitud: data.latitud,
-          longitud: data.longitud,
-          horaInicio: data.horaInicio.toString(),
-          horaFin: data.horaFin.toString(),
-          puntosAsistencia: data.puntosAsistencia,
-          costoInterno: data.costoInterno ? Number(data.costoInterno) : undefined,
-          costoInscripcion: data.costoInscripcion ? Number(data.costoInscripcion) : undefined,
-          organizadorId: data.organizadorId,
-          provinciaId: data.provinciaId,
-          sponsorId: data.sponsorId
-        };
-      },
-      error: (err) => {
-        console.error('Error cargando evento:', err);
-        this.error = 'Error al cargar el evento';
-        this.loading = false;
+    // Obtener el ID del evento desde la ruta
+    this.route.params.subscribe(params => {
+      this.eventoId = +params['id'];
+      if (this.eventoId) {
+        this.cargarEvento();
+        this.cargarAsistencias();
       }
     });
   }
 
-  cargarAsistencias(eventoId: number): void {
+  cargarEvento(): void {
+    this.eventoService.getEventoById(this.eventoId).subscribe({
+      next: (evento: any) => {
+        this.nombreEvento = evento.nombre;
+      },
+      error: (err) => {
+        console.error('Error cargando evento:', err);
+        this.error = 'Error al cargar la información del evento';
+      }
+    });
+  }
+
+  cargarAsistencias(): void {
     this.loading = true;
     this.error = null;
 
-    this.eventoService.obtenerAsistenciasEvento(eventoId).subscribe({
+    this.eventoService.obtenerAsistenciasEvento(this.eventoId).subscribe({
       next: (response: any) => {
-        this.participantes = response.usuariosAsistencias.sort((a: ParticipanteAsistencia, b: ParticipanteAsistencia) =>
-          a.nombreUsuario.localeCompare(b.nombreUsuario)
-        );
+        // Mapear la respuesta a nuestro formato
+        this.participantes = response.usuariosAsistencias.map((item: any) => ({
+          usuarioId: item.usuarioId,
+          nombreUsuario: item.nombreUsuario,
+          asistio: item.asistio
+        }));
         this.loading = false;
       },
       error: (err) => {
@@ -90,26 +75,38 @@ export class PlanillaAsistencia implements OnInit {
     });
   }
 
+  marcarTodos(asistieron: boolean): void {
+    this.participantes.forEach(p => p.asistio = asistieron);
+  }
+
   guardarAsistencias(): void {
-    if (!this.evento?.id) return;
+    if (this.guardando) return;
 
     this.guardando = true;
+    this.error = null;
 
-    const asistencias = this.participantes.map(p => ({
-      usuarioId: p.usuarioId,
-      asistio: p.asistio
-    }));
+    // Preparar el DTO según el formato esperado por el backend
+    const planillaRequest = {
+      eventoId: this.eventoId,
+      usuariosAsistencias: this.participantes.map(p => ({
+        usuarioId: p.usuarioId,
+        asistio: p.asistio
+      }))
+    };
 
-    this.eventoService.guardarAsistenciasEvento(this.evento.id, asistencias).subscribe({
-      next: (response) => {
-        alert('✅ Asistencias guardadas exitosamente');
+    // Enviar el objeto completo al backend
+    this.eventoService.guardarAsistenciasEvento(planillaRequest).subscribe({
+      next: (response: any) => {
         this.guardando = false;
-        this.volver();
+        alert('✅ Asistencias guardadas exitosamente');
+        // Recargar para obtener el estado actualizado
+        this.cargarAsistencias();
       },
       error: (err) => {
         console.error('Error guardando asistencias:', err);
-        alert('❌ Error al guardar las asistencias. Por favor, intente nuevamente.');
+        this.error = 'Error al guardar las asistencias';
         this.guardando = false;
+        alert('❌ Error al guardar las asistencias. Por favor, intenta nuevamente.');
       }
     });
   }
@@ -118,35 +115,15 @@ export class PlanillaAsistencia implements OnInit {
     this.router.navigate(['/panel-organizador']);
   }
 
-  formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-AR', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric'
-    });
+  get totalParticipantes(): number {
+    return this.participantes.length;
   }
 
-  formatTime(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString('es-AR', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  get totalPresentes(): number {
+    return this.participantes.filter(p => p.asistio).length;
   }
 
-  getEstadoClass(estado: string): string {
-    switch (estado) {
-      case 'PROXIMO':
-        return 'estado-proximo';
-      case 'EN_CURSO':
-        return 'estado-en-curso';
-      case 'FINALIZADO':
-        return 'estado-finalizado';
-      case 'CANCELADO':
-        return 'estado-cancelado';
-      default:
-        return '';
-    }
+  get totalAusentes(): number {
+    return this.participantes.filter(p => !p.asistio).length;
   }
 }

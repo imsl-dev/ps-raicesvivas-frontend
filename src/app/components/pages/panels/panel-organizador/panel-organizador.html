@@ -44,7 +44,7 @@
             <div class="content-wrapper">
                 <div class="header">
                     <h2>✅ Gestión de Asistencias</h2>
-                    <p class="subtitle">Administra la asistencia de participantes en tus eventos</p>
+                    <p class="subtitle">Administra la asistencia de inscriptos en tus eventos</p>
                 </div>
 
                 <div class="content-body">
@@ -108,7 +108,7 @@
                                                     <span class="info-value">{{ formatDate(evento.horaFin) }}</span>
                                                 </div>
                                                 <div class="info-item">
-                                                    <span class="info-label">Participantes:</span>
+                                                    <span class="info-label">Inscriptos:</span>
                                                     <span class="info-value">{{ contarInscritos(evento) }}</span>
                                                 </div>
                                                 @if (evento.direccion) {
@@ -155,7 +155,7 @@
                                         <div class="evento-info">
                                             <h4>{{ evento.nombre }}</h4>
                                             <p class="evento-meta">
-                                                👥 {{ contarInscritos(evento) }} participantes
+                                                👥 {{ contarInscritos(evento) }} inscriptos
                                             </p>
                                         </div>
                                     </div>
@@ -186,7 +186,7 @@
                                                     <span class="info-value">{{ formatDate(evento.horaFin) }}</span>
                                                 </div>
                                                 <div class="info-item">
-                                                    <span class="info-label">Participantes:</span>
+                                                    <span class="info-label">Inscriptos:</span>
                                                     <span class="info-value">{{ contarInscritos(evento) }}</span>
                                                 </div>
                                                 @if (evento.direccion) {
