@@ -1,4 +1,4 @@
-<div class="sponsor-list-container">
+<div class="sponsor-list-container" [class.standalone]="!isAdminPanel">
   <div class="header">
     <h2>📋 Listado de Sponsors</h2>
     <button class="btn btn-primary" (click)="nuevoSponsor()">
