@@ -59,12 +59,15 @@ export class PlanillaAsistencia implements OnInit {
 
     this.eventoService.obtenerAsistenciasEvento(this.eventoId).subscribe({
       next: (response: any) => {
-        // Mapear la respuesta a nuestro formato
-        this.participantes = response.usuariosAsistencias.map((item: any) => ({
-          usuarioId: item.usuarioId,
-          nombreUsuario: item.nombreUsuario,
-          asistio: item.asistio
-        }));
+        this.participantes = response.usuariosAsistencias
+          .map((item: any) => ({
+            usuarioId: item.usuarioId,
+            nombreUsuario: item.nombreUsuario,
+            asistio: item.asistio
+          }))
+          .sort((a: ParticipanteAsistencia, b: ParticipanteAsistencia) =>
+            a.nombreUsuario.localeCompare(b.nombreUsuario, 'es', { sensitivity: 'base' })
+          );
         this.loading = false;
       },
       error: (err) => {
