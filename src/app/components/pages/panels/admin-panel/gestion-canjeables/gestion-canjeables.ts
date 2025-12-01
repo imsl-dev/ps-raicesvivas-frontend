@@ -3,192 +3,230 @@ import { Sponsor } from '../../../../../models/entities/Sponsor';
 import { Router } from '@angular/router';
 import { Canjeable } from '../../../../../models/entities/Canjeable';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { SponsorService } from '../../../../../services/sponsor.service';
 import { CanjeableService } from '../../../../../services/canjeable.service';
-import { NuevoCanjeableDTO } from '../../../../../models/dtos/canjeables/NuevoCanjeableDTO';
+import { CanjeableFormAdmin } from '../canjeable-form-admin/canjeable-form-admin';
+
+
+export type CanjeableAction = 'crear' | 'editar' | 'ver';
+
+export interface CanjeableEvent {
+  action: CanjeableAction;
+  canjeableId?: number;
+}
 
 @Component({
   selector: 'app-gestion-canjeables',
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule, CanjeableFormAdmin],
   templateUrl: './gestion-canjeables.html',
   styleUrl: './gestion-canjeables.css'
 })
 export class GestionCanjeables implements OnInit {
   private readonly router = inject(Router);
-
-  constructor(
-    private sponsorService: SponsorService,
-    private canjeableService: CanjeableService
-  ) {
-  }
+  private readonly sponsorService = inject(SponsorService);
+  private readonly canjeableService = inject(CanjeableService);
 
   loading: boolean = false;
   sponsors: Sponsor[] = [];
+  canjeables: Canjeable[] = [];
+  canjeablesFiltrados: Canjeable[] = [];
 
-  // Formulario
-  formData: Canjeable = {
-    nombre: '',
-    sponsorId: 0,
-    url: '',
-    costoPuntos: 0,
-    validoHasta: '',
-    nombreSponsor: ""
-  };
+  // Form state
+  showCanjeableForm: boolean = false;
+  canjeableFormAction: CanjeableAction = 'crear';
+  canjeableFormId: number | null = null;
 
-  // Validación
-  errors: { [key: string]: string } = {};
+  // Filtros
+  searchTerm: string = '';
+  filtroEstado: 'activos' | 'todos' = 'activos';
+  filtroVigencia: 'vigentes' | 'todos' = 'vigentes';
+  filtroSponsor: number | null = null;
+
+  // Modales de confirmación
+  showDeleteModal: boolean = false;
+  canjeableToDelete: Canjeable | null = null;
+
+  showSuccessModal: boolean = false;
+  successMessage: string = '';
+  successAction: string = ''; // 'crear', 'editar', 'eliminar'
 
   ngOnInit(): void {
     this.loadSponsors();
-    this.setMinDate();
+    this.loadCanjeables();
   }
 
   loadSponsors(): void {
-    this.loading = true;
-
     this.sponsorService.getSponsor().subscribe({
       next: (data) => {
         this.sponsors = data;
-        this.loading = false;
       },
       error: (err) => {
         console.error('Error cargando sponsors:', err);
+      }
+    });
+  }
+
+  loadCanjeables(): void {
+    this.loading = true;
+
+    // Usar endpoint /all para obtener todos los canjeables
+    this.canjeableService.getAllCanjeablesAdmin().subscribe({
+      next: (data) => {
+        this.canjeables = data;
+        this.aplicarFiltros();
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error cargando canjeables:', err);
         this.loading = false;
       }
     });
-
-
   }
 
-  // Mock data (remove when API is ready)
-  generateMockSponsors(): Sponsor[] {
-    return [
-      { id: 1, nombre: 'EcoMercado Local' },
-      { id: 2, nombre: 'Semillas Orgánicas SA' },
-      { id: 3, nombre: 'Cooperativa Verde' },
-      { id: 4, nombre: 'Tienda Natural' },
-      { id: 5, nombre: 'Agro Sustentable' }
-    ];
+  aplicarFiltros(): void {
+    let filtrados = [...this.canjeables];
+
+    // Filtro de búsqueda por nombre
+    if (this.searchTerm) {
+      filtrados = filtrados.filter(c =>
+        c.nombre.toLowerCase().includes(this.searchTerm.toLowerCase())
+      );
+    }
+
+    // Filtro de estado (activo/inactivo)
+    if (this.filtroEstado === 'activos') {
+      filtrados = filtrados.filter(c => c.activo === true);
+    }
+
+    // Filtro de vigencia (vencido o no)
+    if (this.filtroVigencia === 'vigentes') {
+      filtrados = filtrados.filter(c => !this.estaVencido(c));
+    }
+
+    // Filtro de sponsor
+    if (this.filtroSponsor) {
+      filtrados = filtrados.filter(c => c.sponsorId === this.filtroSponsor);
+    }
+
+    this.canjeablesFiltrados = filtrados;
   }
 
-  setMinDate(): void {
-    // Set minimum date to today with time
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    this.formData.validoHasta = `${year}-${month}-${day}T23:59:59`;
-  }
-  validateForm(): boolean {
-    this.errors = {};
-    let isValid = true;
-
-    // Validar nombre
-    if (!this.formData.nombre || this.formData.nombre.trim() === '') {
-      this.errors['nombre'] = 'El nombre es obligatorio';
-      isValid = false;
-    }
-
-    // Validar sponsor
-    if (!this.formData.sponsorId || this.formData.sponsorId === 0) {
-      this.errors['sponsorId'] = 'Debe seleccionar un sponsor';
-      isValid = false;
-    }
-
-    // Validar URL (ahora obligatoria)
-    if (!this.formData.url || this.formData.url.trim() === '') {
-      this.errors['url'] = 'La URL es obligatoria';
-      isValid = false;
-    } else {
-      try {
-        new URL(this.formData.url);
-      } catch {
-        this.errors['url'] = 'La URL ingresada no es válida';
-        isValid = false;
-      }
-    }
-
-    // Validar costo de puntos
-    if (!this.formData.costoPuntos || this.formData.costoPuntos <= 0) {
-      this.errors['costoPuntos'] = 'El costo debe ser mayor a 0';
-      isValid = false;
-    }
-
-    // Validar fecha
-    if (!this.formData.validoHasta) {
-      this.errors['validoHasta'] = 'Debe seleccionar una fecha de vencimiento';
-      isValid = false;
-    } else {
-      const selectedDate = new Date(this.formData.validoHasta);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      if (selectedDate < today) {
-        this.errors['validoHasta'] = 'La fecha debe ser hoy o posterior';
-        isValid = false;
-      }
-    }
-
-    return isValid;
+  onSearchChange(): void {
+    this.aplicarFiltros();
   }
 
-  onSubmit(): void {
-    if (!this.validateForm()) {
-      return;
-    }
+  onFiltroEstadoChange(): void {
+    this.aplicarFiltros();
+  }
 
-    // Convert date to LocalDateTime format (add time if not present)
-    let validoHastaFormatted = this.formData.validoHasta;
-    if (!validoHastaFormatted.includes('T')) {
-      // If only date is provided, add end of day time
-      validoHastaFormatted = `${validoHastaFormatted}T23:59:59`;
-    }
+  onFiltroVigenciaChange(): void {
+    this.aplicarFiltros();
+  }
 
-    const canjeableDTO: NuevoCanjeableDTO = {
-      nombre: this.formData.nombre,
-      sponsorId: this.formData.sponsorId,
-      costoPuntos: this.formData.costoPuntos,
-      url: this.formData.url!,
-      validoHasta: validoHastaFormatted,
-      nombreSponsor: this.sponsors.find((sponsor) => sponsor.id === this.formData.sponsorId)?.nombre || ""
-    };
+  onFiltroSponsorChange(): void {
+    this.aplicarFiltros();
+  }
 
-    console.log("[Gestion Canjeables] Posteando canjeable: ", canjeableDTO);
-    this.canjeableService.postCanjeable(canjeableDTO).subscribe({
+  estaVencido(canjeable: Canjeable): boolean {
+    if (!canjeable.validoHasta) return false;
+    const fechaVencimiento = new Date(canjeable.validoHasta);
+    const ahora = new Date();
+    return fechaVencimiento < ahora;
+  }
 
-      next: (response) => {
-        alert('Canjeable creado exitosamente');
-        this.resetForm();
+  puedeEditarEliminar(canjeable: Canjeable): boolean {
+    // Solo se puede editar/eliminar si NO está vencido
+    return !this.estaVencido(canjeable);
+  }
+
+  nuevoCanjeable(): void {
+    this.canjeableFormAction = 'crear';
+    this.canjeableFormId = null;
+    this.showCanjeableForm = true;
+  }
+
+  editarCanjeable(id: number | undefined): void {
+    if (!id) return;
+    this.canjeableFormAction = 'editar';
+    this.canjeableFormId = id;
+    this.showCanjeableForm = true;
+  }
+
+  verCanjeable(id: number | undefined): void {
+    if (!id) return;
+    this.canjeableFormAction = 'ver';
+    this.canjeableFormId = id;
+    this.showCanjeableForm = true;
+  }
+
+  abrirModalEliminar(canjeable: Canjeable): void {
+    this.canjeableToDelete = canjeable;
+    this.showDeleteModal = true;
+  }
+
+  cerrarModalEliminar(): void {
+    this.showDeleteModal = false;
+    this.canjeableToDelete = null;
+  }
+
+  cerrarModalExito(): void {
+    this.showSuccessModal = false;
+    this.successMessage = '';
+    this.successAction = '';
+  }
+
+  confirmarEliminar(): void {
+    if (!this.canjeableToDelete || !this.canjeableToDelete.id) return;
+
+    this.canjeableService.deleteCanjeable(this.canjeableToDelete.id).subscribe({
+      next: () => {
+        this.cerrarModalEliminar();
+
+        // Mostrar modal de éxito
+        this.successAction = 'eliminar';
+        this.successMessage = '¡Canjeable eliminado exitosamente!';
+        this.showSuccessModal = true;
+
+        // Recargar lista después de un breve delay
+        setTimeout(() => {
+          this.loadCanjeables();
+        }, 300);
       },
       error: (err) => {
-        console.error('Error creando canjeable:', err);
-        alert('Error al crear el canjeable');
+        console.error('Error al eliminar canjeable:', err);
+        alert(err.error?.message || 'Error al eliminar el canjeable');
+        this.cerrarModalEliminar();
       }
     });
-
-
   }
 
-  resetForm(): void {
-    this.formData = {
-      nombre: '',
-      sponsorId: 0,
-      url: '',
-      costoPuntos: 0,
-      validoHasta: '',
-      nombreSponsor: ''
-    };
-    this.errors = {};
-    this.setMinDate();
+  handleCanjeableFormClose(result: { saved: boolean, action?: string }): void {
+    this.showCanjeableForm = false;
+
+    if (result.saved && result.action) {
+      // Mostrar modal de éxito
+      this.successAction = result.action;
+
+      if (result.action === 'crear') {
+        this.successMessage = '¡Canjeable creado exitosamente!';
+      } else if (result.action === 'editar') {
+        this.successMessage = '¡Canjeable actualizado exitosamente!';
+      }
+
+      this.showSuccessModal = true;
+
+      // Recargar lista después de cerrar el modal
+      setTimeout(() => {
+        this.loadCanjeables();
+      }, 300);
+    }
+
+    this.canjeableFormId = null;
   }
 
-  getSponsorName(sponsorId: number): string {
-    const sponsor = this.sponsors.find(s => s.id === Number(sponsorId));
-    return sponsor ? sponsor.nombre : '';
-  }
-
-  getSponsorImage(sponsorId: number): string | undefined {
-    const sponsor = this.sponsors.find(s => s.id === Number(sponsorId));
-    return sponsor?.rutaImg1;
+  getSponsorNombre(sponsorId: number): string {
+    const sponsor = this.sponsors.find(s => s.id === sponsorId);
+    return sponsor?.nombre || 'Sponsor desconocido';
   }
 }

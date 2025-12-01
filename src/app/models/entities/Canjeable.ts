@@ -9,4 +9,5 @@ export interface Canjeable {
   validoHasta: string;
   nombreSponsor: string;
   sponsor?: Sponsor
+  activo?: boolean;
 }

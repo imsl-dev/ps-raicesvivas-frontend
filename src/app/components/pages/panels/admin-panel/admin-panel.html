@@ -32,14 +32,14 @@
                     <span class="nav-text">Gestión de Canjeables</span>
                 </button>
 
-                <button class="nav-item" [class.active]="isSelected('reportes')" (click)="selectOption('reportes')">
-                    <span class="nav-icon">📊</span>
-                    <span class="nav-text">Reportes</span>
-                </button>
-                
                 <button class="nav-item" [class.active]="isSelected('sponsors')" (click)="selectOption('sponsors')">
                     <span class="nav-icon">™️</span>
                     <span class="nav-text">Gestión de Sponsors</span>
+                </button>
+
+                <button class="nav-item" [class.active]="isSelected('reportes')" (click)="selectOption('reportes')">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Reportes</span>
                 </button>
             </nav>
 
@@ -72,18 +72,12 @@
             }
 
             @if (selectedOption === 'sponsors') {
-                @if (showSponsorForm) {
-                    <app-sponsor-form-admin 
-                        [sponsorId]="sponsorFormId"
-                        [action]="sponsorFormAction"
-                        (formClosed)="handleSponsorFormClose($event)"
-                    />
-                } @else {
-                    <app-lista-sponsors 
-                        [isAdminPanel]="true"
-                        (sponsorActionRequested)="handleSponsorAction($event)"
-                    />
-                }
+            @if (showSponsorForm) {
+            <app-sponsor-form-admin [sponsorId]="sponsorFormId" [action]="sponsorFormAction"
+                (formClosed)="handleSponsorFormClose($event)" />
+            } @else {
+            <app-lista-sponsors [isAdminPanel]="true" (sponsorActionRequested)="handleSponsorAction($event)" />
+            }
             }
         </main>
     </div>
