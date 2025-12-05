@@ -104,6 +104,18 @@ export class Home {
       pregunta: '¿Qué sucede si realizo una donación por equivocación o dono más dinero del que quería?',
       respuesta: 'Las donaciones no cuentan con reembolsos y el organizador no tiene la obligación de devolver el dinero. Sin embargo, puede apelar a la buena fe del organizador y comunicarse con él a través del email que se encuentra en el detalle del evento.',
       expanded: false
+    },
+    {
+      id: 6,
+      pregunta: '¿Cómo funciona el sistema de canjeables?',
+      respuesta: 'Al asistit a eventos y obtener la asitencia, iremos sumando puntos, luego estos puntos podrán ser canjeados por beneficios que los organizadores ofrezcan en sus eventos. Los canjeables solo podrán ser utilizados una vez y cuentan con fecha de vencimiento.',
+      expanded: false
+    },
+    {
+      id: 7,
+      pregunta: '¿Que sucede si le doy al boton de "Mostrar QR" sin querer?',
+      respuesta: 'Al clickear el boton, previo a que se muestre la imagen, le aparecerá una ventana de confirmación para evitar clicks accidentales. En caso de que haya confirmado el click, el QR se mostrará en pantalla y luego el canjeable quedará utilizado.',
+      expanded: false
     }
   ];
 
