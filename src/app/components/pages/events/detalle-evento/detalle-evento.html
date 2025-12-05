@@ -43,6 +43,38 @@
       </div>
     </div>
 
+    <!-- Banner del Sponsor -->
+    @if (evento.sponsor) {
+    <div class="sponsor-banner">
+      <div class="sponsor-banner-content">
+        <div class="sponsor-banner-label">
+          <span class="sponsor-icon">🤝</span>
+          <span class="sponsor-text">Patrocinado por</span>
+          <span class="sponsor-name">{{ evento.sponsor.nombre }}</span>
+        </div>
+
+        <div class="sponsor-banner-images">
+          @if (evento.sponsor.rutaImg1) {
+          <div class="sponsor-banner-img-container">
+            <img [src]="evento.sponsor.rutaImg1" [alt]="evento.sponsor.nombre" class="sponsor-banner-img">
+          </div>
+          }
+          @if (evento.sponsor.rutaImg2) {
+          <div class="sponsor-banner-img-container">
+            <img [src]="evento.sponsor.rutaImg2" [alt]="evento.sponsor.nombre" class="sponsor-banner-img">
+          </div>
+          }
+        </div>
+
+        @if (evento.sponsor.linkDominio) {
+        <a [href]="evento.sponsor.linkDominio" target="_blank" rel="noopener noreferrer" class="sponsor-banner-link">
+          🔗 Conoce más sobre {{ evento.sponsor.nombre }}
+        </a>
+        }
+      </div>
+    </div>
+    }
+
     <!-- Contenido principal -->
     <div class="evento-content">
       <!-- Título y acciones -->
@@ -61,12 +93,12 @@
       <!-- Información destacada -->
       <div class="info-destacada">
         <!-- Ubicación, Fecha y Hora -->
-        <div class="info-card">
-          <div class="info-header">
-            <span class="info-icon">📍</span>
+        <div class="info-card ubicacion-card">
+          <div class="ubicacion-header-banner">
+            <span class="ubicacion-icon">📍</span>
             <h3>Ubicación, Fecha y Hora</h3>
           </div>
-          <div class="info-body">
+          <div class="ubicacion-content">
             <p class="info-principal">{{ evento.provincia?.nombre }}</p>
             @if (evento.direccion) {
             <p class="info-secundaria">{{ evento.direccion }}</p>
@@ -88,39 +120,42 @@
 
         <!-- Organizador -->
         @if (evento.organizador) {
-        <div class="info-card">
-          <div class="info-header">
-            <span class="info-icon">👤</span>
-            <h3>Organizador</h3>
-          </div>
-          <div class="info-body organizador-body">
-            <div class="organizador-foto">
+        <div class="info-card organizador-card">
+          <div class="organizador-header-banner">
+            <div class="organizador-avatar">
               @if (evento.organizador.rutaImg) {
-              <img [src]="evento.organizador.rutaImg" [alt]="evento.organizador.nombre" class="foto-perfil">
+              <img [src]="evento.organizador.rutaImg" [alt]="evento.organizador.nombre" class="organizador-foto">
+              } @else {
+              <div class="organizador-foto-placeholder">
+                {{ evento.organizador.nombre?.charAt(0) }}{{ evento.organizador.apellido?.charAt(0) }}
+              </div>
               }
             </div>
-            <div class="organizador-info">
-              <p class="organizador-nombre">{{ evento.organizador.nombre }} {{ evento.organizador.apellido }}</p>
-              @if (evento.organizador.email) {
-              <p class="organizador-email">✉️ {{ evento.organizador.email }}</p>
-              }
+            <div class="organizador-titulo">
+              <h3 class="organizador-nombre-header">{{ evento.organizador.nombre }} {{ evento.organizador.apellido }}
+              </h3>
+              <span class="organizador-rol">Organizador del evento</span>
             </div>
+          </div>
+
+          <div class="organizador-content">
+            @if (evento.organizador.email) {
+            <div class="organizador-email-row">
+              <span class="email-icon">✉️</span>
+              <span class="email-text">{{ evento.organizador.email }}</span>
+            </div>
+            }
+
+            <a [href]="'mailto:' + evento.organizador.email" class="btn-contactar">
+              📧 Contactar Organizador
+            </a>
           </div>
         </div>
         }
 
+
         <!-- Sponsoreado por -->
-        @if (evento.sponsor) {
-        <div class="info-card">
-          <div class="info-header">
-            <span class="info-icon">🤝</span>
-            <h3>Sponsoreado por</h3>
-          </div>
-          <div class="info-body">
-            <p class="info-principal">{{ evento.sponsor.nombre }}</p>
-          </div>
-        </div>
-        }
+
       </div>
 
       <!-- Descripción -->

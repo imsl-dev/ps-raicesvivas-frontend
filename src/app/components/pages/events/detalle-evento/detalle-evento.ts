@@ -109,7 +109,13 @@ export class DetalleEvento implements OnInit {
           provinciaId: data.provinciaId,
           sponsorId: data.sponsorId,
           provincia: data.provinciaNombre ? { id: data.provinciaId, nombre: data.provinciaNombre } : undefined,
-          sponsor: data.sponsorNombre ? { id: data.sponsorId, nombre: data.sponsorNombre } : undefined
+          sponsor: data.sponsorNombre ? {
+            id: data.sponsorId,
+            nombre: data.sponsorNombre,
+            rutaImg1: data.sponsorRutaImg1,
+            rutaImg2: data.sponsorRutaImg2,
+            linkDominio: data.sponsorLinkDominio
+          } : undefined,
         };
 
         this.loading = false;
