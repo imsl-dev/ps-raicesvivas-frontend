@@ -1,0 +1,271 @@
+<!-- src/app/components/pages/panels/panel-organizador/reportes-organizador/reportes-organizador.html -->
+
+<div class="content-wrapper">
+    <div class="header">
+        <h2>📊 Reportes y Estadísticas</h2>
+        <p class="subtitle">Analiza el rendimiento de tus eventos</p>
+    </div>
+
+    <div class="content-body">
+        <!-- Loading state -->
+        @if (loading) {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Cargando reportes...</p>
+        </div>
+        }
+
+        @if (!loading) {
+        <!-- KPIs Section -->
+        <section class="kpi-section">
+            <div class="kpi-card">
+                <div class="kpi-icon">📅</div>
+                <div class="kpi-content">
+                    <h3 class="kpi-title">Total Eventos Creados</h3>
+                    <p class="kpi-value">{{ kpiData.totalEventosCreados }}</p>
+                    <p class="kpi-subtitle">Eventos organizados</p>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon">👥</div>
+                <div class="kpi-content">
+                    <h3 class="kpi-title">Promedio Asistencias</h3>
+                    <p class="kpi-value">{{ kpiData.promedioAsistenciasPorEvento | number:'1.1-1' }}</p>
+                    <p class="kpi-subtitle">Por evento finalizado</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="charts-section">
+            <!-- Pie Chart - Tasa de Asistencia -->
+            <div class="chart-card" #chartTorta>
+                <button class="btn-export" (click)="exportarTortaAPDF()" title="Exportar a PDF">
+                    📄 Exportar PDF
+                </button>
+                @if (pieChartData.length > 0) {
+                <google-chart 
+                    [type]="pieChartType" 
+                    [data]="pieChartData" 
+                    [options]="pieChartOptions"
+                    [width]="pieChartWidth" 
+                    [height]="pieChartHeight">
+                </google-chart>
+                <div class="chart-info">
+                    <span class="info-badge info-total">
+                        Total inscripciones: <strong>{{ tasaAsistenciaData.totalInscripciones }}</strong>
+                    </span>
+                    <span class="info-badge info-porcentaje">
+                        Asistencia: <strong>{{ tasaAsistenciaData.porcentajeAsistencia }}%</strong>
+                    </span>
+                </div>
+                } @else {
+                <div class="chart-placeholder">
+                    <span>📊</span>
+                    <p>No hay datos de asistencia disponibles</p>
+                    <small>Los datos aparecerán cuando tengas eventos finalizados con inscripciones</small>
+                </div>
+                }
+            </div>
+
+            <!-- Bar Chart - Recaudación Neta por Evento -->
+            <div class="chart-card chart-wide" #chartRecaudacion>
+                <button class="btn-export" (click)="exportarRecaudacionAPDF()" title="Exportar a PDF">
+                    📄 Exportar PDF
+                </button>
+                @if (barChartData.length > 0) {
+                <google-chart 
+                    [type]="barChartType" 
+                    [data]="barChartData" 
+                    [options]="barChartOptions"
+                    [width]="barChartWidth" 
+                    [height]="barChartHeight">
+                </google-chart>
+                } @else {
+                <div class="chart-placeholder">
+                    <span>📈</span>
+                    <p>No hay datos de recaudación disponibles</p>
+                    <small>Los datos aparecerán cuando tus eventos reciban donaciones</small>
+                </div>
+                }
+            </div>
+        </section>
+
+        <!-- Tabla de Donaciones -->
+        <section class="donaciones-section">
+            <div class="section-header">
+                <h3>💰 Donaciones Recibidas</h3>
+                <button class="btn-export-excel" (click)="exportarDonacionesAExcel()" 
+                        [disabled]="donaciones.length === 0">
+                    📥 Exportar Excel
+                </button>
+            </div>
+
+            @if (loadingDonaciones) {
+            <div class="loading-mini">
+                <div class="spinner-small"></div>
+                <span>Cargando donaciones...</span>
+            </div>
+            }
+
+            @if (!loadingDonaciones && donaciones.length === 0) {
+            <div class="empty-state-small">
+                <span>💸</span>
+                <p>Aún no hay donaciones registradas para tus eventos</p>
+            </div>
+            }
+
+            @if (!loadingDonaciones && donaciones.length > 0) {
+            <div class="table-container">
+                <table class="tabla-donaciones">
+                    <thead>
+                        <tr>
+                            <th>Evento</th>
+                            <th>Fecha/Hora</th>
+                            <th>Usuario</th>
+                            <th>Monto</th>
+                            <th>Mensaje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (donacion of donaciones; track donacion.donacionId) {
+                        <tr>
+                            <td class="td-evento">{{ donacion.nombreEvento }}</td>
+                            <td class="td-fecha">{{ formatDate(donacion.fechaHora) }}</td>
+                            <td class="td-usuario">{{ donacion.nombreUsuario }}</td>
+                            <td class="td-monto">${{ donacion.montoDonado | number:'1.2-2' }}</td>
+                            <td class="td-mensaje">{{ donacion.mensaje || '-' }}</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            }
+        </section>
+
+        <!-- Histórico de Eventos -->
+        <section class="historico-section">
+            <div class="section-header">
+                <h3>📋 Histórico de Mis Eventos</h3>
+                <button class="btn-export-excel" (click)="exportarEventosAExcel()" 
+                        [disabled]="eventos.length === 0 || exportandoExcel">
+                    @if (exportandoExcel) {
+                    <span class="spinner-btn"></span> Exportando...
+                    } @else {
+                    📥 Exportar Excel
+                    }
+                </button>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filtros-container">
+                <div class="filtro-search">
+                    <input type="text" 
+                           class="search-input" 
+                           placeholder="🔍 Buscar por nombre..." 
+                           [(ngModel)]="searchTerm"
+                           (input)="onFiltroChange()">
+                </div>
+                <div class="filtro-tipo">
+                    <select class="select-input" [(ngModel)]="filtroTipo" (change)="onFiltroChange()">
+                        <option value="TODOS">Todos los tipos</option>
+                        @for (tipo of tiposEvento; track tipo) {
+                        <option [value]="tipo">{{ tipo | tipoEvento }}</option>
+                        }
+                    </select>
+                </div>
+                <div class="filtro-gratuito">
+                    <select class="select-input" [(ngModel)]="filtroGratuito" (change)="onFiltroChange()">
+                        <option value="TODOS">Todos</option>
+                        <option value="SI">Gratuitos</option>
+                        <option value="NO">Con costo</option>
+                    </select>
+                </div>
+                <button class="btn-limpiar" (click)="limpiarFiltros()">Limpiar</button>
+            </div>
+
+            <!-- Resultados info -->
+            <div class="results-info">
+                <span class="results-count">
+                    Mostrando {{ eventos.length }} de {{ totalElements }} eventos
+                </span>
+            </div>
+
+            @if (loadingTabla) {
+            <div class="loading-mini">
+                <div class="spinner-small"></div>
+                <span>Cargando eventos...</span>
+            </div>
+            }
+
+            @if (!loadingTabla && eventos.length === 0) {
+            <div class="empty-state-small">
+                <span>📭</span>
+                <p>No se encontraron eventos con los filtros seleccionados</p>
+            </div>
+            }
+
+            @if (!loadingTabla && eventos.length > 0) {
+            <div class="table-container">
+                <table class="tabla-eventos">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Fecha Inicio</th>
+                            <th>Estado</th>
+                            <th>Inscripciones</th>
+                            <th>Costo</th>
+                            <th>Sponsor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (evento of eventos; track evento.id) {
+                        <tr>
+                            <td class="td-nombre">{{ evento.nombre }}</td>
+                            <td>{{ evento.tipo | tipoEvento }}</td>
+                            <td>{{ formatDateShort(evento.horaInicio) }}</td>
+                            <td>
+                                <span class="estado-badge" [ngClass]="getEstadoClass(evento.estado)">
+                                    {{ evento.estado }}
+                                </span>
+                            </td>
+                            <td class="td-center">{{ evento.totalInscripciones }}</td>
+                            <td>{{ evento.costoInscripcion > 0 ? ('$' + evento.costoInscripcion) : 'Gratis' }}</td>
+                            <td>{{ evento.sponsorNombre }}</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Paginación -->
+            @if (totalPages > 1) {
+            <div class="paginacion">
+                <button class="btn-pagina" (click)="irAPagina(0)" [disabled]="currentPage === 0">
+                    ««
+                </button>
+                <button class="btn-pagina" (click)="irAPagina(currentPage - 1)" [disabled]="currentPage === 0">
+                    «
+                </button>
+                
+                @for (pagina of getPaginas(); track pagina) {
+                <button class="btn-pagina" [class.active]="pagina === currentPage" (click)="irAPagina(pagina)">
+                    {{ pagina + 1 }}
+                </button>
+                }
+                
+                <button class="btn-pagina" (click)="irAPagina(currentPage + 1)" [disabled]="currentPage >= totalPages - 1">
+                    »
+                </button>
+                <button class="btn-pagina" (click)="irAPagina(totalPages - 1)" [disabled]="currentPage >= totalPages - 1">
+                    »»
+                </button>
+            </div>
+            }
+            }
+        </section>
+        }
+    </div>
+</div>

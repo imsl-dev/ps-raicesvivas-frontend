@@ -17,7 +17,8 @@
             </div>
 
             <nav class="sidebar-nav">
-                <button class="nav-item" [class.active]="isSelected('asistencias')" (click)="selectOption('asistencias')">
+                <button class="nav-item" [class.active]="isSelected('asistencias')"
+                    (click)="selectOption('asistencias')">
                     <span class="nav-icon">✅</span>
                     <span class="nav-text">Gestión de Asistencias</span>
                 </button>
@@ -217,33 +218,7 @@
             }
 
             @if (selectedOption === 'reportes') {
-            <div class="content-wrapper">
-                <div class="header">
-                    <h2>📊 Reportes</h2>
-                    <p class="subtitle">Visualiza estadísticas y reportes de tus eventos</p>
-                </div>
-
-                <div class="placeholder-content">
-                    <div class="placeholder-icon">📈</div>
-                    <h3>Componente en desarrollo</h3>
-                    <p>Esta sección permitirá visualizar reportes detallados de tus eventos.</p>
-
-                    <div class="features-list">
-                        <div class="feature-item">
-                            <span class="feature-icon">📊</span>
-                            <span>Estadísticas de asistencia</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">💰</span>
-                            <span>Reportes financieros</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">📈</span>
-                            <span>Análisis de participación</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <app-reportes-organizador></app-reportes-organizador>
             }
         </main>
     </div>
