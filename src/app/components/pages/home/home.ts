@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { EventoService } from '../../../services/evento.service';
+import { Evento } from '../../../models/entities/Evento';
 
 // Interfaz para Preguntas Frecuentes
 interface FAQ {
@@ -16,9 +18,13 @@ interface FAQ {
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
-export class Home {
-  // Estadísticas de impacto
+export class Home implements OnInit {
 
+  private readonly eventoService = inject(EventoService);
+  events: Evento[] = [];
+  loadingEvents: boolean = true;
+
+  // Estadísticas de impacto
   stats = [
     { number: '15,000+', label: 'Árboles Plantados', icon: '🌳' },
     { number: '500+', label: 'Voluntarios Activos', icon: '👥' },
@@ -27,6 +33,7 @@ export class Home {
   ];
 
   // Próximos eventos de reforestación
+  /*
   events = [
     {
       title: 'Reforestación Sierra de Córdoba',
@@ -49,7 +56,7 @@ export class Home {
       participants: 60,
       image: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=500&h=300&fit=crop'
     }
-  ];
+  ]; */
 
   // Testimonios
   testimonials = [
@@ -132,5 +139,43 @@ export class Home {
       faq.expanded = !faq.expanded;
     }
   }
+
+  ngOnInit(): void {
+    this.cargarProximosEventos();
+  }
+
+  cargarProximosEventos(): void {
+    this.loadingEvents = true;
+    this.eventoService.getEventos().subscribe({
+      next: (eventos) => {
+        // Filtrar solo eventos con estado PRÓXIMO
+        const eventosProximos = eventos.filter(e => e.estado === 'PRÓXIMO');
+
+        // Ordenar por fecha de inicio (más cercanos primero)
+        eventosProximos.sort((a, b) =>
+          new Date(a.horaInicio).getTime() - new Date(b.horaInicio).getTime()
+        );
+
+        // Tomar solo los primeros 3
+        this.events = eventosProximos.slice(0, 3);
+        this.loadingEvents = false;
+      },
+      error: (err) => {
+        console.error('Error cargando eventos:', err);
+        this.events = [];
+        this.loadingEvents = false;
+      }
+    });
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-AR', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    });
+  }
+
 
 }
