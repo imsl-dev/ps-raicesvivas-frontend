@@ -2,6 +2,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { map } from 'rxjs';
+import Swal from 'sweetalert2';
 
 export const adminGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
@@ -15,13 +16,18 @@ export const adminGuard: CanActivateFn = (route, state) => {
       }
 
       const role = authService.getRole();
-      
+
       if (role === 'ADMIN') {
         // Si es admin, permitir acceso
         return true;
       } else {
         // Si no es admin, redirigir a home
-        alert('Acceso denegado: Se requieren permisos de administrador');
+        Swal.fire({
+          title: "Acceso denegado",
+          text: "Se requieren permisos de administrador",
+          icon: "warning",
+          draggable: true
+        });
         return router.createUrlTree(['/home']);
       }
     })

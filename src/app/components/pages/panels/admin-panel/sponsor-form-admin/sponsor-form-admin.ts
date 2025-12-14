@@ -4,6 +4,7 @@ import { Sponsor } from '../../../../../models/entities/Sponsor';
 import { CommonModule } from '@angular/common';
 import { SponsorService } from '../../../../../services/sponsor.service';
 import { SponsorAction } from '../../../sponsors/lista-sponsors/lista-sponsors';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-sponsor-form-admin',
@@ -40,7 +41,7 @@ export class SponsorFormAdmin implements OnInit {
 
   ngOnInit(): void {
     this.isViewMode = this.action === 'ver';
-    
+
     if (this.sponsorId) {
       this.loadSponsor(this.sponsorId);
     }
@@ -62,7 +63,12 @@ export class SponsorFormAdmin implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar el sponsor:', err);
-        alert('Error al cargar los datos del sponsor');
+        Swal.fire({
+          title: "Error",
+          text: "Error al cargar los datos del sponsor",
+          icon: "error",
+          draggable: true
+        });
       }
     });
   }
@@ -122,12 +128,22 @@ export class SponsorFormAdmin implements OnInit {
       request.subscribe({
         next: (response) => {
           const mensaje = this.sponsorId ? 'actualizado' : 'creado';
-          alert(`Sponsor ${mensaje} exitosamente`);
+          Swal.fire({
+            title: "¡Éxito!",
+            text: `Sponsor ${mensaje} exitosamente`,
+            icon: "success",
+            draggable: true
+          });
           this.formClosed.emit(true);
         },
         error: (error) => {
           console.error('Error al guardar el sponsor:', error);
-          alert('Error al guardar el sponsor. Por favor, intente nuevamente.');
+          Swal.fire({
+            title: "Error",
+            text: "Error al guardar el sponsor. Por favor, intente nuevamente.",
+            icon: "error",
+            draggable: true
+          });
         }
       });
     } else {

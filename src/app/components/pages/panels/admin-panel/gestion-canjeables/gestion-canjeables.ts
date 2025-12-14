@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { SponsorService } from '../../../../../services/sponsor.service';
 import { CanjeableService } from '../../../../../services/canjeable.service';
 import { CanjeableFormAdmin } from '../canjeable-form-admin/canjeable-form-admin';
+import Swal from 'sweetalert2';
 
 
 export type CanjeableAction = 'crear' | 'editar' | 'ver';
@@ -195,7 +196,12 @@ export class GestionCanjeables implements OnInit {
       },
       error: (err) => {
         console.error('Error al eliminar canjeable:', err);
-        alert(err.error?.message || 'Error al eliminar el canjeable');
+        Swal.fire({
+          title: "Error",
+          text: err.error?.message || 'Error al eliminar el canjeable',
+          icon: "error",
+          draggable: true
+        });
         this.cerrarModalEliminar();
       }
     });

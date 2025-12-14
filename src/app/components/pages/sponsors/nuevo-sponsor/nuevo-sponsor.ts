@@ -4,6 +4,7 @@ import { Sponsor } from '../../../../models/entities/Sponsor';
 import { CommonModule } from '@angular/common';
 import { SponsorService } from '../../../../services/sponsor.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-nuevo-sponsor',
@@ -37,9 +38,9 @@ export class NuevoSponsor implements OnInit {
   }
 
   get tituloFormulario(): string {
-  if (this.isViewMode) return 'Detalle del Sponsor';
-  return this.sponsorId ? 'Modificar Sponsor' : 'Alta de Sponsor';
-}
+    if (this.isViewMode) return 'Detalle del Sponsor';
+    return this.sponsorId ? 'Modificar Sponsor' : 'Alta de Sponsor';
+  }
 
 
   ngOnInit(): void {
@@ -70,16 +71,21 @@ export class NuevoSponsor implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar el sponsor:', err);
-        alert('Error al cargar los datos del sponsor');
+        Swal.fire({
+          title: "Error",
+          text: "Error al cargar los datos del sponsor",
+          icon: "error",
+          draggable: true
+        });
       }
     });
   }
 
   private setFormViewMode(): void {
-  if (this.isViewMode) {
-    this.sponsorForm.disable();
+    if (this.isViewMode) {
+      this.sponsorForm.disable();
+    }
   }
-}
 
   onFileSelected(event: Event, imageNumber: 1 | 2): void {
     const input = event.target as HTMLInputElement;
@@ -113,8 +119,8 @@ export class NuevoSponsor implements OnInit {
   }
 
   volver(): void {
-  this.router.navigate(['/sponsors']);
-}
+    this.router.navigate(['/sponsors']);
+  }
 
   onSubmit(): void {
     if (this.sponsorForm.valid) {
@@ -130,12 +136,22 @@ export class NuevoSponsor implements OnInit {
       request.subscribe({
         next: (response) => {
           const mensaje = this.sponsorId ? 'actualizado' : 'creado';
-          alert(`Sponsor ${mensaje} exitosamente`);
+          Swal.fire({
+            title: "¡Éxito!",
+            text: `Sponsor ${mensaje} exitosamente`,
+            icon: "success",
+            draggable: true
+          });
           this.router.navigate(['/sponsors']);
         },
         error: (error) => {
           console.error('Error al guardar el sponsor:', error);
-          alert('Error al guardar el sponsor. Por favor, intente nuevamente.');
+          Swal.fire({
+            title: "Error",
+            text: "Error al guardar el sponsor. Por favor, intente nuevamente.",
+            icon: "error",
+            draggable: true
+          });
         }
       });
     } else {

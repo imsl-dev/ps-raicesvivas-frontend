@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { CommonModule } from '@angular/common';
 import { SponsorService } from '../../../../services/sponsor.service';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 export type SponsorAction = 'crear' | 'editar' | 'ver';
 
@@ -21,10 +22,10 @@ export interface SponsorEvent {
 export class ListaSponsors implements OnInit {
   private readonly service = inject(SponsorService);
   private readonly router = inject(Router);
-  
+
   @Input() isAdminPanel: boolean = false;
   @Output() sponsorActionRequested = new EventEmitter<SponsorEvent>();
-  
+
   sponsors: Sponsor[] = [];
   loading: boolean = true;
   error: string | null = null;
@@ -66,23 +67,45 @@ export class ListaSponsors implements OnInit {
   deleteSponsor(id: number | undefined): void {
     if (!id) return;
 
-    if (confirm('¿Está seguro de que desea eliminar este sponsor?')) {
-      this.service.deleteSponsor(id).subscribe({
-        next: () => {
-          this.sponsors = this.sponsors.filter(s => s.id !== id);
-          alert('Sponsor eliminado exitosamente');
-        },
-        error: (err) => {
-          console.error('Error al eliminar el sponsor:', err);
-          alert('Error al eliminar el sponsor. Por favor, intente nuevamente.');
-        }
-      });
-    }
+    Swal.fire({
+      title: '¿Está seguro?',
+      text: "¿Desea eliminar este sponsor?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#28a745',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      draggable: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.service.deleteSponsor(id).subscribe({
+          next: () => {
+            this.sponsors = this.sponsors.filter(s => s.id !== id);
+            Swal.fire({
+              title: "¡Eliminado!",
+              text: "Sponsor eliminado exitosamente",
+              icon: "success",
+              draggable: true
+            });
+          },
+          error: (err) => {
+            console.error('Error al eliminar el sponsor:', err);
+            Swal.fire({
+              title: "Error",
+              text: "Error al eliminar el sponsor. Por favor, intente nuevamente.",
+              icon: "error",
+              draggable: true
+            });
+          }
+        });
+      }
+    });
   }
 
   editSponsor(id: number | undefined): void {
     if (!id) return;
-    
+
     if (this.isAdminPanel) {
       this.sponsorActionRequested.emit({ action: 'editar', sponsorId: id });
     } else {
@@ -92,7 +115,7 @@ export class ListaSponsors implements OnInit {
 
   viewDetails(id: number | undefined): void {
     if (!id) return;
-    
+
     if (this.isAdminPanel) {
       this.sponsorActionRequested.emit({ action: 'ver', sponsorId: id });
     } else {
