@@ -10,10 +10,14 @@
     @if (!loading && user) {
     <div class="signup-container">
         <div class="signup-header">
-
-
             <div class="logo-container">
-                <img [src]="user.rutaImg" alt=" " class="logo-img" />
+                @if (user.rutaImg) {
+                <img [src]="user.rutaImg" [alt]="user.nombre" class="logo-img" />
+                } @else {
+                <div class="logo-img-placeholder">
+                    {{ getUserInitials() }}
+                </div>
+                }
             </div>
             <div class="d-flex justify-content-center gap-2">
                 <h2 class="signup-title mb-0">{{ user.nombre }} {{ user.apellido }}</h2>
@@ -24,13 +28,11 @@
                 </button>
                 }
             </div>
-
         </div>
 
         <!-- VIEW MODE -->
         @if(!isEditMode) {
         <div class="signup-form">
-
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Nombre</label>
@@ -41,61 +43,54 @@
                     <input type="text" class="form-control" [value]="user.apellido" readonly />
                 </div>
             </div>
+
             <div class="form-row">
-
-
                 <div class="form-group">
-                    <label class="form-label">Rol</label>
-                    <input type="text" class="form-control" [value]="rolFormateado" readonly />
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" [value]="user.email || '-'" readonly />
                 </div>
-
                 <div class="form-group">
                     <label class="form-label">Provincia</label>
                     <input type="text" class="form-control" [value]="user.provincia?.nombre || '-'" readonly />
                 </div>
             </div>
 
-
             <div class="form-row">
-                <div class="form-group d-flex justify-content-center">
-                    <label class="form-label">Contacto</label>
-                    <input type="text" class="form-control" [value]="user.email || '-'" readonly />
+                <div class="form-group">
+                    <label class="form-label">Rol</label>
+                    <input type="text" class="form-control" [value]="rolFormateado" readonly />
                 </div>
 
                 @if(isMyProfile && !tienePeticionActiva && !esAdministrador) {
-                <div class="form-group d-flex justify-content-center">
-                    <label class="form-label">¿Te interesa organizar eventos?</label>
-                    <button class="btn btn-warning" title="Solicitar ser un organizador de eventos"
+                <div class="form-group d-flex justify-content-center align-items-end">
+                    <button class="btn btn-warning w-100" title="Solicitar ser un organizador de eventos"
                         (click)="openDialog()">
-                        🚀 Saber más
+                        <span class="btn-icon">🚀</span>
+                        ¿Querés organizar eventos?
                     </button>
                 </div>
-                }
-                @else if (isMyProfile && tienePeticionActiva && !tienePeticionAceptada && !tienePeticionCancelada) {
-                <div class="form-group d-flex justify-content-center">
-                    <label class="form-label">¿Te interesa organizar eventos?</label>
-                    <button class="btn btn-info" title="">
-                        Tu petición está siendo validada
+                } @else if (isMyProfile && tienePeticionActiva && !tienePeticionAceptada && !tienePeticionCancelada) {
+                <div class="form-group d-flex justify-content-center align-items-end">
+                    <button class="btn btn-info w-100" disabled>
+                        <span class="btn-icon">⏳</span>
+                        Petición en validación
                     </button>
                 </div>
-                }
-                @else if (isMyProfile && tienePeticionActiva && tienePeticionAceptada) {
-                <div class="form-group d-flex justify-content-center">
-                    <label class="form-label">¿Te interesa organizar eventos?</label>
-                    <button class="btn btn-success" title="">
+                } @else if (isMyProfile && tienePeticionActiva && tienePeticionAceptada) {
+                <div class="form-group d-flex justify-content-center align-items-end">
+                    <button class="btn btn-success w-100" disabled>
+                        <span class="btn-icon">✓</span>
                         ¡Ya sos organizador!
                     </button>
                 </div>
-                }
-                @else if (isMyProfile && tienePeticionActiva && tienePeticionCancelada) {
-                <div class="form-group d-flex justify-content-center">
-                    <label class="form-label">¿Te interesa organizar eventos?</label>
-                    <button class="btn btn-danger" title="">
-                        Tu petición fue rechazada
+                } @else if (isMyProfile && tienePeticionActiva && tienePeticionCancelada) {
+                <div class="form-group d-flex justify-content-center align-items-end">
+                    <button class="btn btn-danger w-100" disabled>
+                        <span class="btn-icon">✗</span>
+                        Petición de organizador rechazada
                     </button>
                 </div>
                 }
-
             </div>
         </div>
         }
@@ -104,6 +99,47 @@
         @if(isEditMode) {
         <form class="signup-form" (ngSubmit)="saveProfile()">
 
+            <!-- Sección de imagen de perfil -->
+            <div class="image-upload-section">
+                <label class="form-label">
+                    <span class="label-icon">📷</span>
+                    Foto de perfil
+                </label>
+
+                <div class="image-upload-container">
+                    <div class="image-preview-wrapper">
+                        @if (imagePreview) {
+                        <img [src]="imagePreview" alt="Preview" class="image-preview" />
+                        <button type="button" class="btn-remove-image" (click)="removeImage()" title="Eliminar imagen">
+                            ✕
+                        </button>
+                        } @else {
+                        <div class="image-placeholder">
+                            <span class="placeholder-initials">{{ getUserInitials() }}</span>
+                        </div>
+                        }
+                    </div>
+
+                    <div class="image-upload-actions">
+                        <label class="btn btn-select-image">
+                            <span class="btn-icon">📁</span>
+                            Seleccionar imagen
+                            <input type="file" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                                (change)="onImageSelected($event)" style="display: none;" />
+                        </label>
+                        <small class="image-hint">JPG, PNG, WebP o GIF (máx. 5MB)</small>
+                    </div>
+                </div>
+
+                @if(formErrors.rutaImg) {
+                <div class="error-message">
+                    <span class="error-icon">⚠️</span>
+                    {{ formErrors.rutaImg }}
+                </div>
+                }
+            </div>
+
+            <!-- Campos de información personal -->
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">
@@ -145,18 +181,11 @@
                 <div class="form-group">
                     <label class="form-label">
                         <span class="label-icon">📧</span>
-                        Contacto (Email)
-                        <span class="required">*</span>
+                        Email
                     </label>
-                    <input type="email" class="form-control" [(ngModel)]="editForm.email" name="email"
-                        [class.is-invalid]="formErrors.email" [class.is-valid]="!formErrors.email && editForm.email"
-                        placeholder="correo@ejemplo.com" [disabled]="isSaving" />
-                    @if(formErrors.email) {
-                    <div class="error-message">
-                        <span class="error-icon">⚠️</span>
-                        {{ formErrors.email }}
-                    </div>
-                    }
+                    <input type="email" class="form-control" [value]="editForm.email" readonly disabled
+                        title="El email no puede ser modificado" />
+                    <small class="field-hint">El email no puede ser modificado</small>
                 </div>
 
                 <div class="form-group">
@@ -167,9 +196,9 @@
                     </label>
                     <select class="form-control" [(ngModel)]="editForm.idProvincia" name="provincia"
                         [class.is-invalid]="formErrors.idProvincia"
-                        [class.is-valid]="!formErrors.idProvincia && editForm.idProvincia" [disabled]="isSaving">
-                        <option value="0" disabled>Seleccione una provincia</option>
-                        @for(provincia of provincias; track provincia.id) {
+                        [class.is-valid]="!formErrors.idProvincia && editForm.idProvincia !== 0" [disabled]="isSaving">
+                        <option [value]="0" disabled>Seleccione una provincia</option>
+                        @for (provincia of provincias; track provincia.id) {
                         <option [value]="provincia.id">{{ provincia.nombre }}</option>
                         }
                     </select>
@@ -182,36 +211,39 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="form-row">
-                <button type="button" class="btn-cancel" (click)="cancelEdit()" [disabled]="isSaving">
-                    <span class="btn-icon">❌</span>
-                    Cancelar
+            <!-- Botones de acción -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-cancel" (click)="cancelEdit()" [disabled]="isSaving">
+                    <span class="btn-icon">✕</span>
+                    <span>Cancelar</span>
                 </button>
-
-                <button type="submit" class="btn-submit" [disabled]="isSaving">
+                <button type="submit" class="btn btn-submit" [disabled]="isSaving">
                     <span class="btn-icon">💾</span>
-                    {{ isSaving ? 'Guardando...' : 'Guardar Cambios' }}
+                    <span>{{ isSaving ? 'Guardando...' : 'Guardar cambios' }}</span>
                 </button>
             </div>
 
             @if(error) {
-            <div class="error-message" style="margin-top: 1rem; justify-content: center;">
+            <div class="error-message global-error">
                 <span class="error-icon">⚠️</span>
                 {{ error }}
             </div>
             }
         </form>
         }
-
     </div>
-    } @else {
-    <div class="signup-container">
-        @if (loading) {
-        <h2 class="signup-title">Cargando...</h2>
-        } @else {
-        <p class="error-message">{{ error }}</p>
-        }
+    }
+
+    @if (loading) {
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Cargando perfil...</p>
+    </div>
+    }
+
+    @if (error && !loading) {
+    <div class="error-container">
+        <p>{{ error }}</p>
     </div>
     }
 </div>

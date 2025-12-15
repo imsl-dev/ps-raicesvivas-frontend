@@ -115,13 +115,13 @@ export class Home implements OnInit {
     {
       id: 6,
       pregunta: '¿Cómo funciona el sistema de canjeables?',
-      respuesta: 'Al asistit a eventos y obtener la asitencia, iremos sumando puntos, luego estos puntos podrán ser canjeados por beneficios que los organizadores ofrezcan en sus eventos. Los canjeables solo podrán ser utilizados una vez y cuentan con fecha de vencimiento.',
+      respuesta: 'Al asistir a eventos y obtener la asitencia, irás sumando puntos. Estos puntos pueden ser canjeados por beneficios tales como descuentos que RaicesVivas junto con nuestros Sponsors ofrece en la tienda. Los canjeables solo pueden ser utilizados una vez y cuentan con fecha de vencimiento.',
       expanded: false
     },
     {
       id: 7,
-      pregunta: '¿Que sucede si le doy al boton de "Mostrar QR" sin querer?',
-      respuesta: 'Al clickear el boton, previo a que se muestre la imagen, le aparecerá una ventana de confirmación para evitar clicks accidentales. En caso de que haya confirmado el click, el QR se mostrará en pantalla y luego el canjeable quedará utilizado.',
+      pregunta: '¿Que sucede si le doy al boton de "Mostrar QR" de un canjeable sin querer?',
+      respuesta: 'Al clickear el boton, previo a que se muestre el código QR, le aparecerá una ventana de confirmación para evitar clicks accidentales. En caso de que haya confirmado el click, el QR se mostrará en pantalla y luego el canjeable quedará utilizado.',
       expanded: false
     }
   ];
