@@ -4,4 +4,5 @@ export interface ActualizarUsuarioDTO {
     apellido: string;
     idProvincia: number;
     email: string;
+    rutaImg?: string; // Optional porque no siempre se actualiza
 }

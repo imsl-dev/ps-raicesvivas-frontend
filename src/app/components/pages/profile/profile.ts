@@ -29,7 +29,6 @@ import { DialogRef } from '@angular/cdk/dialog';
 })
 export class Profile implements OnInit {
 
-
   solicitudDialog = inject(MatDialog)
 
   openDialog() {
@@ -50,8 +49,6 @@ export class Profile implements OnInit {
       }
     });
   }
-
-
 
   user: Usuario = {
     nombre: "Mock",
@@ -92,11 +89,13 @@ export class Profile implements OnInit {
     apellido: string;
     email: string;
     idProvincia: number;
+    rutaImg?: string;
   } = {
       nombre: '',
       apellido: '',
       email: '',
-      idProvincia: 0
+      idProvincia: 0,
+      rutaImg: undefined
     };
 
   // Form validation
@@ -105,80 +104,61 @@ export class Profile implements OnInit {
     apellido?: string;
     email?: string;
     idProvincia?: string;
+    rutaImg?: string;
   } = {};
 
   isSaving: boolean = false;
 
-  // You'll need to populate this with available provinces
   provincias: any[] = [];
 
-  constructor(
-    private httpService: HttpService,
-    private authService: AuthService,
-    private peticionService: PeticionService,
-    private route: ActivatedRoute) { }
+  // Image preview
+  imagePreview: string | null = null;
 
+  constructor(
+    private authService: AuthService,
+    private httpService: HttpService,
+    private route: ActivatedRoute,
+    private peticionService: PeticionService
+  ) { }
 
   ngOnInit(): void {
-    //cargar datos del perfil basado en usuario
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.loading = true;
+    const userId = this.route.snapshot.paramMap.get('id');
 
-    this.httpService
-      .getUsuarioById(id)
-      .subscribe({
+    if (userId) {
+      this.httpService.getUsuarioById(parseInt(userId)).subscribe({
         next: (usuario) => {
           this.user = usuario;
+          this.rolFormateado = this.formatearRol(this.user.rol || RolUsuario.USUARIO)
           this.loading = false;
-          this.rolFormateado = this.formatearRol(this.user.rol)
-          //checkear si es mi perfil
-
-          this.checkIsMyProfile()
-
-          //checkear si es admin para no mostrar boton peticion
-
-          if (this.user.rol == RolUsuario.ADMIN) {
-            this.esAdministrador = true;
-          }
-          //obtener peticion organizador
-          this.obtenerPeticionOrganizador(id);
-
+          this.checkIsMyProfile();
+          this.esAdministrador = this.user.rol == RolUsuario.ADMIN
+          if (this.user?.id)
+            this.obtenerPeticionOrganizador(this.user.id)
         },
-        error: () => {
-          this.error = 'Error al cargar los datos de usuario'
-          this.loading = false
+        error: (err) => {
+          this.error = 'Error al cargar el perfil del usuario';
+          this.loading = false;
         }
-      })
+      });
+    }
 
-    // Load provinces for the dropdown
-    this.loadProvincias();
-  }
-
-
-
-  loadProvincias() {
-
-    this.httpService.getProvincias().subscribe(provincias => {
-      this.provincias = provincias;
+    // Load provincias for edit mode
+    this.httpService.getProvincias().subscribe({
+      next: (provincias) => {
+        this.provincias = provincias;
+      },
+      error: (err) => {
+        console.error('Error loading provincias:', err);
+      }
     });
   }
 
-  formatearRol(rol: RolUsuario | undefined) {
-
-    if (rol == undefined) {
-      return "ROL"
-    }
-
-    const splitted = rol.toLocaleLowerCase().split("")
-
-    const uppercase = splitted[0].toUpperCase()
-
-    splitted.shift()
-
-    const result = uppercase + splitted.join("")
-
-
-    return result == "Admin" ? "Administrador" : result
-
+  formatearRol(rol: RolUsuario): string {
+    const result = rol == RolUsuario.ADMIN ? "Administrador" :
+      rol == RolUsuario.ORGANIZADOR ? "Organizador" :
+        "Usuario"
+    return result;
   }
 
   checkIsMyProfile() {
@@ -189,7 +169,6 @@ export class Profile implements OnInit {
         }
       }
     )
-
   }
 
   editProfile() {
@@ -202,8 +181,12 @@ export class Profile implements OnInit {
       nombre: this.user.nombre,
       apellido: this.user.apellido,
       email: this.user.email || '',
-      idProvincia: this.user.provincia?.id || 0
+      idProvincia: this.user.provincia?.id || 0,
+      rutaImg: this.user.rutaImg || undefined
     };
+
+    // Set initial image preview
+    this.imagePreview = this.user.rutaImg || null;
 
     // Clear any previous errors
     this.formErrors = {};
@@ -213,6 +196,52 @@ export class Profile implements OnInit {
     this.isEditMode = false;
     this.formErrors = {};
     this.isSaving = false;
+    this.imagePreview = null;
+  }
+
+  // Handle image selection
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+
+      // Validate file size (5MB max)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        this.formErrors.rutaImg = 'La imagen no debe superar los 5MB';
+        return;
+      }
+
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+      if (!allowedTypes.includes(file.type)) {
+        this.formErrors.rutaImg = 'Solo se permiten imágenes JPG, PNG, WebP o GIF';
+        return;
+      }
+
+      // Convert to base64
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        const base64 = e.target?.result as string;
+        this.imagePreview = base64;
+        this.editForm.rutaImg = base64;
+        this.formErrors.rutaImg = undefined;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Remove selected image
+  removeImage(): void {
+    this.imagePreview = null;
+    this.editForm.rutaImg = undefined;
+  }
+
+  // Get user initials for avatar placeholder
+  getUserInitials(): string {
+    const firstName = this.user.nombre?.charAt(0) || '';
+    const lastName = this.user.apellido?.charAt(0) || '';
+    return (firstName + lastName).toUpperCase();
   }
 
   validateForm(): boolean {
@@ -235,18 +264,6 @@ export class Profile implements OnInit {
     } else if (this.editForm.apellido.trim().length < 2) {
       this.formErrors.apellido = 'El apellido debe tener al menos 2 caracteres';
       isValid = false;
-    }
-
-    // Validate email
-    if (!this.editForm.email || this.editForm.email.trim().length === 0) {
-      this.formErrors.email = 'El email es requerido';
-      isValid = false;
-    } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(this.editForm.email)) {
-        this.formErrors.email = 'El email no es válido';
-        isValid = false;
-      }
     }
 
     // Validate provincia
@@ -273,6 +290,11 @@ export class Profile implements OnInit {
       idProvincia: this.editForm.idProvincia
     };
 
+    // Only include rutaImg if it was changed
+    if (this.editForm.rutaImg !== undefined) {
+      updateDTO.rutaImg = this.editForm.rutaImg;
+    }
+
     this.httpService.updateUser(updateDTO).subscribe({
       next: (updatedUser) => {
         // Update local user object
@@ -282,6 +304,7 @@ export class Profile implements OnInit {
         // Exit edit mode
         this.isEditMode = false;
         this.isSaving = false;
+        this.imagePreview = null;
 
         // Optionally show success message
         console.log('Perfil actualizado exitosamente');
@@ -309,16 +332,11 @@ export class Profile implements OnInit {
             if (this.peticionOrganizador.estadoPeticion == EstadoPeticion.CANCELADO) {
               this.tienePeticionCancelada = true;
             }
-
-          }
-
-          else {
+          } else {
             this.tienePeticionActiva = false;
           }
-
         }
       }
     )
   }
-
 }
