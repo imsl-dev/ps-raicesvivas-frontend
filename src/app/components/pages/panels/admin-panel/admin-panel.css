@@ -39,6 +39,8 @@
 /* Sidebar de navegación */
 .admin-sidebar {
     width: 320px;
+    min-width: 320px;
+    flex-shrink: 0;
     background: white;
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -165,6 +167,8 @@
 /* Contenido principal */
 .admin-main {
     flex: 1;
+    min-width: 0;
+    overflow-x: auto;
     animation: fadeIn 0.8s ease-out;
 }
 

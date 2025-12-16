@@ -270,7 +270,8 @@ export class ReportesAdmin implements OnInit {
     try {
       const canvas = await html2canvas(element.nativeElement, {
         backgroundColor: '#ffffff',
-        scale: 2
+        scale: 2,
+        ignoreElements: (el) => el.classList.contains('btn-export')
       });
 
       const imgData = canvas.toDataURL('image/png');

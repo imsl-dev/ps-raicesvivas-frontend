@@ -162,7 +162,7 @@ export class ReportesOrganizador implements OnInit {
 
   loadReportes(): void {
     if (!this.organizadorId) return;
-    
+
     this.loading = true;
 
     this.reporteService.obtenerKPIs(this.organizadorId).subscribe({
@@ -198,7 +198,7 @@ export class ReportesOrganizador implements OnInit {
 
   loadDonaciones(): void {
     if (!this.organizadorId) return;
-    
+
     this.loadingDonaciones = true;
 
     this.reporteService.obtenerDonaciones(this.organizadorId).subscribe({
@@ -215,7 +215,7 @@ export class ReportesOrganizador implements OnInit {
 
   loadHistoricoEventos(): void {
     if (!this.organizadorId) return;
-    
+
     this.loadingTabla = true;
 
     const tipo = this.filtroTipo === 'TODOS' ? undefined : (this.filtroTipo as TipoEvento);
@@ -334,7 +334,9 @@ export class ReportesOrganizador implements OnInit {
     if (!this.chartTorta) return;
 
     try {
-      const canvas = await html2canvas(this.chartTorta.nativeElement);
+      const canvas = await html2canvas(this.chartTorta.nativeElement, {
+        ignoreElements: (el) => el.classList.contains('btn-export')
+      });
       const imgData = canvas.toDataURL('image/png');
 
       const pdf = new jsPDF('landscape', 'mm', 'a4');
@@ -359,7 +361,9 @@ export class ReportesOrganizador implements OnInit {
     if (!this.chartRecaudacion) return;
 
     try {
-      const canvas = await html2canvas(this.chartRecaudacion.nativeElement);
+      const canvas = await html2canvas(this.chartRecaudacion.nativeElement, {
+        ignoreElements: (el) => el.classList.contains('btn-export')
+      });
       const imgData = canvas.toDataURL('image/png');
 
       const pdf = new jsPDF('landscape', 'mm', 'a4');
@@ -397,7 +401,7 @@ export class ReportesOrganizador implements OnInit {
 
   exportarEventosAExcel(): void {
     if (!this.organizadorId) return;
-    
+
     this.exportandoExcel = true;
 
     const tipo = this.filtroTipo === 'TODOS' ? undefined : (this.filtroTipo as TipoEvento);
