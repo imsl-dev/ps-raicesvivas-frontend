@@ -9,6 +9,7 @@ import { PeticionOrganizador } from '../../../models/entities/PeticionOrganizado
 import { PeticionOrganizadorPostDTO } from '../../../models/dtos/peticionesOrganizador/PeticionOrganizadorPostDTO';
 import { AuthService } from '../../../services/auth.service';
 import { Usuario } from '../../../models/entities/Usuario';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-frm-solicitud-organizador',
@@ -79,31 +80,68 @@ export class FrmSolicitudOrganizador implements OnInit {
         formData.append('idImage', this.fileData);
       }
 
-      // You can send `formData` to your backend here
       const peticion: PeticionOrganizadorPostDTO = {
         idUsuario: this.user.id || 1,
         mensajeUsuario: this.formSolicitud.get('motivo')?.value!,
         image64: this.selectedImage as string,
         userImage: this.user.rutaImg as string
       }
-      console.log("Image data:", this.formSolicitud.get('idImage')?.value!);
+
       this.peticionService.postPeticion(peticion).subscribe({
         next: (response) => {
-          // Close dialog and pass success result
-          this.dialogRef.close({ success: true, peticion: response });
+          // Mostrar SweetAlert de éxito
+          Swal.fire({
+            title: "¡Solicitud enviada!",
+            text: "Tu petición está siendo validada por un administrador. Recibirás un correo cuando sea revisada.",
+            icon: "success",
+            draggable: true
+          }).then(() => {
+            // Cerrar el diálogo y pasar el resultado exitoso
+            this.dialogRef.close({ success: true, peticion: response });
+          });
         },
         error: (err) => {
           console.log("Error enviando peticion");
+          Swal.fire({
+            title: "Error",
+            text: "No se pudo enviar la solicitud. Por favor, intente nuevamente.",
+            icon: "error",
+            draggable: true
+          });
           this.dialogRef.close({ success: false, err });
         }
-      })
-
-      this.dialogRef.close(this.formSolicitud.value);
+      });
     }
   }
 
   onCancel() {
     this.dialogRef.close()
+  }
+
+  /**
+   * Valida que solo se ingresen dígitos por teclado
+   */
+  validarSoloDigitos(event: KeyboardEvent): void {
+    const teclaPermitida = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
+
+    if (teclaPermitida.includes(event.key)) {
+      return;
+    }
+
+    // Solo permitir dígitos del 0 al 9
+    if (!/^[0-9]$/.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  /**
+   * Valida que al pegar solo se permitan dígitos
+   */
+  validarPasteDigitos(event: ClipboardEvent): void {
+    const pastedData = event.clipboardData?.getData('text') || '';
+    if (!/^\d+$/.test(pastedData)) {
+      event.preventDefault();
+    }
   }
 
 

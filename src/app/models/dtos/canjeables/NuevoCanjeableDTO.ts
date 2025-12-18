@@ -5,4 +5,5 @@ export interface NuevoCanjeableDTO {
     costoPuntos: number,
     validoHasta: string,
     nombreSponsor: string
+    activo?: boolean;
 }

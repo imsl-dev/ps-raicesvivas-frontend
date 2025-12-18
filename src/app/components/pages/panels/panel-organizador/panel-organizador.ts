@@ -6,12 +6,13 @@ import { Evento } from '../../../../models/entities/Evento';
 import { EstadoEvento } from '../../../../models/enums/Enums';
 import { AuthService } from '../../../../services/auth.service';
 import { EventoService } from '../../../../services/evento.service';
+import { ReportesOrganizador } from './reportes-organizador/reportes-organizador';
 
 type MenuOption = 'asistencias' | 'reportes';
 
 @Component({
   selector: 'app-panel-organizador',
-  imports: [CommonModule],
+  imports: [CommonModule, ReportesOrganizador],
   templateUrl: './panel-organizador.html',
   styleUrl: './panel-organizador.css'
 })
@@ -122,7 +123,7 @@ export class PanelOrganizador implements OnInit {
     });
   }
 
-  contarInscritos(evento: Evento): number {
-    return evento.participantes?.length || 0;
+  contarInscritos(evento: any): number {
+    return evento.cantidadInscritos || 0;
   }
 }

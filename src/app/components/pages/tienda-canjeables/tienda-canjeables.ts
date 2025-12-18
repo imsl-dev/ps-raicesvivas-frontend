@@ -8,6 +8,7 @@ import { AuthService } from '../../../services/auth.service';
 import { Usuario } from '../../../models/entities/Usuario';
 import { CanjeableService } from '../../../services/canjeable.service';
 import { SponsorService } from '../../../services/sponsor.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-shop',
@@ -147,7 +148,12 @@ export class TiendaCanjeables implements OnInit {
         },
         error: (err) => {
           console.error('Error canjeando cupón:', err);
-          alert('Error al canjear el cupón');
+          Swal.fire({
+            title: "Error",
+            text: "Error al canjear el cupón",
+            icon: "error",
+            draggable: true
+          });
           // Revert the expansion
           this.expandedCanjeableId = null;
           this.qrCodeDataUrl = '';
@@ -156,7 +162,12 @@ export class TiendaCanjeables implements OnInit {
 
     } catch (err) {
       console.error('Error generando QR:', err);
-      alert('Error al generar el código QR');
+      Swal.fire({
+        title: "Error",
+        text: "Error al generar el código QR",
+        icon: "error",
+        draggable: true
+      });
     } finally {
       this.generatingQR = false;
       this.pendingRedeemCanjeable = null;
@@ -173,7 +184,12 @@ export class TiendaCanjeables implements OnInit {
     if (!this.usuarioLogeado) return;
 
     if (this.usuarioLogeado.puntos! < canjeable.costoPuntos) {
-      alert('No tienes suficientes puntos para comprar este canjeable');
+      Swal.fire({
+        title: "Puntos insuficientes",
+        text: "No tienes suficientes puntos para comprar este canjeable",
+        icon: "warning",
+        draggable: true
+      });
       return;
     }
 
@@ -198,7 +214,11 @@ export class TiendaCanjeables implements OnInit {
             this.canjeablesDisponibles = this.canjeablesDisponibles.filter(
               c => c.id !== canjeable.id
             );
-            alert('Cupón comprado');
+            Swal.fire({
+              title: "¡Cupón comprado!",
+              icon: "success",
+              draggable: true
+            });
           },
           error: (err) => {
             console.error('Error refrescando usuario:', err);
@@ -207,7 +227,12 @@ export class TiendaCanjeables implements OnInit {
       },
       error: (err) => {
         console.error('Error comprando canjeable:', err);
-        alert('Ya tenés ese cupón disponible. Utilizalo antes de comprar otro');
+        Swal.fire({
+          title: "Error",
+          text: "Ya tenés ese cupón disponible. Utilizalo antes de comprar otro",
+          icon: "error",
+          draggable: true
+        });
       }
     });
 

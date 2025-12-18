@@ -1,28 +1,25 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ɵInternalFormsSharedModule, ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { Sponsor } from '../../../../models/entities/Sponsor';
+import { Component, inject, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { Sponsor } from '../../../../../models/entities/Sponsor';
 import { CommonModule } from '@angular/common';
-import { SponsorService } from '../../../../services/sponsor.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { SponsorService } from '../../../../../services/sponsor.service';
+import { SponsorAction } from '../../../sponsors/lista-sponsors/lista-sponsors';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-nuevo-sponsor',
+  selector: 'app-sponsor-form-admin',
   imports: [FormsModule, CommonModule, ReactiveFormsModule],
-  templateUrl: './nuevo-sponsor.html',
-  styleUrl: './nuevo-sponsor.css'
+  templateUrl: './sponsor-form-admin.html',
+  styleUrl: './sponsor-form-admin.css'
 })
-export class NuevoSponsor implements OnInit {
+export class SponsorFormAdmin implements OnInit {
   private readonly service = inject(SponsorService);
-  private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
 
-  // ID del sponsor a editar
-  sponsorId: number | null = null;
+  @Input() sponsorId: number | null = null;
+  @Input() action: SponsorAction = 'crear';
+  @Output() formClosed = new EventEmitter<boolean>(); // true if saved, false if cancelled
 
-  // Modo de vista (ver solo)
   isViewMode: boolean = false;
-
   sponsorForm: FormGroup;
   imagenPreview1: string | null = null;
   imagenPreview2: string | null = null;
@@ -42,17 +39,12 @@ export class NuevoSponsor implements OnInit {
     return this.sponsorId ? 'Modificar Sponsor' : 'Alta de Sponsor';
   }
 
-
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      const id = params['id'];
-      if (id) {
-        this.sponsorId = +id;
-        // Verificar si es modo vista
-        this.isViewMode = this.router.url.includes('/ver/');
-        this.loadSponsor(id);
-      }
-    });
+    this.isViewMode = this.action === 'ver';
+
+    if (this.sponsorId) {
+      this.loadSponsor(this.sponsorId);
+    }
   }
 
   loadSponsor(id: number): void {
@@ -119,7 +111,7 @@ export class NuevoSponsor implements OnInit {
   }
 
   volver(): void {
-    this.router.navigate(['/sponsors']);
+    this.formClosed.emit(false);
   }
 
   onSubmit(): void {
@@ -142,7 +134,7 @@ export class NuevoSponsor implements OnInit {
             icon: "success",
             draggable: true
           });
-          this.router.navigate(['/sponsors']);
+          this.formClosed.emit(true);
         },
         error: (error) => {
           console.error('Error al guardar el sponsor:', error);

@@ -1,1 +1,138 @@
-<p>planilla-asistencia works!</p>
+<div class="planilla-container">
+    <!-- Header -->
+    <div class="header">
+        <button class="btn-volver" (click)="volver()" title="Volver al panel">
+            ← Volver
+        </button>
+        <div class="header-info">
+            <h2>📋 Planilla de Asistencia</h2>
+            @if (nombreEvento) {
+            <p class="evento-nombre">{{ nombreEvento }}</p>
+            }
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading) {
+    <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando asistencias...</p>
+    </div>
+    }
+
+    <!-- Error State -->
+    @if (error && !loading) {
+    <div class="error-state">
+        <div class="error-icon">⚠️</div>
+        <p>{{ error }}</p>
+        <button class="btn-retry" (click)="cargarAsistencias()">Reintentar</button>
+    </div>
+    }
+
+    <!-- Content -->
+    @if (!loading && !error) {
+    <div class="content-wrapper">
+        <!-- Estadísticas -->
+        <div class="estadisticas">
+            <div class="stat-card total">
+                <div class="stat-icon">👥</div>
+                <div class="stat-content">
+                    <span class="stat-value">{{ totalParticipantes }}</span>
+                    <span class="stat-label">Total Inscriptos</span>
+                </div>
+            </div>
+            <div class="stat-card presentes">
+                <div class="stat-icon">✅</div>
+                <div class="stat-content">
+                    <span class="stat-value">{{ totalPresentes }}</span>
+                    <span class="stat-label">Presentes</span>
+                </div>
+            </div>
+            <div class="stat-card ausentes">
+                <div class="stat-icon">❌</div>
+                <div class="stat-content">
+                    <span class="stat-value">{{ totalAusentes }}</span>
+                    <span class="stat-label">Ausentes</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acciones Rápidas -->
+        <div class="acciones-rapidas">
+            <button class="btn-accion" (click)="marcarTodos(true)" title="Marcar todos como presentes">
+                ✅ Marcar Todos Presentes
+            </button>
+            <button class="btn-accion btn-secondary" (click)="marcarTodos(false)" title="Marcar todos como ausentes">
+                ❌ Marcar Todos Ausentes
+            </button>
+        </div>
+
+        <!-- Lista de Participantes -->
+        @if (participantes.length === 0) {
+        <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <h3>No hay participantes inscritos</h3>
+            <p>Aún no hay personas inscritas a este evento.</p>
+        </div>
+        }
+
+        @if (participantes.length > 0) {
+        <div class="participantes-list">
+            <div class="list-header">
+                <span class="header-nombre">Participante</span>
+                <span class="header-asistencia">Asistencia</span>
+            </div>
+
+            @for (participante of participantes; track participante.usuarioId) {
+            <div class="participante-item" [class.presente]="participante.asistio">
+                <div class="participante-info">
+                    <div class="participante-avatar">
+                        {{ participante.nombreUsuario.charAt(0).toUpperCase() }}
+                    </div>
+                    <span class="participante-nombre">{{ participante.nombreUsuario }}</span>
+                </div>
+                <div class="participante-asistencia">
+                    <label class="checkbox-container">
+                        <input 
+                            type="checkbox" 
+                            [(ngModel)]="participante.asistio"
+                            class="checkbox-input"
+                        />
+                        <span class="checkbox-custom"></span>
+                        <span class="checkbox-label">
+                            @if (participante.asistio) {
+                            <span class="presente-text">Presente</span>
+                            }
+                            @if (!participante.asistio) {
+                            <span class="ausente-text">Ausente</span>
+                            }
+                        </span>
+                    </label>
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- Botón Guardar -->
+        <div class="footer-actions">
+            <button 
+                class="btn-guardar" 
+                (click)="guardarAsistencias()" 
+                [disabled]="guardando"
+                [class.guardando]="guardando"
+            >
+                @if (!guardando) {
+                <span>💾 Guardar Asistencias</span>
+                }
+                @if (guardando) {
+                <span>
+                    <span class="spinner-small"></span>
+                    Guardando...
+                </span>
+                }
+            </button>
+        </div>
+        }
+    </div>
+    }
+</div>

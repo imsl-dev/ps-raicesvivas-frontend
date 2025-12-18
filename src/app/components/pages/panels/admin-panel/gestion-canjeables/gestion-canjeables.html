@@ -1,147 +1,228 @@
 <div class="content-wrapper">
+    @if (showCanjeableForm) {
+    <!-- Formulario de Canjeable -->
+    <app-canjeable-form-admin [canjeableId]="canjeableFormId" [action]="canjeableFormAction"
+        (formClosed)="handleCanjeableFormClose($event)" />
+    } @else {
+    <!-- Lista de Canjeables -->
     <div class="header">
-        <h2>🎁 Gestión de Canjeables</h2>
-        <p class="subtitle">Crea nuevos productos canjeables por puntos para los usuarios</p>
+        <h2>⭐ Gestión de Canjeables</h2>
+        <button class="btn btn-primary" (click)="nuevoCanjeable()">
+            ➕ Nuevo Canjeable
+        </button>
     </div>
 
     <div class="content-body">
-        <!-- Loading state -->
+        <!-- Buscador -->
+        <div class="search-container">
+            <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()"
+                placeholder="🔍 Buscar por nombre..." class="search-input">
+        </div>
+
+        <!-- Filtros -->
+        <div class="filtros-container">
+            <!-- Filtro de Estado -->
+            <div class="filtro-group">
+                <label class="filtro-label">Estado:</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="filtroEstado" value="activos" [(ngModel)]="filtroEstado"
+                            (change)="onFiltroEstadoChange()">
+                        <span>Solo activos</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="filtroEstado" value="todos" [(ngModel)]="filtroEstado"
+                            (change)="onFiltroEstadoChange()">
+                        <span>Todos</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Filtro de Vigencia -->
+            <div class="filtro-group">
+                <label class="filtro-label">Vigencia:</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="filtroVigencia" value="vigentes" [(ngModel)]="filtroVigencia"
+                            (change)="onFiltroVigenciaChange()">
+                        <span>Solo vigentes</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="filtroVigencia" value="todos" [(ngModel)]="filtroVigencia"
+                            (change)="onFiltroVigenciaChange()">
+                        <span>Todos</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Filtro de Sponsor -->
+            <div class="filtro-group">
+                <label class="filtro-label">Sponsor:</label>
+                <select class="filtro-select" [(ngModel)]="filtroSponsor" (ngModelChange)="onFiltroSponsorChange()">
+                    <option [ngValue]="null">Todos los sponsors</option>
+                    @for (sponsor of sponsors; track sponsor.id) {
+                    <option [ngValue]="sponsor.id">{{ sponsor.nombre }}</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <!-- Estado de carga -->
         @if (loading) {
-        <div class="loading-state">
-            <div class="spinner"></div>
-            <p>Cargando información...</p>
+        <div class="loading">
+            <div class="spinner-border text-success mb-3" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p>Cargando canjeables...</p>
         </div>
         }
 
+        <!-- Grid de Canjeables -->
         @if (!loading) {
-        <div class="form-container">
-            <form (ngSubmit)="onSubmit()" #canjeableForm="ngForm">
-
-                <!-- Name Field -->
-                <div class="form-group">
-                    <label for="nombre" class="form-label">
-                        📝 Nombre del Canjeable *
-                    </label>
-                    <input type="text" id="nombre" name="nombre" [(ngModel)]="formData.nombre" class="form-control"
-                        [class.error]="errors['nombre']" placeholder="Ej: 20% de descuento en Helados Grido" required>
-                    @if (errors['nombre']) {
-                    <span class="error-message">{{ errors['nombre'] }}</span>
-                    }
-                </div>
-
-                <!-- Sponsor Selection -->
-                <div class="form-group">
-                    <label for="sponsor" class="form-label">
-                        🏢 Sponsor *
-                    </label>
-                    <select id="sponsor" name="sponsor" [(ngModel)]="formData.sponsorId" class="form-control"
-                        [class.error]="errors['sponsorId']" required>
-                        <option [ngValue]="0">Seleccione un sponsor</option>
-                        @for (sponsor of sponsors; track sponsor.id) {
-                        <option [ngValue]="sponsor.id">{{ sponsor.nombre }}</option>
-                        }
-                    </select>
-                    @if (errors['sponsorId']) {
-                    <span class="error-message">{{ errors['sponsorId'] }}</span>
-                    }
-                </div>
-
-                <!-- URL Field -->
-                <div class="form-group">
-                    <label for="url" class="form-label">
-                        🔗 URL de Redirección *
-                    </label>
-                    <input type="text" id="url" name="url" [(ngModel)]="formData.url" class="form-control"
-                        [class.error]="errors['url']" placeholder="https://ejemplo.com/descuento" required>
-                    <small class="form-hint">
-                        URL a la que redirigirá el código QR cuando sea escaneado
-                    </small>
-                    @if (errors['url']) {
-                    <span class="error-message">{{ errors['url'] }}</span>
-                    }
-                </div>
-
-                <!-- Cost in Points -->
-                <div class="form-group">
-                    <label for="costoPuntos" class="form-label">
-                        ⭐ Costo en Puntos *
-                    </label>
-                    <input type="number" id="costoPuntos" name="costoPuntos" [(ngModel)]="formData.costoPuntos"
-                        class="form-control" [class.error]="errors['costoPuntos']" min="1" placeholder="100" required>
-                    @if (errors['costoPuntos']) {
-                    <span class="error-message">{{ errors['costoPuntos'] }}</span>
-                    }
-                </div>
-
-                <!-- Expiration Date -->
-                <div class="form-group">
-                    <label for="validoHasta" class="form-label">
-                        📅 Válido Hasta *
-                    </label>
-                    <input type="date" id="validoHasta" name="validoHasta" [(ngModel)]="formData.validoHasta"
-                        class="form-control" [class.error]="errors['validoHasta']" required>
-                    @if (errors['validoHasta']) {
-                    <span class="error-message">{{ errors['validoHasta'] }}</span>
-                    }
-                </div>
-
-                <!-- Preview Card -->
-                @if (formData.sponsorId && formData.sponsorId > 0) {
-                <div class="preview-section">
-                    <h3>👁️ Vista Previa</h3>
-                    <div class="preview-card">
-                        @if (formData.nombre) {
-                        <div class="preview-nombre">
-                            {{ formData.nombre }}
-                        </div>
-                        }
-                        <div class="preview-header">
-                            <div class="preview-sponsor-info">
-                                @if (getSponsorImage(formData.sponsorId)) {
-                                <img [src]="getSponsorImage(formData.sponsorId)"
-                                    [alt]="getSponsorName(formData.sponsorId)" class="sponsor-logo">
-                                }
-                                <span class="preview-sponsor">{{ getSponsorName(formData.sponsorId) }}</span>
-                            </div>
-                            <span class="preview-points">⭐ {{ formData.costoPuntos || 0 }} puntos</span>
-                        </div>
-                        @if (formData.url) {
-                        <div class="preview-url">
-                            <span class="url-icon">🔗</span>
-                            <span class="url-text">{{ formData.url }}</span>
-                        </div>
-                        }
-                        <div class="preview-expiry">
-                            <span class="expiry-icon">📅</span>
-                            <span>Válido hasta: {{ formData.validoHasta || 'No especificado' }}</span>
+        @if (canjeablesFiltrados.length === 0) {
+        <div class="empty-state">
+            <p>😔 No se encontraron canjeables con los filtros aplicados</p>
+        </div>
+        } @else {
+        <div class="canjeables-grid">
+            @for (canjeable of canjeablesFiltrados; track canjeable.id) {
+            <div class="canjeable-card">
+                <!-- Header del card -->
+                <div class="card-header">
+                    <div class="header-top">
+                        <h3 class="canjeable-nombre">{{ canjeable.nombre }}</h3>
+                        <div class="badges">
+                            @if (canjeable.activo) {
+                            <span class="badge badge-activo">ACTIVO</span>
+                            } @else {
+                            <span class="badge badge-inactivo">INACTIVO</span>
+                            }
+                            @if (estaVencido(canjeable)) {
+                            <span class="badge badge-vencido">VENCIDO</span>
+                            }
                         </div>
                     </div>
-                </div>
-                }
-
-                <!-- Form Actions -->
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" (click)="resetForm()">
-                        🔄 Limpiar Formulario
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        ✅ Crear Canjeable
-                    </button>
+                    <p class="sponsor-nombre">{{ getSponsorNombre(canjeable.sponsorId) }}</p>
                 </div>
 
-            </form>
-        </div>
+                <!-- Body del card -->
+                <div class="card-body">
+                    <div class="info-row">
+                        <span class="info-icon">💰</span>
+                        <span class="info-text">{{ canjeable.costoPuntos }} puntos</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">📅</span>
+                        <span class="info-text">
+                            Válido hasta: {{ canjeable.validoHasta | date:'dd/MM/yyyy' }}
+                        </span>
+                    </div>
+                    @if (canjeable.url) {
+                    <div class="info-row">
+                        <span class="info-icon">🔗</span>
+                        <a [href]="canjeable.url" target="_blank" class="info-link">
+                            Ver oferta
+                        </a>
+                    </div>
+                    }
+                </div>
 
-        <!-- Info Box -->
-        <div class="info-box">
-            <h4>ℹ️ Información</h4>
-            <ul>
-                <li>Los usuarios podrán canjear puntos por estos productos en la tienda</li>
-                <li>El código QR se generará automáticamente al momento del canje</li>
-                <li>La URL de redirección es obligatoria y debe apuntar al cupón o beneficio</li>
-                <li>Todos los campos marcados con * son obligatorios</li>
-            </ul>
+                <!-- Acciones -->
+                <div class="card-actions">
+                    <button class="btn-action btn-view" (click)="verCanjeable(canjeable.id)" title="Ver detalles">
+                        👁️ Ver
+                    </button>
+                    <button class="btn-action btn-edit" (click)="editarCanjeable(canjeable.id)"
+                        [disabled]="!puedeEditarEliminar(canjeable)" [class.disabled]="!puedeEditarEliminar(canjeable)"
+                        title="Editar">
+                        ✏️ Editar
+                    </button>
+                    <button class="btn-action btn-delete" (click)="abrirModalEliminar(canjeable)"
+                        [disabled]="!puedeEditarEliminar(canjeable)" [class.disabled]="!puedeEditarEliminar(canjeable)"
+                        title="Eliminar">
+                        🗑️ Eliminar
+                    </button>
+                </div>
+            </div>
+            }
         </div>
         }
+        }
+    </div>
+    }
+</div>
+
+<!-- Modal de Confirmación de Eliminación -->
+@if (showDeleteModal) {
+<div class="modal-overlay" (click)="cerrarModalEliminar()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header modal-header-warning">
+            <h3>⚠️ Confirmar Eliminación</h3>
+            <button class="modal-close" (click)="cerrarModalEliminar()">✖</button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-message">
+                ¿Estás seguro de que deseas eliminar el canjeable
+                <strong>"{{ canjeableToDelete?.nombre }}"</strong>?
+            </p>
+
+            <div class="info-preview">
+                <div class="info-item">
+                    <span class="info-icon">💰</span>
+                    <span class="info-text">{{ canjeableToDelete?.costoPuntos }} puntos</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">🏢</span>
+                    <span class="info-text">{{ getSponsorNombre(canjeableToDelete?.sponsorId || 0) }}</span>
+                </div>
+            </div>
+
+            <p class="modal-warning">
+                ⚠️ Esta acción marcará el canjeable como inactivo. No podrá ser canjeado por los usuarios.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="cerrarModalEliminar()">
+                Cancelar
+            </button>
+            <button class="btn btn-danger" (click)="confirmarEliminar()">
+                Confirmar Eliminación
+            </button>
+        </div>
     </div>
 </div>
+}
+
+<!-- Modal de Éxito -->
+@if (showSuccessModal) {
+<div class="modal-overlay" (click)="cerrarModalExito()">
+    <div class="modal-content modal-success" (click)="$event.stopPropagation()">
+        <div class="modal-header modal-header-success">
+            <h3>✅ Operación Exitosa</h3>
+            <button class="modal-close" (click)="cerrarModalExito()">✖</button>
+        </div>
+        <div class="modal-body">
+            <div class="success-icon">
+                @if (successAction === 'crear') {
+                <span class="icon-large">➕</span>
+                } @else if (successAction === 'editar') {
+                <span class="icon-large">✏️</span>
+                } @else if (successAction === 'eliminar') {
+                <span class="icon-large">🗑️</span>
+                }
+            </div>
+            <p class="modal-message success-message">
+                {{ successMessage }}
+            </p>
+            <p class="modal-submessage">
+                Los cambios se han aplicado correctamente.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" (click)="cerrarModalExito()">
+                Entendido
+            </button>
+        </div>
+    </div>
+</div>
+}

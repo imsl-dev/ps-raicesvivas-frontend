@@ -1,11 +1,13 @@
+<!-- src/app/components/pages/panels/admin-panel/reportes-admin/reportes-admin.html -->
+
 <div class="content-wrapper">
     <div class="header">
         <h2>📊 Reportes y Estadísticas</h2>
-        <p class="subtitle">Panel de control con métricas clave del sistema</p>
+        <p class="subtitle">Analiza el rendimiento y métricas del sistema</p>
     </div>
 
     <div class="content-body">
-        <!-- Loading State -->
+        <!-- Loading state -->
         @if (loading) {
         <div class="loading-state">
             <div class="spinner"></div>
@@ -15,89 +17,274 @@
 
         @if (!loading) {
         <!-- KPIs Section -->
-        <section class="kpis-section">
-            <div class="kpi-card revenue">
+        <section class="kpi-section">
+            <div class="kpi-card">
                 <div class="kpi-icon">💰</div>
                 <div class="kpi-content">
-                    <h3 class="kpi-label">Total Recaudado (Mes Actual)</h3>
-                    <p class="kpi-value">{{ formatCurrency(kpiData.totalRecaudado) }}</p>
+                    <h3 class="kpi-title">Recaudado este Mes</h3>
+                    <p class="kpi-value">${{ kpiData.totalRecaudadoMes.toFixed(2) }}</p>
+                    <p class="kpi-subtitle">5% de donaciones</p>
                 </div>
             </div>
 
-            <div class="kpi-card inscriptions">
+            <div class="kpi-card">
                 <div class="kpi-icon">📝</div>
                 <div class="kpi-content">
-                    <h3 class="kpi-label">Inscripciones Este Mes</h3>
-                    <p class="kpi-value">{{ formatNumber(kpiData.inscripcionesMes) }}</p>
+                    <h3 class="kpi-title">Inscripciones del Mes</h3>
+                    <p class="kpi-value">{{ kpiData.inscripcionesMes }}</p>
+                    <p class="kpi-subtitle">Nuevas inscripciones</p>
                 </div>
             </div>
 
-            <div class="kpi-card events">
-                <div class="kpi-icon">📅</div>
+            <div class="kpi-card">
+                <div class="kpi-icon">🎯</div>
                 <div class="kpi-content">
-                    <h3 class="kpi-label">Eventos Activos</h3>
-                    <p class="kpi-value">{{ formatNumber(kpiData.eventosActivos) }}</p>
+                    <h3 class="kpi-title">Eventos Activos</h3>
+                    <p class="kpi-value">{{ kpiData.eventosActivos }}</p>
+                    <p class="kpi-subtitle">Próximos y en curso</p>
                 </div>
             </div>
-
-
         </section>
 
         <!-- Charts Section -->
         <section class="charts-section">
-            <!-- Event Types Pie Chart -->
-            <div class="chart-container">
-                <div class="chart-card">
-                    <google-chart [type]="pieChartType" [data]="pieChartData" [options]="pieChartOptions"
-                        [width]="pieChartWidth" [height]="pieChartHeight">
-                    </google-chart>
+            <!-- Pie Chart -->
+            <div class="chart-card" #chartTorta>
+                <button class="btn-export" (click)="exportarTortaAPDF()" title="Exportar a PDF">
+                    📄 Exportar PDF
+                </button>
+                @if (pieChartData.length > 0) {
+                <google-chart [type]="pieChartType" [data]="pieChartData" [options]="pieChartOptions"
+                    [width]="pieChartWidth" [height]="pieChartHeight">
+                </google-chart>
+                } @else {
+                <div class="chart-placeholder">
+                    <p>📊 No hay datos de tipos de eventos</p>
                 </div>
+                }
             </div>
 
-            <!-- Monthly Revenue Bar Chart -->
-            <div class="chart-container full-width">
-                <div class="chart-card">
-                    <google-chart [type]="barChartType" [data]="barChartData" [options]="barChartOptions"
-                        [width]="barChartWidth" [height]="barChartHeight">
-                    </google-chart>
+            <!-- Bar Chart -->
+            <div class="chart-card" #chartRecaudacion>
+                <button class="btn-export" (click)="exportarRecaudacionAPDF()" title="Exportar a PDF">
+                    📄 Exportar PDF
+                </button>
+                @if (barChartData.length > 0) {
+                <google-chart [type]="barChartType" [data]="barChartData" [options]="barChartOptions"
+                    [width]="barChartWidth" [height]="barChartHeight">
+                </google-chart>
+                } @else {
+                <div class="chart-placeholder">
+                    <p>📊 No hay datos de recaudación mensual</p>
                 </div>
+                }
             </div>
 
-            <!-- Monthly Registrations Line Chart -->
-            <div class="chart-container full-width">
-                <div class="chart-card">
-                    <google-chart [type]="lineChartType" [data]="lineChartData" [options]="lineChartOptions"
-                        [width]="lineChartWidth" [height]="lineChartHeight">
-                    </google-chart>
+            <!-- Line Chart -->
+            <div class="chart-card" #chartInscripciones>
+                <button class="btn-export" (click)="exportarInscripcionesAPDF()" title="Exportar a PDF">
+                    📄 Exportar PDF
+                </button>
+                @if (lineChartData.length > 0) {
+                <google-chart [type]="lineChartType" [data]="lineChartData" [options]="lineChartOptions"
+                    [width]="lineChartWidth" [height]="lineChartHeight">
+                </google-chart>
+                } @else {
+                <div class="chart-placeholder">
+                    <p>📊 No hay datos de inscripciones mensuales</p>
                 </div>
+                }
             </div>
         </section>
 
-        <!-- Summary Section
-        <section class="summary-section">
-            <div class="summary-card">
-                <h3>📈 Resumen del Período</h3>
-                <ul class="summary-list">
-                    <li>
-                        <span class="summary-icon">✅</span>
-                        <span>El tipo de evento más popular es <strong>Reforestación</strong> con 45 eventos</span>
-                    </li>
-                    <li>
-                        <span class="summary-icon">📊</span>
-                        <span>Noviembre fue el mes con mayor recaudación: <strong>{{ formatCurrency(23500)
-                                }}</strong></span>
-                    </li>
-                    <li>
-                        <span class="summary-icon">👤</span>
-                        <span>El mes con más inscripciones fue Noviembre con <strong>445 inscripciones</strong></span>
-                    </li>
-                    <li>
-                        <span class="summary-icon">🎯</span>
-                        <span>Promedio de inscripciones mensuales: <strong>349 usuarios</strong></span>
-                    </li>
-                </ul>
+        <!-- Histórico de Eventos Section -->
+        <section class="historico-section">
+            <div class="section-header">
+                <h3>📋 Histórico de Eventos</h3>
+                <button class="btn-export-excel" (click)="exportarTablaAExcel()" [disabled]="exportandoExcel">
+                    @if (exportandoExcel) {
+                    <span class="spinner-small-inline"></span>
+                    Exportando...
+                    } @else {
+                    📊 Exportar a Excel
+                    }
+                </button>
             </div>
-        </section> -->
+
+            <!-- Filtros -->
+            <div class="filtros-container">
+                <div class="filtro-search">
+                    <input type="text" [(ngModel)]="searchTerm" (keyup.enter)="aplicarFiltros()"
+                        placeholder="Buscar por nombre..." class="search-input">
+                </div>
+
+                <div class="filtro-tipo">
+                    <select [(ngModel)]="filtroTipo" (change)="aplicarFiltros()" class="select-input">
+                        <option value="TODOS">Todos los tipos</option>
+                        @for (tipo of tiposEvento; track tipo) {
+                        <option [value]="tipo">{{ tipo | tipoEvento }}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="filtro-gratuito">
+                    <select [(ngModel)]="filtroGratuito" (change)="aplicarFiltros()" class="select-input">
+                        <option value="TODOS">Todos los eventos</option>
+                        <option value="SI">Gratuitos</option>
+                        <option value="NO">De pago</option>
+                    </select>
+                </div>
+
+                <button class="btn-limpiar" (click)="limpiarFiltros()">
+                    🔄 Limpiar
+                </button>
+            </div>
+
+            <!-- Info de resultados -->
+            <div class="results-info">
+                <span class="results-count">
+                    📊 Mostrando {{ eventos.length }} de {{ totalElements }} evento(s)
+                </span>
+            </div>
+
+            <!-- Loading de tabla -->
+            @if (loadingTabla) {
+            <div class="loading-state-small">
+                <div class="spinner-small"></div>
+                <p>Cargando eventos...</p>
+            </div>
+            }
+
+            <!-- Tabla (Desktop) -->
+            @if (!loadingTabla) {
+            @if (eventos.length === 0) {
+            <div class="empty-state">
+                <span class="empty-icon">🔍</span>
+                <p>No se encontraron eventos con los filtros aplicados</p>
+            </div>
+            } @else {
+            <div class="table-container">
+                <table class="tabla-eventos">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Fecha</th>
+                            <th>Ubicación</th>
+                            <th>Estado</th>
+                            <th>Costo Inscripción</th>
+                            <th>Costo Interno</th>
+                            <th>Sponsor</th>
+                            <th>Inscripciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (evento of eventos; track evento.id) {
+                        <tr>
+                            <td class="evento-nombre">{{ evento.nombre }}</td>
+                            <td>
+                                <span class="badge badge-tipo">{{ evento.tipo | tipoEvento }}</span>
+                            </td>
+                            <td class="evento-fecha">{{ formatearFecha(evento.horaInicio) }}</td>
+                            <td class="evento-ubicacion">{{ evento.ubicacion }}</td>
+                            <td>
+                                <span class="badge" [ngClass]="getEstadoBadgeClass(evento.estado)">
+                                    {{ evento.estado }}
+                                </span>
+                            </td>
+                            <td class="evento-costo">
+                                @if (esGratuito(evento.costoInscripcion)) {
+                                <span class="badge badge-success">GRATUITO</span>
+                                } @else {
+                                <span class="costo-valor">${{ evento.costoInscripcion.toFixed(2) }}</span>
+                                }
+                            </td>
+                            <td class="evento-costo">
+                                <span class="costo-valor">${{ evento.costoInterno.toFixed(2) }}</span>
+                            </td>
+                            <td class="evento-sponsor">{{ evento.sponsorNombre }}</td>
+                            <td class="evento-inscripciones">
+                                <span class="inscripciones-badge">{{ evento.totalInscripciones }}</span>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Cards móviles -->
+            <div class="cards-mobile">
+                @for (evento of eventos; track evento.id) {
+                <div class="evento-card-mobile">
+                    <div class="card-header-mobile">
+                        <h4>{{ evento.nombre }}</h4>
+                        <span class="badge" [ngClass]="getEstadoBadgeClass(evento.estado)">
+                            {{ evento.estado }}
+                        </span>
+                    </div>
+
+                    <div class="card-body-mobile">
+                        <div class="info-row">
+                            <span class="info-label">📌 Tipo:</span>
+                            <span class="badge badge-tipo">{{ evento.tipo | tipoEvento }}</span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">📅 Fecha:</span>
+                            <span>{{ formatearFecha(evento.horaInicio) }}</span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">📍 Ubicación:</span>
+                            <span>{{ evento.ubicacion }}</span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">💰 Costo Inscripción:</span>
+                            @if (esGratuito(evento.costoInscripcion)) {
+                            <span class="badge badge-success">GRATUITO</span>
+                            } @else {
+                            <span class="costo-valor">${{ evento.costoInscripcion.toFixed(2) }}</span>
+                            }
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">💵 Costo Interno:</span>
+                            <span class="costo-valor">${{ evento.costoInterno.toFixed(2) }}</span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">🏢 Sponsor:</span>
+                            <span>{{ evento.sponsorNombre }}</span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">👥 Inscripciones:</span>
+                            <span class="inscripciones-badge">{{ evento.totalInscripciones }}</span>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+
+            <!-- Paginación -->
+            @if (totalPages > 1) {
+            <div class="pagination">
+                <button class="pagination-btn" [disabled]="currentPage === 0" (click)="changePage(currentPage - 1)">
+                    ← Anterior
+                </button>
+                <span class="pagination-info">
+                    Página {{ currentPage + 1 }} de {{ totalPages }}
+                </span>
+                <button class="pagination-btn" [disabled]="currentPage === totalPages - 1"
+                    (click)="changePage(currentPage + 1)">
+                    Siguiente →
+                </button>
+            </div>
+            }
+            }
+            }
+        </section>
         }
     </div>
 </div>
