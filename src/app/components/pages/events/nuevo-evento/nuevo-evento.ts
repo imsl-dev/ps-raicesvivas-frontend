@@ -404,4 +404,68 @@ export class NuevoEvento implements OnInit {
     }
   }
 
+  /**
+   * Valida que solo se ingresen números enteros positivos por teclado
+   */
+  validarEnteroPositivo(event: KeyboardEvent): void {
+    const teclaPermitida = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
+
+    if (teclaPermitida.includes(event.key)) {
+      return;
+    }
+
+    // Solo permitir dígitos del 0 al 9
+    if (!/^[0-9]$/.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  /**
+   * Valida que al pegar solo se permitan números enteros
+   */
+  validarPasteEntero(event: ClipboardEvent): void {
+    const pastedData = event.clipboardData?.getData('text') || '';
+    if (!/^\d+$/.test(pastedData)) {
+      event.preventDefault();
+    }
+  }
+
+  /**
+   * Valida que solo se ingresen números positivos por teclado (permite decimales)
+   */
+  /**
+   * Valida que solo se ingresen números positivos por teclado (permite decimales con punto)
+   */
+  validarNumeroPositivo(event: KeyboardEvent): void {
+    const teclaPermitida = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
+
+    if (teclaPermitida.includes(event.key)) {
+      return;
+    }
+
+    const input = event.target as HTMLInputElement;
+    const valorActual = input.value;
+
+    // Permitir solo punto decimal, y solo si no existe ya uno
+    if (event.key === '.' && !valorActual.includes('.')) {
+      return;
+    }
+
+    // Solo permitir dígitos del 0 al 9
+    if (!/^[0-9]$/.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  /**
+   * Valida que al pegar solo se permitan números positivos
+   */
+  validarPasteNumeroPositivo(event: ClipboardEvent): void {
+    const pastedData = event.clipboardData?.getData('text') || '';
+    // Permite números con un punto decimal opcional
+    if (!/^\d+(\.\d+)?$/.test(pastedData)) {
+      event.preventDefault();
+    }
+  }
+
 }

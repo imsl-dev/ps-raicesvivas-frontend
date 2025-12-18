@@ -176,4 +176,30 @@ export class CanjeableFormAdmin implements OnInit {
   get validoHasta() {
     return this.canjeableForm.get('validoHasta');
   }
+
+  /**
+   * Valida que solo se ingresen números enteros positivos por teclado
+   */
+  validarEnteroPositivo(event: KeyboardEvent): void {
+    const teclaPermitida = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
+
+    if (teclaPermitida.includes(event.key)) {
+      return;
+    }
+
+    // Solo permitir dígitos del 0 al 9
+    if (!/^[0-9]$/.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  /**
+   * Valida que al pegar solo se permitan números enteros positivos
+   */
+  validarPasteEntero(event: ClipboardEvent): void {
+    const pastedData = event.clipboardData?.getData('text') || '';
+    if (!/^\d+$/.test(pastedData)) {
+      event.preventDefault();
+    }
+  }
 }

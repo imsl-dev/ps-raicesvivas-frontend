@@ -71,7 +71,8 @@
                 </label>
                 <input type="number" id="costoPuntos" class="form-control" formControlName="costoPuntos"
                     placeholder="100" min="1" [class.is-invalid]="costoPuntos?.invalid && costoPuntos?.touched"
-                    [class.is-valid]="costoPuntos?.valid && costoPuntos?.touched">
+                    [class.is-valid]="costoPuntos?.valid && costoPuntos?.touched"
+                    (keydown)="validarEnteroPositivo($event)" (paste)="validarPasteEntero($event)">
                 @if (costoPuntos?.invalid && costoPuntos?.touched) {
                 <div class="invalid-feedback">
                     @if (costoPuntos?.errors?.['required']) {

@@ -118,5 +118,31 @@ export class FrmSolicitudOrganizador implements OnInit {
     this.dialogRef.close()
   }
 
+  /**
+   * Valida que solo se ingresen dígitos por teclado
+   */
+  validarSoloDigitos(event: KeyboardEvent): void {
+    const teclaPermitida = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
+
+    if (teclaPermitida.includes(event.key)) {
+      return;
+    }
+
+    // Solo permitir dígitos del 0 al 9
+    if (!/^[0-9]$/.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  /**
+   * Valida que al pegar solo se permitan dígitos
+   */
+  validarPasteDigitos(event: ClipboardEvent): void {
+    const pastedData = event.clipboardData?.getData('text') || '';
+    if (!/^\d+$/.test(pastedData)) {
+      event.preventDefault();
+    }
+  }
+
 
 }

@@ -413,4 +413,43 @@ export class DetalleEvento implements OnInit {
     return this.montoDonacion !== null && this.montoDonacion > 0;
   }
 
+
+  /**
+   * Valida que solo se ingresen números positivos por teclado (permite decimales)
+   */
+  /**
+   * Valida que solo se ingresen números positivos por teclado (permite decimales con punto)
+   */
+  validarNumeroPositivo(event: KeyboardEvent): void {
+    const teclaPermitida = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'];
+
+    if (teclaPermitida.includes(event.key)) {
+      return;
+    }
+
+    const input = event.target as HTMLInputElement;
+    const valorActual = input.value;
+
+    // Permitir solo punto decimal, y solo si no existe ya uno
+    if (event.key === '.' && !valorActual.includes('.')) {
+      return;
+    }
+
+    // Solo permitir dígitos del 0 al 9
+    if (!/^[0-9]$/.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  /**
+   * Valida que al pegar solo se permitan números positivos
+   */
+  validarPasteNumeroPositivo(event: ClipboardEvent): void {
+    const pastedData = event.clipboardData?.getData('text') || '';
+    // Permite números con un punto decimal opcional
+    if (!/^\d+(\.\d+)?$/.test(pastedData)) {
+      event.preventDefault();
+    }
+  }
+
 }

@@ -127,7 +127,7 @@
               <img [src]="evento.organizador.rutaImg" [alt]="evento.organizador.nombre" class="organizador-foto">
               } @else {
               <div class="organizador-foto-placeholder">
-                {{ evento.organizador.nombre?.charAt(0) }}{{ evento.organizador.apellido?.charAt(0) }}
+                {{ evento.organizador.nombre.charAt(0) }}{{ evento.organizador.apellido.charAt(0) }}
               </div>
               }
             </div>
@@ -402,7 +402,8 @@
           <div class="input-monto-wrapper">
             <span class="currency-symbol">$</span>
             <input type="number" id="monto-donacion" class="input-monto" [(ngModel)]="montoDonacion"
-              placeholder="Ingresá el monto" min="1" step="1" [disabled]="procesandoDonacion">
+              placeholder="Ingresá el monto" min="1" step="0.01" [disabled]="procesandoDonacion"
+              (keydown)="validarNumeroPositivo($event)" (paste)="validarPasteNumeroPositivo($event)">
           </div>
           <small class="helper-text">Gracias por ayudar a la causa!npm </small>
         </div>

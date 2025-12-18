@@ -55,7 +55,8 @@
             <mat-hint>A esta cuenta se transferirá el dinero de las inscripciones y donaciones</mat-hint>
             <mat-label>CBU</mat-label>
 
-            <input matInput type="text" maxlength="22" formControlName="cbu" placeholder="Ingrese su CBU" />
+            <input matInput type="text" maxlength="22" formControlName="cbu" placeholder="Ingrese su CBU"
+                (keydown)="validarSoloDigitos($event)" (paste)="validarPasteDigitos($event)" />
             <mat-hint align="end">22 dígitos</mat-hint>
 
             @if(formSolicitud.get('cbu')?.hasError('required')) {
