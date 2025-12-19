@@ -11,6 +11,7 @@ import { PagoRequest } from '../../../../models/dtos/pagos/PagoRequest';
 import { DonacionService } from '../../../../services/donacion.service';
 import { FormsModule } from '@angular/forms';
 import { MapaDetalleEvento } from '../../../shared/mapa-detalle-evento/mapa-detalle-evento';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-detalle-evento',
@@ -206,7 +207,12 @@ export class DetalleEvento implements OnInit {
       next: () => {
         this.estaInscripto = true;
         this.procesandoInscripcion = false;
-        alert('✅ ¡Te has inscripto exitosamente al evento!');
+        Swal.fire({
+          title: "¡Inscripción exitosa!",
+          text: "Te has inscripto exitosamente al evento",
+          icon: "success",
+          draggable: true
+        });
       },
       error: (err) => {
         this.procesandoInscripcion = false;

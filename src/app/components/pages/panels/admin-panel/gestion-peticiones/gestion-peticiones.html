@@ -32,7 +32,13 @@
                 <div class="accordion-item" [class.expanded]="isPendienteExpanded(peticion.id)">
                     <div class="accordion-header" (click)="togglePendiente(peticion.id)">
                         <div class="header-left">
+                            @if (peticion.userImage) {
                             <img [src]="peticion.userImage" [alt]="peticion.nombreUsuario" class="user-avatar">
+                            } @else {
+                            <div class="user-avatar-placeholder">
+                                {{ getUserInitials(peticion) }}
+                            </div>
+                            }
                             <div class="user-info">
                                 <h4>{{ peticion.nombreUsuario }} {{ peticion.apellidoUsuario }}</h4>
                                 <p class="user-email">{{ peticion.email }}</p>
@@ -162,7 +168,13 @@
                 <div class="accordion-item" [class.expanded]="isProcesadaExpanded(peticion.id)">
                     <div class="accordion-header" (click)="toggleProcesada(peticion.id)">
                         <div class="header-left">
+                            @if (peticion.userImage) {
                             <img [src]="peticion.userImage" [alt]="peticion.nombreUsuario" class="user-avatar">
+                            } @else {
+                            <div class="user-avatar-placeholder">
+                                {{ getUserInitials(peticion) }}
+                            </div>
+                            }
                             <div class="user-info">
                                 <h4>{{ peticion.nombreUsuario }} {{ peticion.apellidoUsuario }}</h4>
                                 <p class="user-email">{{ peticion.email }}</p>

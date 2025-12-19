@@ -45,12 +45,8 @@
                     📄 Exportar PDF
                 </button>
                 @if (pieChartData.length > 0) {
-                <google-chart 
-                    [type]="pieChartType" 
-                    [data]="pieChartData" 
-                    [options]="pieChartOptions"
-                    [width]="pieChartWidth" 
-                    [height]="pieChartHeight">
+                <google-chart [type]="pieChartType" [data]="pieChartData" [options]="pieChartOptions"
+                    [width]="pieChartWidth" [height]="pieChartHeight">
                 </google-chart>
                 <div class="chart-info">
                     <span class="info-badge info-total">
@@ -75,18 +71,14 @@
                     📄 Exportar PDF
                 </button>
                 @if (barChartData.length > 0) {
-                <google-chart 
-                    [type]="barChartType" 
-                    [data]="barChartData" 
-                    [options]="barChartOptions"
-                    [width]="barChartWidth" 
-                    [height]="barChartHeight">
+                <google-chart [type]="barChartType" [data]="barChartData" [options]="barChartOptions"
+                    [width]="barChartWidth" [height]="barChartHeight">
                 </google-chart>
                 } @else {
                 <div class="chart-placeholder">
                     <span>📈</span>
                     <p>No hay datos de recaudación disponibles</p>
-                    <small>Los datos aparecerán cuando tus eventos reciban donaciones</small>
+                    <small>Los datos aparecerán cuando tus eventos reciban donaciones o inscripciones</small>
                 </div>
                 }
             </div>
@@ -96,8 +88,8 @@
         <section class="donaciones-section">
             <div class="section-header">
                 <h3>💰 Donaciones Recibidas</h3>
-                <button class="btn-export-excel" (click)="exportarDonacionesAExcel()" 
-                        [disabled]="donaciones.length === 0">
+                <button class="btn-export-excel" (click)="exportarDonacionesAExcel()"
+                    [disabled]="donaciones.length === 0">
                     📥 Exportar Excel
                 </button>
             </div>
@@ -148,8 +140,8 @@
         <section class="historico-section">
             <div class="section-header">
                 <h3>📋 Histórico de Mis Eventos</h3>
-                <button class="btn-export-excel" (click)="exportarEventosAExcel()" 
-                        [disabled]="eventos.length === 0 || exportandoExcel">
+                <button class="btn-export-excel" (click)="exportarEventosAExcel()"
+                    [disabled]="eventos.length === 0 || exportandoExcel">
                     @if (exportandoExcel) {
                     <span class="spinner-btn"></span> Exportando...
                     } @else {
@@ -161,11 +153,8 @@
             <!-- Filtros -->
             <div class="filtros-container">
                 <div class="filtro-search">
-                    <input type="text" 
-                           class="search-input" 
-                           placeholder="🔍 Buscar por nombre..." 
-                           [(ngModel)]="searchTerm"
-                           (input)="onFiltroChange()">
+                    <input type="text" class="search-input" placeholder="🔍 Buscar por nombre..."
+                        [(ngModel)]="searchTerm" (input)="onFiltroChange()">
                 </div>
                 <div class="filtro-tipo">
                     <select class="select-input" [(ngModel)]="filtroTipo" (change)="onFiltroChange()">
@@ -249,17 +238,19 @@
                 <button class="btn-pagina" (click)="irAPagina(currentPage - 1)" [disabled]="currentPage === 0">
                     «
                 </button>
-                
+
                 @for (pagina of getPaginas(); track pagina) {
                 <button class="btn-pagina" [class.active]="pagina === currentPage" (click)="irAPagina(pagina)">
                     {{ pagina + 1 }}
                 </button>
                 }
-                
-                <button class="btn-pagina" (click)="irAPagina(currentPage + 1)" [disabled]="currentPage >= totalPages - 1">
+
+                <button class="btn-pagina" (click)="irAPagina(currentPage + 1)"
+                    [disabled]="currentPage >= totalPages - 1">
                     »
                 </button>
-                <button class="btn-pagina" (click)="irAPagina(totalPages - 1)" [disabled]="currentPage >= totalPages - 1">
+                <button class="btn-pagina" (click)="irAPagina(totalPages - 1)"
+                    [disabled]="currentPage >= totalPages - 1">
                     »»
                 </button>
             </div>

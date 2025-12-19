@@ -4,6 +4,7 @@ import { EventoService } from '../../../services/evento.service';
 import { AuthService } from '../../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
 
 interface ParticipanteAsistencia {
   usuarioId: number;
@@ -101,7 +102,12 @@ export class PlanillaAsistencia implements OnInit {
     this.eventoService.guardarAsistenciasEvento(planillaRequest).subscribe({
       next: (response: any) => {
         this.guardando = false;
-        alert('✅ Asistencias guardadas exitosamente');
+        Swal.fire({
+          title: "✅ Asistencias guardadas ",
+          text: "Las asistencias fueron guardadas correctamente.",
+          icon: "success",
+          draggable: true
+        })
         // Recargar para obtener el estado actualizado
         this.cargarAsistencias();
       },

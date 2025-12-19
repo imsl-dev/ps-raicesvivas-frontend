@@ -89,7 +89,7 @@ export class ReportesOrganizador implements OnInit {
   barChartType = ChartType.ColumnChart;
   barChartData: any[] = [];
   barChartOptions = {
-    title: 'Recaudación Neta por Evento (Donaciones - Costo Interno)',
+    title: 'Recaudación Neta por Evento (Donaciones + Inscripciones - Costo Interno)',
     titleTextStyle: {
       fontSize: 18,
       bold: true,

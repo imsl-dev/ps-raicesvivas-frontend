@@ -13,6 +13,7 @@ import { T } from '@angular/cdk/keycodes';
 import { TipoEventoPipe } from '../../../../pipes/tipo-evento.pipe';
 import { MapaSelector } from '../../../shared/mapa-selector/mapa-selector';
 import { CoordenadaResult, GeocodingService } from '../../../../services/geocoding.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-nuevo-evento',
@@ -326,19 +327,35 @@ export class NuevoEvento implements OnInit {
       request.subscribe({
         next: (response) => {
           const mensaje = this.eventoId
-            ? '✅ Evento modificado exitosamente'
-            : '✅ Evento creado exitosamente';
-          alert(mensaje);
-          this.router.navigate(['/eventos']);
+            ? 'Evento modificado exitosamente'
+            : 'Evento creado exitosamente';
+          Swal.fire({
+            title: "¡Operación exitosa!",
+            text: mensaje,
+            icon: "success",
+            draggable: true
+          }).then(() => {
+            this.router.navigate(['/eventos']);
+          });
         },
         error: (err) => {
           console.error('Error al guardar evento:', err);
-          alert('❌ Error al guardar el evento. Por favor, revisa los datos ingresados.');
+          Swal.fire({
+            title: "Error",
+            text: "Error al guardar el evento. Por favor, revisa los datos ingresados.",
+            icon: "error",
+            draggable: true
+          });
         }
       });
     } else {
       this.markFormGroupTouched(this.eventoForm);
-      alert('❌ Por favor completa todos los campos obligatorios correctamente');
+      Swal.fire({
+        title: "Formulario incompleto",
+        text: "Por favor completa todos los campos obligatorios correctamente",
+        icon: "warning",
+        draggable: true
+      });
     }
   }
 

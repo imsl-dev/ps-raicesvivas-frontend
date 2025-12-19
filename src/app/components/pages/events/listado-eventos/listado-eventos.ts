@@ -10,6 +10,7 @@ import { HttpService } from '../../../../services/http.service';
 import { TipoEventoPipe } from '../../../../pipes/tipo-evento.pipe';
 import { Usuario } from '../../../../models/entities/Usuario';
 import { AuthService } from '../../../../services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-listado-eventos',
@@ -145,18 +146,41 @@ export class ListadoEventos implements OnInit {
 
   deleteEvento(id: number | undefined): void {
     if (!id) return;
-    if (confirm('¿Está seguro de que desea cancelar este evento? Luego no será posible reanudarlo.')) {
-      this.service.deleteEvento(id).subscribe({
-        next: () => {
-          this.eventos = this.eventos.filter(e => e.id !== id);
-          alert('Evento cancelado exitosamente');
-        },
-        error: (err) => {
-          console.error('Error al cancelar el evento:', err);
-          alert('Error al cancelar el evento. Por favor, intente nuevamente.');
-        }
-      });
-    }
+
+    Swal.fire({
+      title: '¿Está seguro?',
+      text: "¿Desea cancelar este evento? Luego no será posible reanudarlo.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#28a745',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'No, volver',
+      draggable: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.service.deleteEvento(id).subscribe({
+          next: () => {
+            this.eventos = this.eventos.filter(e => e.id !== id);
+            Swal.fire({
+              title: "¡Cancelado!",
+              text: "El evento ha sido cancelado exitosamente",
+              icon: "success",
+              draggable: true
+            });
+          },
+          error: (err) => {
+            console.error('Error al cancelar el evento:', err);
+            Swal.fire({
+              title: "Error",
+              text: "Error al cancelar el evento. Por favor, intente nuevamente.",
+              icon: "error",
+              draggable: true
+            });
+          }
+        });
+      }
+    });
   }
 
   viewDetails(id: number | undefined): void {
