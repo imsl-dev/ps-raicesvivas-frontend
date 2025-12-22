@@ -4,6 +4,7 @@ import { EstadoPeticion } from '../../../../../models/enums/Enums';
 import { PeticionOrganizador } from '../../../../../models/entities/PeticionOrganizador';
 import { FormsModule } from '@angular/forms';
 import { PeticionService } from '../../../../../services/peticion.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-gestion-peticiones',
@@ -195,11 +196,21 @@ export class GestionPeticiones implements OnInit {
       next: () => {
         peticion.estadoPeticion = EstadoPeticion.ACEPTADO;
         this.expandedPendienteId = null;
-        alert('Petición aceptada exitosamente');
+        Swal.fire({
+          title: "¡Petición aceptada!",
+          text: "El usuario ahora es organizador",
+          icon: "success",
+          draggable: true
+        });
       },
       error: (err) => {
         console.error('Error aceptando petición:', err);
-        alert('Error al aceptar la petición');
+        Swal.fire({
+          title: "Error",
+          text: "No se pudo aceptar la petición. Intente nuevamente.",
+          icon: "error",
+          draggable: true
+        });
       }
     });
 
@@ -213,11 +224,21 @@ export class GestionPeticiones implements OnInit {
       next: () => {
         peticion.estadoPeticion = EstadoPeticion.CANCELADO;
         this.expandedPendienteId = null;
-        alert('Petición cancelada');
+        Swal.fire({
+          title: "Petición rechazada",
+          text: "La solicitud ha sido rechazada",
+          icon: "info",
+          draggable: true
+        });
       },
       error: (err) => {
         console.error('Error cancelando petición:', err);
-        alert('Error al cancelar la petición');
+        Swal.fire({
+          title: "Error",
+          text: "No se pudo rechazar la petición. Intente nuevamente.",
+          icon: "error",
+          draggable: true
+        });
       }
     });
 
@@ -257,5 +278,12 @@ export class GestionPeticiones implements OnInit {
       default:
         return '';
     }
+  }
+
+  // Helper para obtener iniciales del usuario
+  getUserInitials(peticion: PeticionOrganizador): string {
+    const firstName = peticion.nombreUsuario?.charAt(0) || '';
+    const lastName = peticion.apellidoUsuario?.charAt(0) || '';
+    return (firstName + lastName).toUpperCase();
   }
 }

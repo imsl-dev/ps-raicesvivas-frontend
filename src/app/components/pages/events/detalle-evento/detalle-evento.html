@@ -235,8 +235,10 @@
       </div>
 
       <!-- Botones de acción -->
+      <!-- Botones de acción -->
       <div class="acciones-principales">
-        @if (evento.estado === 'PRÓXIMO' && usuarioLogeado?.rol === 'USUARIO') {
+        <!-- Inscripción para USUARIO cuando evento está PRÓXIMO o EN_CURSO -->
+        @if ((evento.estado === 'PRÓXIMO' || evento.estado === 'EN CURSO') && usuarioLogeado?.rol === 'USUARIO') {
         @if (!estaInscripto) {
         @if (tieneCostoInscripcion()) {
         <button class="btn btn-success btn-lg" (click)="abrirModalConfirmacionPago()" [disabled]="procesandoPago">
@@ -266,7 +268,7 @@
             <span class="icono-check">✓</span>
             <span>Ya estás inscripto a este evento</span>
           </div>
-          @if(!tieneCostoInscripcion){
+          @if (!tieneCostoInscripcion()) {
           <button class="btn btn-warning" (click)="abrirModalCancelacion()" [disabled]="procesandoInscripcion">
             🚫 Cancelar Inscripción
           </button>
@@ -275,12 +277,21 @@
         }
         }
 
+        <!-- Mensaje para evento FINALIZADO -->
+        @if (evento.estado === 'FINALIZADO' && usuarioLogeado?.rol === 'USUARIO') {
+        <div class="alerta-finalizado">
+          <p>🏁 Este evento ya ha finalizado</p>
+        </div>
+        }
+
+        <!-- Mensaje para evento CANCELADO -->
         @if (evento.estado === 'CANCELADO') {
         <div class="alerta-cancelado">
           <p>⚠️ Este evento ha sido cancelado</p>
         </div>
         }
 
+        <!-- Botón editar para ORGANIZADOR -->
         @if (usuarioLogeado?.rol === 'ORGANIZADOR' && evento.organizadorId === usuarioLogeado?.id && evento.estado ===
         'PRÓXIMO') {
         <button class="btn btn-secondary" (click)="editarEvento()">

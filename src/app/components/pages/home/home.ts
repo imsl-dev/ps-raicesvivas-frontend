@@ -120,7 +120,7 @@ export class Home implements OnInit {
     },
     {
       id: 7,
-      pregunta: '¿Que sucede si le doy al boton de "Mostrar QR" de un canjeable sin querer?',
+      pregunta: '¿Qué sucede si le doy al boton de "Mostrar QR" de un canjeable sin querer?',
       respuesta: 'Al clickear el boton, previo a que se muestre el código QR, le aparecerá una ventana de confirmación para evitar clicks accidentales. En caso de que haya confirmado el click, el QR se mostrará en pantalla y luego el canjeable quedará utilizado.',
       expanded: false
     }

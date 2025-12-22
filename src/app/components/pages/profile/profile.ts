@@ -308,6 +308,7 @@ export class Profile implements OnInit {
 
         // Optionally show success message
         console.log('Perfil actualizado exitosamente');
+        this.authService.refreshUsuario();
       },
       error: (error) => {
         this.isSaving = false;

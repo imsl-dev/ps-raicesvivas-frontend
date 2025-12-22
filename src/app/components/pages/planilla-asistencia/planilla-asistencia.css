@@ -1,4 +1,5 @@
 .planilla-container {
+    margin-top: 3rem;
     min-height: 100vh;
     background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
     padding: 2rem;
